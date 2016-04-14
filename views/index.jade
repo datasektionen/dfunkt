@@ -15,6 +15,16 @@ block content
     input(type="text", name="description", placeholder="Desc")
     input(type="email", name="email", placeholder="mail")
     input(type="submit")
+    
+  h2 Creating a Mandate
+  form(action="/mandates/create", method="post")
+    input(type="date", name="start")
+    input(type="date", name="end")
+    input(type="number", name="userId", placeholer="User")
+    input(type="number", name="roleId")
+    input(type="submit")
+    
+  
 
   h2 Users
 
@@ -35,4 +45,15 @@ block content
           = role.description
         li    
           = role.email
+        li    
+          = role.id
+
+  h2 Mandates
+  each mandate in mandates
+    ul
+      li
+        = mandate.UserId
+      li
+        = mandate.RoleId
+      
         

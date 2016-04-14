@@ -6,11 +6,14 @@ var router  = express.Router();
 router.get('/', function(req, res) {
     models.User.findAll({}).then(function(users) {
       models.Role.findAll({}).then(function(roles) {
-        res.render('index', {
-          title: 'Express',
-            users: users,
-            roles: roles,
-          });
+        models.Mandate.findAll({}).then(function(mandates) {
+            res.render('index', {
+              title: 'Express',
+              users: users,
+              roles: roles,
+              mandates: mandates,
+            });
+        });
       });
     });
 });
