@@ -1,16 +1,17 @@
 "use strict";
 
 module.exports = function(sequelize, DataTypes) {
-  var User = sequelize.define("User", {
+  var Role = sequelize.define("Role", {
     name: DataTypes.STRING,
-    kthid: DataTypes.STRING,
+    description: DataTypes.STRING,
+    email: DataTypes.STRING,
   }, {
     classMethods: {
       associate: function(models) {
-        User.hasMany(models.Mandate)
+        Role.hasMany(models.Mandate)
       }
     }
   });
 
-  return User;
+  return Role;
 };
