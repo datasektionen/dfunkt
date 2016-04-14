@@ -3,8 +3,13 @@ var express = require('express');
 var router  = express.Router();
 
 router.get('/', function(req, res) {
-    res.render('index', {
-      title: 'Express',
+    models.User.findAll({
+        include: [{all: true }],
+    }).then(function(users) {
+        res.render('index', {
+          title: 'Express',
+          users: users,
+        });
     });
 });
 
