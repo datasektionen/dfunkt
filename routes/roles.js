@@ -3,18 +3,10 @@ var express = require('express');
 var router  = express.Router();
 
 router.post('/create', function(req, res) {
-  models.User.create({
-    name: req.body.name
-  }).then(function() {
-    res.redirect('/');
-  });
-});
-
-router.get('/:user_id/destroy', function(req, res) {
-  models.User.destroy({
-    where: {
-      id: req.params.user_id
-    }
+  models.Role.create({
+    name: req.body.name,
+    email: req.body.email,
+    description: req.body.description,
   }).then(function() {
     res.redirect('/');
   });
