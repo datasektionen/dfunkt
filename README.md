@@ -10,6 +10,7 @@ Dfunkt är ännu i ett tidigt stadium, men just nu listar den datan den har och 
  * Administratörspanel (som nu, fast bättre)
  * User/Role search dropdowns istället för explicit ID
  * Säkert mer, men det är vad jag kommer på nu
+ * Oh right, byta till Postregsql, right? Tror den kör SQLite3 i bakgrunden nu.
 
 ## Installation
 
