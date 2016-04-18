@@ -20,8 +20,13 @@ block content
   form(action="/mandates/create", method="post")
     input(type="date", name="start")
     input(type="date", name="end")
-    input(type="number", name="userId", placeholer="User")
     input(type="number", name="roleId")
+    input(type="text", name="username", placeholer="User")
+    //input(list="roles", name="role")
+      //datalist#roles 
+        //option(value="qwe")
+        //option(value="foo")
+        //option(value="bar")
     input(type="submit")
     
   
@@ -54,6 +59,10 @@ block content
       li
         = mandate.UserId
       li
-        = mandate.RoleId
+        = mandate.RoleId    
+      li
+        = mandate.start
+      li
+        = mandate.end
       
         
