@@ -3,11 +3,16 @@ var express = require('express');
 var router  = express.Router();
 
 router.post('/create', function(req, res) {
-  models.User.create({
-    name: req.body.name
-  }).then(function() {
+  if (req.body.name !== "") {
+    models.User.create({
+      name: req.body.name
+    }).then(function() {
+      res.redirect('/');
+    });
+  } else {
+    debug("User create rejected because empty name.");
     res.redirect('/');
-  });
+  }
 });
 
 router.get('/:user_id/destroy', function(req, res) {
