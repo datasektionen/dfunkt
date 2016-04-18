@@ -23,7 +23,10 @@ block content
     datalist#users 
       each user in users
         option(value=user.name)
-    input(type="number", name="roleId", placeholder="Role Id")
+    input(type="text", list="roles", name="rolename", placeholder="Role")
+    datalist#roles 
+      each role in roles
+        option(value=role.name)
       
     input(type="submit")
     
