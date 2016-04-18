@@ -4,6 +4,7 @@ var debug = require('debug')('Mandaties');
 var router  = express.Router();
 
 router.post('/create', function(req, res) {
+  debug("Searching for" + JSON.stringify(req.body.username));
   models.User.findOne({
       where: {
           name:req.body.username

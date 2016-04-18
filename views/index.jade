@@ -1,8 +1,7 @@
 extends layout
 
 block content
-  h1= title
-  p This is DFUNKT REBORN!
+  h1 This is DFUNKT REBORN!
 
   h2 Creating a new user
   form(action="/users/create", method="post")
@@ -20,16 +19,16 @@ block content
   form(action="/mandates/create", method="post")
     input(type="date", name="start")
     input(type="date", name="end")
-    input(type="number", name="roleId")
-    input(type="text", name="username", placeholer="User")
-    //input(list="roles", name="role")
-      //datalist#roles 
-        //option(value="qwe")
-        //option(value="foo")
-        //option(value="bar")
+    input(type="text", list="users", name="username", placeholder="User")
+    datalist#users 
+      each user in users
+        option(value=user.name)
+    input(type="number", name="roleId", placeholder="Role Id")
+      
     input(type="submit")
     
   
+  h1 Current state
 
   h2 Users
 
@@ -37,6 +36,8 @@ block content
   each user in users
     li
       = user.name
+    li
+      = user.id
       
   h2 Roles
   
