@@ -7,8 +7,8 @@ function validMandateRequest(body) {
   return body.username && body.username !== "" &&
          body.roleId &&
          body.start &&
-         body.end;
-  // TODO: Check if end is after start
+         body.end &&
+         new Date(body.start) <= new Date(body.end);
 }
 
 router.post('/create', function(req, res) {
