@@ -65,11 +65,4 @@ router.post('/create', function(req, res) {
   }
 });
 
-router.get('/list', function(req, res) {
-  models.Mandate.findAll({})
-  .then(function(mandates) {
-    res.json({mandates: mandates});
-  });
-});
-
 module.exports = router;

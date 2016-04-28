@@ -1,7 +1,7 @@
 var models  = require('../models');
 var express = require('express');
 var router  = express.Router();
-var debug   = require('debug')("dfunkt");
+var debug   = require('debug')("routes");
 
 function validRequest(body) {
   return body.title && body.title !== "" &&
@@ -51,13 +51,22 @@ function jsonRenderRole(role, allMandates) {
     title:  role.title,
     description: role.description,
     email: role.email,
-    mandates: allMandates.filter(byId).map(jsonRenderMandate),
+    mandates: mostRecentMandate(allMandates.filter(byId)),
   };
 }
 
-//TODO: Improve
-function jsonRenderMandate(mandate) {
-  return mandate;
+function mostRecentMandate(mandates) {
+  if (mandates.length == 0) {
+    return [];
+  } else {
+    return mandates.reduce(function(prev, curr) {
+      if (curr.end > prev.end) {
+	return curr;
+      } else {
+	return prev;
+      }
+    });
+  }
 }
 
 module.exports = router;
