@@ -5,7 +5,8 @@ var router  = express.Router();
 router.post('/create', function(req, res) {
   if (req.body.name !== "") {
     models.User.create({
-      name: req.body.name
+      name: req.body.name,
+      kthid: req.body.kthid,
     }).then(function() {
       res.redirect('/');
     });
