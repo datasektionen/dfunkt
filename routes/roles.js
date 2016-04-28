@@ -24,6 +24,28 @@ router.post('/create', function(req, res) {
   }
 });
 
+router.get("/:RoleId/list", function(req, res) {
+  models.Role.findById(req.params.RoleId, {
+    attributes: ["title", "description", "email"], 
+  }).then(function(role) {
+    models.Mandate.findAll({
+      where: {RoleId: req.params.RoleId,},
+      attributes: ["start", "end"],
+      include: [{
+	model: models.User, 
+	attributes: ["name", "kthid"],
+      }],
+    }).then(function(mandates) {
+      res.json({
+	title:  role.title,
+	description: role.description,
+	email: role.email,
+	mandates: mandates,
+      });
+    });
+  });
+});
+
 router.get('/list', function(req, res) {
   models.Role.findAll({
     attributes: ["title", "description", "email", "id"],
