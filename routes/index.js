@@ -14,10 +14,14 @@ router.get('/', function(req, res) {
     var mandates = results[2];
     res.render('index', {
       title: 'Express',
+      user: req.user,
       users: users,
       roles: roles,
       mandates: mandates,
     });
+  }).catch(function(e) {
+    res.status(403);
+    res.send('error');
   });
 });
 

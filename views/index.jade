@@ -2,6 +2,12 @@ extends layout
 
 block content
   h1 This is DFUNKT REBORN!
+  #user 
+   if user
+    p You are logged in as #{user}
+    a(href='/login/logout') Logout
+   else 
+    a(href='https://login2.datasektionen.se/login?callback=http://localhost:3000/login/dauth/') Login
 
   h2 Creating a new user
   form(action="/users/create", method="post")
