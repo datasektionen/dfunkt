@@ -2,7 +2,7 @@
 
 module.exports = function(sequelize, DataTypes) {
   var Role = sequelize.define("Role", {
-    name: DataTypes.STRING,
+    title: DataTypes.STRING,
     description: DataTypes.STRING,
     email: DataTypes.STRING,
   }, {

@@ -4,11 +4,15 @@ Dfunkt håller koll på roller, mandat och personer. Roller har sina beskrivning
 
 Dfunkt är ännu i ett tidigt stadium, men just nu listar den datan den har och man kan lägga till de olika sakerna.
 
+## Usage (rest api)
+
+ * `GET /roles/list` listar alla roller, och deras senaste mandat.
+ * `GET /roles/:RoleId/list listar en specifik roll, och alla mandat på den (som nånsin varit ever).
+
 ## Roadmap, I guess
 
- * API för att hämta lista på mandat för det nuvarande datumet
  * Administratörspanel (som nu, fast bättre)
- * User/Role search dropdowns istället för explicit ID
+ * Inloggning
  * Säkert mer, men det är vad jag kommer på nu
  * Oh right, byta till Postregsql, right? Tror den kör SQLite3 i bakgrunden nu.
 
