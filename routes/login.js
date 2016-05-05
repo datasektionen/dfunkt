@@ -16,9 +16,7 @@ router.get('/dauth/:token', passport.authenticate('dauth', {
 
 router.get('/logout', function(req, res) {
 	req.logout();
-	//TODO: redirect instead??
-	res.status(200);
-	res.send("success");
+	res.redirect('/');
 });
 
 module.exports = router;

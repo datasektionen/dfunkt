@@ -1,7 +1,54 @@
 doctype html
 html
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    meta(charset="utf-8")
+    title= dfunkt
+    link(rel='stylesheet', href='http://aurora.froyo.datasektionen.se/', type="text/css")
+    script(type="text/javascript").
+      function getLoginUrl() {
+        var callback = ""
+        callback += location.protocol + "//"
+        callback += location.hostname
+        if(location.port) {
+          callback += ":" + location.port
+        }
+        callback += "/login/dauth/"
+        return "http://login2.datasektionen.se/login?callback=" + callback
+      }
+
+      var loginname="#{user}";
+      var login_text = "login";
+      var login_href = getLoginUrl();
+      if(loginname != "") {
+        login_text = "logout";
+        login_href = "/login/logout";
+      }
+
+      window.tbaas_conf = {
+        system_name: "dfunkt",
+        target_id: "methone-container-replace",
+        primary_color: "#ab47bc",
+        secondary_color: "white",
+        login_text: login_text,
+        login_href: login_href,
+        delta_invert: true,
+        topbar_items: [
+          {
+              str: "ett",
+              href: "/"
+          },
+      
+          {
+              str: "två",
+              href: "/g"
+          },
+      
+          {
+              str: "tre",
+              href: "/"
+          },
+        ]
+      }
+    script(async="", src="http://methone.datasektionen.se").
   body
     block content

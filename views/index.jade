@@ -1,91 +1,116 @@
 extends layout
 
 block content
-  h1 This is DFUNKT REBORN!
-  #user 
-   if user
-    p You are logged in as #{user}
-    a(href='/login/logout') Logout
-   else 
-    a(href='https://login2.datasektionen.se/login?callback=http://localhost:3000/login/dauth/') Login
+  div(id='methone-container-replace')
+  div(id='application' class='purple')
+    header
+      div(class='header-inner')
+        div(class='row')
+          div(class='header-left col-md-2')
+            a(href='/') Tillbaka
+          div(class='col-md-8')
+            h2 Dfunkt
+          div(class='header-right col-md-2')
+            a(href='https://github.com/datasektionen/Docs', class='primary-action') Github
+        div(class='clear')
+    div(id='content')
+      div(class='row')
+        div(class='col-sm-4 col-md-3')
+          div(id='secondary-nav')
+            h3
+              #user 
+              if user
+                p Logged in as #{user}
+              else
+                p Dfunkt
+            ul
+              li
+                a(href='/') todolink
+            ul
+              li
+                a(href='/') todolink
+        div(class='col-sm-8 col-md-9')
 
-  h2 Creating a new user
-  form(action="/users/create", method="post")
-    input(type="text", name="name")
-    input(type="text", name="kthid")
-    input(type="submit")
-    
-  h2 Create a new Role
-  form(action="/roles/create", method="post")
-    input(type="text", name="title", placeholder="Name")
-    input(type="text", name="description", placeholder="Desc")
-    input(type="email", name="email", placeholder="mail")
-    input(type="submit")
-    
-  h2 Creating a Mandate
-  form(action="/mandates/create", method="post")
-    input(type="date", name="start")
-    input(type="date", name="end")
-    input(type="text", list="users", name="username", placeholder="User")
-    datalist#users 
-      each user in users
-        option(value=user.name)
-    input(type="text", list="roles", name="rolename", placeholder="Role")
-    datalist#roles 
-      each role in roles
-        option(value=role.title)
+          h1 Creating things
+
+          h2 Creating a new user
+          form(action="/users/create", method="post")
+            input(type="text", name="name")
+            input(type="text", name="kthid")
+            input(type="submit")
+            
+          h2 Create a new Role
+          form(action="/roles/create", method="post")
+            input(type="text", name="title", placeholder="Name")
+            input(type="text", name="description", placeholder="Desc")
+            input(type="email", name="email", placeholder="mail")
+            input(type="submit")
+            
+          h2 Creating a Mandate
+          form(action="/mandates/create", method="post")
+            input(type="date", name="start")
+            input(type="date", name="end")
+            input(type="text", list="users", name="username", placeholder="User")
+            datalist#users 
+              each user in users
+                option(value=user.name)
+            input(type="text", list="roles", name="rolename", placeholder="Role")
+            datalist#roles 
+              each role in roles
+                option(value=role.title)
+              
+            input(type="submit")
+            
+          
+          h1 Current state
+
+          h2 Users
+
+          ul
+          each user in users
+            p
+              li
+                = user.name
+              li 
+                = user.kthid + "\@kth.se"
+              li
+                = "Database id: "+user.id
+              li
+                form(action="/users/"+user.id+"/destroy", method="delete")
+                  input(type="submit", value="Delete")
+              
+          h2 Roles
+          
+          ul
+          each role in roles
+            p
+              li
+                = role.title
+              li    
+                = role.description
+              li    
+                = role.email
+              li    
+                = "Database id: "+role.id
+              li
+                form(action="/roles/"+role.id+"/destroy", method="delete")
+                  input(type="submit", value="Delete")
+
+          h2 Mandates
+          ul
+          each mandate in mandates
+            p
+              li
+                = "User id: "+mandate.id
+              li
+                = "Role id: "+mandate.id
+              li
+                = "Start: " + mandate.start
+              li
+                = "End: " + mandate.end
+              li
+                form(action="/mandates/"+mandate.id+"/destroy", method="delete")
+                  input(type="submit", value="Delete")
+
+        div(class='clear')
       
-    input(type="submit")
-    
-  
-  h1 Current state
-
-  h2 Users
-
-  ul
-  each user in users
-    p
-      li
-        = user.name
-      li 
-        = user.kthid + "\@kth.se"
-      li
-        = "Database id: "+user.id
-      li
-        form(action="/users/"+user.id+"/destroy", method="delete")
-          input(type="submit", value="Delete")
-      
-  h2 Roles
-  
-  ul
-  each role in roles
-    p
-      li
-        = role.title
-      li    
-        = role.description
-      li    
-        = role.email
-      li    
-        = "Database id: "+role.id
-      li
-        form(action="/roles/"+role.id+"/destroy", method="delete")
-          input(type="submit", value="Delete")
-
-  h2 Mandates
-  ul
-  each mandate in mandates
-    p
-      li
-        = "User id: "+mandate.id
-      li
-        = "Role id: "+mandate.id
-      li
-        = "Start: " + mandate.start
-      li
-        = "End: " + mandate.end
-      li
-        form(action="/mandates/"+mandate.id+"/destroy", method="delete")
-          input(type="submit", value="Delete")
-      
-        

@@ -20,6 +20,7 @@ router.get('/', function(req, res) {
       mandates: mandates,
     });
   }).catch(function(e) {
+    console.log(e);
     res.status(403);
     res.send('error');
   });
