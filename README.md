@@ -7,7 +7,7 @@ Dfunkt är ännu i ett tidigt stadium, men just nu listar den datan den har och 
 ## Usage (rest api)
 
  * `GET /roles/list` listar alla roller, och deras senaste mandat.
- * `GET /roles/:RoleId/list listar en specifik roll, och alla mandat på den (som nånsin varit ever).
+ * `GET /roles/:RoleId/list` listar en specifik roll, och alla mandat på den (som nånsin varit ever).
 
 ## Roadmap, I guess
 
