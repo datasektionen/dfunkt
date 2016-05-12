@@ -21,7 +21,7 @@ block content
           input(type="email", name="email", placeholder="email")
           input(type="submit")
           
-        h2 Skapa mandat
+        h2 Skapa Mandat
         form(action="/mandates/create", method="post")
           input(type="date", name="start")
           input(type="date", name="end")
@@ -36,7 +36,7 @@ block content
             
           input(type="submit")
 
-        h2 Lägga till administratorer
+        h2 Lägga till Administratörer
         form(action="/users/make-admin", method="post")
           select(name="userId", placeholder="User")
             each user in users
@@ -44,10 +44,19 @@ block content
                 = user.first_name + " " + user.last_name
           input(type="submit", value="Gör till administrator")
 
-        h2 Ta bort administratorer
+        h2 Ta bort Administratörer
         form(action="/users/revoke-admin", method="post")
           select(name="userId", placeholder="User")
             each user in users
               option(value=user.id)
                 = user.first_name + " " + user.last_name
           input(type="submit", value="Ta bort som administrator")
+
+        h2 Radera Användare
+        form(action="/users/destroy", method="delete")
+          select(name="userId", placeholder="User")
+            each user in users
+              option(value=user.id)
+                = user.first_name + " " + user.last_name
+          input(type="submit", value="Radera användare")
+

@@ -20,12 +20,13 @@ router.post('/create', helpers.requireadmin, function(req, res) {
   }
 });
 
-router.get('/:user_id/destroy', helpers.requireadmin, function(req, res) {
+router.get('/destroy', helpers.requireadmin, function(req, res) {
   models.User.destroy({
     where: {
-      id: req.params.user_id
+      id: req.body.userId
     }
   }).then(function() {
+    debug("Deleted a user.");
     res.redirect('/');
   });
 });
@@ -46,13 +47,13 @@ function toggleAdmin(user_id, set_admin) {
   });
 }
 
-router.post('/make-admin', function(req, res) {
+router.post('/make-admin', helpers.requireadmin, function(req, res) {
   toggleAdmin(req.body.userId, true).then(function() {
     res.redirect('/');
   });
 });
 
-router.post('/revoke-admin', function(req, res) {
+router.post('/revoke-admin', helpers.requireadmin, function(req, res) {
   toggleAdmin(req.body.userId, false).then(function() {
     res.redirect('/');
   });
