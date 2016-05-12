@@ -33,7 +33,7 @@ router.post('/create', function(req, res) {
       }),
       models.Role.findOne({
         where: {
-          id:req.body.userId
+          id:req.body.roleId
         }
       }),
     ]).then( makeSureNoneNull )
