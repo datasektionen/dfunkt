@@ -1,7 +1,7 @@
 var models  = require('../models');
 var express = require('express');
 var helpers = require('./helpers');
-var debug = require('debug')('mandates');
+var debug = require('debug')('dfunkt');
 var router  = express.Router();
 
 function validRequest(body) {

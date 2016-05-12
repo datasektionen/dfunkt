@@ -20,12 +20,13 @@ router.post('/create', helpers.requireadmin, function(req, res) {
   }
 });
 
-router.get('/:user_id/destroy', helpers.requireadmin, function(req, res) {
+router.get('/destroy', helpers.requireadmin, function(req, res) {
   models.User.destroy({
     where: {
-      id: req.params.user_id
+      id: req.body.userId
     }
   }).then(function() {
+    debug("Deleted a user.");
     res.redirect('/');
   });
 });
