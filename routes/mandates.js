@@ -1,5 +1,6 @@
 var models  = require('../models');
 var express = require('express');
+var helpers = require('./helpers');
 var debug = require('debug')('mandates');
 var router  = express.Router();
 
@@ -21,7 +22,7 @@ function makeSureNoneNull(values) {
   return Promise.resolve(values);
 };
 
-router.post('/create', function(req, res) {
+router.post('/create', helpers.requireadmin, function(req, res) {
   debug("Request body: " + JSON.stringify(req.body));
 
   if (validRequest(req.body)) {
