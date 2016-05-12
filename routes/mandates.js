@@ -4,8 +4,8 @@ var debug = require('debug')('mandates');
 var router  = express.Router();
 
 function validRequest(body) {
-  return body.username && body.username !== "" &&
-         body.rolename && body.rolename !== "" &&
+  return body.userId && 
+         body.roleId && 
          body.start &&
          body.end &&
          new Date(body.start) <= new Date(body.end);
@@ -23,18 +23,17 @@ function makeSureNoneNull(values) {
 
 router.post('/create', function(req, res) {
   debug("Request body: " + JSON.stringify(req.body));
-  debug("Searching for user " + JSON.stringify(req.body.username));
 
   if (validRequest(req.body)) {
     Promise.all([
       models.User.findOne({
         where: {
-          name:req.body.username
+          id:req.body.userId
         }
       }),
       models.Role.findOne({
         where: {
-          title:req.body.rolename
+          id:req.body.userId
         }
       }),
     ]).then( makeSureNoneNull )

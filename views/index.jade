@@ -51,14 +51,14 @@ block content
           form(action="/mandates/create", method="post")
             input(type="date", name="start")
             input(type="date", name="end")
-            input(type="text", list="users", name="username", placeholder="User")
-            datalist#users 
+            select(name="userId", placeholder="User")
               each user in users
-                option(value=user.first_name + " " + user.last_name)
-            input(type="text", list="roles", name="rolename", placeholder="Role")
-            datalist#roles 
+                option(value=user.id)
+                  = user.first_name + " " + user.last_name
+            select(name="roleId", placeholder="Role")
               each role in roles
-                option(value=role.title)
+                option(value=role.id)
+                  = role.title
               
             input(type="submit")
             
