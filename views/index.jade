@@ -5,42 +5,9 @@ block content
       div(class='row')
         include sidebar.jade
         div(class='col-sm-8 col-md-9')
+          h1 Saker
 
-          h1 Creating things
-
-          h2 Creating a new user
-          form(action="/users/create", method="post")
-            input(type="text", name="first_name")
-            input(type="text", name="last_name")
-            input(type="text", name="kthid")
-            input(type="submit")
-            
-          h2 Create a new Role
-          form(action="/roles/create", method="post")
-            input(type="text", name="title", placeholder="Name")
-            input(type="text", name="description", placeholder="Desc")
-            input(type="email", name="email", placeholder="mail")
-            input(type="submit")
-            
-          h2 Creating a Mandate
-          form(action="/mandates/create", method="post")
-            input(type="date", name="start")
-            input(type="date", name="end")
-            select(name="userId", placeholder="User")
-              each user in users
-                option(value=user.id)
-                  = user.first_name + " " + user.last_name
-            select(name="roleId", placeholder="Role")
-              each role in roles
-                option(value=role.id)
-                  = role.title
-              
-            input(type="submit")
-            
-          
-          h1 Current state
-
-          h2 Users
+          h2 Användare, TODO: inte primärt data som vi vill visa.
 
           ul
           each user in users
@@ -52,12 +19,12 @@ block content
               li 
                 = user.kthid + "\@kth.se"
               li
-                = "Database id: "+user.id
+                = "Databas id: "+user.id
               li
                 form(action="/users/"+user.id+"/destroy", method="delete")
                   input(type="submit", value="Delete")
               
-          h2 Roles
+          h2 Roller
           
           ul
           each role in roles
@@ -74,18 +41,18 @@ block content
                 form(action="/roles/"+role.id+"/destroy", method="delete")
                   input(type="submit", value="Delete")
 
-          h2 Mandates
+          h2 Mandat
           ul
           each mandate in mandates
             p
               li
-                = "User id: "+mandate.User.first_name + " " + mandate.User.last_name
+                = "Användare: "+mandate.User.first_name + " " + mandate.User.last_name
               li
-                = "Role id: "+mandate.Role.title
+                = "Roll: "+mandate.Role.title
               li
                 = "Start: " + mandate.start
               li
-                = "End: " + mandate.end
+                = "Slut: " + mandate.end
               li
                 form(action="/mandates/"+mandate.id+"/destroy", method="delete")
                   input(type="submit", value="Delete")

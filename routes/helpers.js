@@ -5,6 +5,19 @@ var denied = function(res) {
   res.send('denied');
 }
 
+exports.isadmin = function(user) {
+  return new Promise(function(resolve, reject) {
+      models.User.findOne({where: {kthid:user}}).then(function(user) {
+      console.log(user);
+      var isadmin = false;
+      if(user && user.admin) {
+        isadmin = true;
+      }
+      resolve(isadmin);
+    });
+  });
+}
+
 exports.requirelogin = function(req, res, next) {
   if(req.user) {
     next()

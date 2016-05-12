@@ -18,10 +18,10 @@ html
       }
 
       var loginname="#{user}";
-      var login_text = "login";
+      var login_text = "Logga in";
       var login_href = getLoginUrl();
       if(loginname != "") {
-        login_text = "logout";
+        login_text = "Logga ut";
         login_href = "/login/logout";
       }
 
@@ -33,22 +33,7 @@ html
         login_text: login_text,
         login_href: login_href,
         delta_invert: true,
-        topbar_items: [
-          {
-              str: "ett",
-              href: "/"
-          },
-      
-          {
-              str: "två",
-              href: "/g"
-          },
-      
-          {
-              str: "tre",
-              href: "/"
-          },
-        ]
+        topbar_items: []
       }
     script(async="", src="http://methone.datasektionen.se").
   body
