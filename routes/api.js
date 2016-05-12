@@ -26,10 +26,10 @@ router.get('/roles', function(req, res) {
 //All roles who has a history and all of their history.
 router.get('/roles/all', function(req, res) {
   models.Role.findAll({attributes: ['id', 'title', 'description', 'email']}).then(function(roles) {
-    //TODO: do some fun magick to concact theses results together. Maybe rewrite to a better query
+    //TODO: do some fun magick to concact theses results together. Maybe rewrite to a better query. Actually look at what ludvig wrote.
     for (var i = roles.length - 1; i >= 0; i--) {
       models.Mandate.findAll({
-        where: {RoleId: roles[i].id}
+        where: {RoleId: roles[i].id},
         attributes: ['start', 'end'],
         include: [{
           model: models.User,
@@ -39,10 +39,11 @@ router.get('/roles/all', function(req, res) {
         //res.json(result);
       });
     };
-    res.json({'todo': 'fix this function'})
+    res.json({'todo': 'fix this function'});
+  });
 });
 
-//TODO: see function above, needs fixing the same way.
+//TODO: see function above, needs fixing the same way. Actually look at what ludvig wrote with map and such.
 router.get('/roles/type/:type', function(req, res) {
   models.Role.findAll({
     where: {type: req.params.type},
