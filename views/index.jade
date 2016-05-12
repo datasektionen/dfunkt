@@ -1,34 +1,9 @@
 extends layout
 
 block content
-  div(id='methone-container-replace')
-  div(id='application' class='purple')
-    header
-      div(class='header-inner')
-        div(class='row')
-          div(class='header-left col-md-2')
-            a(href='/') Tillbaka
-          div(class='col-md-8')
-            h2 Dfunkt
-          div(class='header-right col-md-2')
-            a(href='https://github.com/datasektionen/dfunkt', class='primary-action') Github
-        div(class='clear')
     div(id='content')
       div(class='row')
-        div(class='col-sm-4 col-md-3')
-          div(id='secondary-nav')
-            h3
-              #user 
-              if user
-                p Logged in as #{user}
-              else
-                p Dfunkt
-            ul
-              li
-                a(href='/') todolink
-            ul
-              li
-                a(href='/') todolink
+        include sidebar.jade
         div(class='col-sm-8 col-md-9')
 
           h1 Creating things

@@ -13,7 +13,6 @@ router.get('/', function(req, res) {
     var roles = results[1];
     var mandates = results[2];
     res.render('index', {
-      title: 'Express',
       user: req.user,
       users: users,
       roles: roles,
@@ -23,6 +22,21 @@ router.get('/', function(req, res) {
     console.log(e);
     res.status(403);
     res.send('error');
+  });
+});
+
+var requirelogin = function(req, res, next) {
+  if(req.user) {
+    next()
+  } else {
+    res.status(403);
+    res.send('denied');
+  }
+}
+
+router.get('/admin', requirelogin, function(req, res) {
+  res.render('admin', {
+    user: req.user,
   });
 });
 
