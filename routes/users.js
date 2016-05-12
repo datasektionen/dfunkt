@@ -28,4 +28,18 @@ router.get('/:user_id/destroy', function(req, res) {
   });
 });
 
+router.post('/:user_id/make-admin', function(req, res) {
+  models.User.findById(req.params.user_id).then(function(user) {
+    if (user) {
+      user.update({admin: true}).then(function() {
+	console.log("User " + user.first_name + " made admin.");
+	res.redirect('/');
+      });
+    } else {
+      res.redirect('/'); //TODO: An error page.
+    }
+  });
+});
+
+
 module.exports = router;
