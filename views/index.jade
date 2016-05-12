@@ -22,7 +22,15 @@ block content
                 = "Databas id: "+user.id
               li
                 form(action="/users/"+user.id+"/destroy", method="delete")
-                  input(type="submit", value="Delete")
+                  input(type="submit", value="Radera")
+              li
+                form(action="/users/"+user.id+"/make-admin", method="post")
+                  input(type="submit", value="Gör till administratör")
+              li
+                form(action="/users/"+user.id+"/revoke-admin", method="post")
+                  input(type="submit", value="Ta bort administratör")
+
+
               
           h2 Roller
           
