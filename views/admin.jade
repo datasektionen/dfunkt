@@ -18,22 +18,31 @@ block content
         form(action="/roles/create", method="post")
           input(type="text", name="title", placeholder="titel")
           input(type="text", name="description", placeholder="beskrivning")
+          select(name="type")
+            option(value="drek")
+              = "D-rektoratet"
+            option(value="project")
+              = "Projekt"
+            option(value="dfunk")
+              = "d-Funktionärer"
+            option(value="other")
+              = "Annat"
           input(type="email", name="email", placeholder="email")
           input(type="submit")
-          
+
         h2 Skapa Mandat
         form(action="/mandates/create", method="post")
           input(type="date", name="start")
           input(type="date", name="end")
           select(name="userId", placeholder="User")
             each user in users
-              option(value=user.id)
-                = user.first_name + " " + user.last_name
-          select(name="roleId", placeholder="Role")
-            each role in roles
-              option(value=role.id)
-                = role.title
-            
+                    option(value=user.id)
+                      = user.first_name + " " + user.last_name
+                select(name="roleId", placeholder="Role")
+                  each role in roles
+                    option(value=role.id)
+                      = role.title
+                  
           input(type="submit")
 
         h2 Lägga till Administratörer

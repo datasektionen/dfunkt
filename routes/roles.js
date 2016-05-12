@@ -16,6 +16,7 @@ router.post('/create', helpers.requireadmin, function(req, res) {
       title: req.body.title,
       email: req.body.email,
       description: req.body.description,
+      type: req.body.type,
     }).then(function() {
       res.redirect('/');
     });
