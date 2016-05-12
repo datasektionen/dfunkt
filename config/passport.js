@@ -13,6 +13,7 @@ module.exports = function(passport) {
         			email: user.email,
         			kthid: user.user,
         			ugkthid: user.ugkthid,
+                    admin: false,
         		});
         	} else if(!dbuser.ugkthid) { //Update user if they are loggin in for the first time.
         		dbuser.update({
@@ -21,6 +22,7 @@ module.exports = function(passport) {
         			email: user.email,
         			kthid: user.user,
         			ugkthid: user.ugkthid,
+                    admin: false,
         		});
         	}
         });

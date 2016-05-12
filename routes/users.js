@@ -8,6 +8,7 @@ router.post('/create', function(req, res) {
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       kthid: req.body.kthid,
+      admin: false,
     }).then(function() {
       res.redirect('/');
     });

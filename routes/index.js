@@ -2,6 +2,7 @@ var Sequelize = require("sequelize");
 var models  = require('../models');
 var express = require('express');
 var router  = express.Router();
+var helpers = require('./helpers');
 
 router.get('/', function(req, res) {
   Promise.all([
@@ -26,16 +27,7 @@ router.get('/', function(req, res) {
   });
 });
 
-var requirelogin = function(req, res, next) {
-  if(req.user) {
-    next()
-  } else {
-    res.status(403);
-    res.send('denied');
-  }
-}
-
-router.get('/admin', requirelogin, function(req, res) {
+router.get('/admin', helpers.requireadmin, function(req, res) {
   res.render('admin', {
     user: req.user,
   });

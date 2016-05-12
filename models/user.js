@@ -7,6 +7,7 @@ module.exports = function(sequelize, DataTypes) {
     email: DataTypes.STRING,
     kthid: DataTypes.STRING,
     ugkthid: DataTypes.STRING,
+    admin: DataTypes.BOOLEAN,
   }, {
     classMethods: {
       associate: function(models) {
