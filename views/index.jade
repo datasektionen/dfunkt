@@ -26,6 +26,9 @@ block content
               li
                 form(action="/users/"+user.id+"/make-admin", method="post")
                   input(type="submit", value="Gör till administratör")
+              li
+                form(action="/users/"+user.id+"/revoke-admin", method="post")
+                  input(type="submit", value="Ta bort administratör")
 
 
               
