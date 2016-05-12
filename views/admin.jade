@@ -35,3 +35,19 @@ block content
                 = role.title
             
           input(type="submit")
+
+        h2 Lägga till administratorer
+        form(action="/users/make-admin", method="post")
+          select(name="userId", placeholder="User")
+            each user in users
+              option(value=user.id)
+                = user.first_name + " " + user.last_name
+          input(type="submit", value="Gör till administrator")
+
+        h2 Ta bort administratorer
+        form(action="/users/revoke-admin", method="post")
+          select(name="userId", placeholder="User")
+            each user in users
+              option(value=user.id)
+                = user.first_name + " " + user.last_name
+          input(type="submit", value="Ta bort som administrator")

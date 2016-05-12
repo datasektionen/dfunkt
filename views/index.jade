@@ -24,10 +24,12 @@ block content
                 form(action="/users/"+user.id+"/destroy", method="delete")
                   input(type="submit", value="Radera")
               li
-                form(action="/users/"+user.id+"/make-admin", method="post")
+                form(action="/users/make-admin", method="post")
+                  input(type="hidden", name="userId", value=user.id) 
                   input(type="submit", value="Gör till administratör")
               li
-                form(action="/users/"+user.id+"/revoke-admin", method="post")
+                form(action="/users/revoke-admin", method="post")
+                  input(type="hidden", name="userId", value=user.id) 
                   input(type="submit", value="Ta bort administratör")
 
 
