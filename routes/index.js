@@ -7,7 +7,8 @@ router.get('/', function(req, res) {
   Promise.all([
     models.User.findAll({}),
     models.Role.findAll({}),
-    models.Mandate.findAll({}),
+    models.Mandate.findAll({include: [{model: models.User, as: "User"},
+                                      {model: models.Role, as: "Role"}]}),
   ]).then(function(results) {
     var users = results[0];
     var roles = results[1];

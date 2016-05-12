@@ -79,9 +79,9 @@ block content
           each mandate in mandates
             p
               li
-                = "User id: "+mandate.id
+                = "User id: "+mandate.User.first_name + " " + mandate.User.last_name
               li
-                = "Role id: "+mandate.id
+                = "Role id: "+mandate.Role.title
               li
                 = "Start: " + mandate.start
               li
