@@ -3,9 +3,10 @@ var express = require('express');
 var router  = express.Router();
 
 router.post('/create', function(req, res) {
-  if (req.body.name !== "") {
+  if (req.body.first_name !== "") {
     models.User.create({
-      name: req.body.name,
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
       kthid: req.body.kthid,
     }).then(function() {
       res.redirect('/');
