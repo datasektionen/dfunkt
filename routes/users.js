@@ -46,13 +46,13 @@ function toggleAdmin(user_id, set_admin) {
   });
 }
 
-router.post('/make-admin', function(req, res) {
+router.post('/make-admin', helpers.requireadmin, function(req, res) {
   toggleAdmin(req.body.userId, true).then(function() {
     res.redirect('/');
   });
 });
 
-router.post('/revoke-admin', function(req, res) {
+router.post('/revoke-admin', helpers.requireadmin, function(req, res) {
   toggleAdmin(req.body.userId, false).then(function() {
     res.redirect('/');
   });
