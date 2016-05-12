@@ -1,6 +1,7 @@
 var models  = require('../models');
 var express = require('express');
 var router  = express.Router();
+var helpers = require('./helpers');
 var debug   = require('debug')("routes");
 
 function validRequest(body) {
@@ -9,7 +10,7 @@ function validRequest(body) {
          body.email && body.email !== ""
 }
 
-router.post('/create', function(req, res) {
+router.post('/create', helpers.requireadmin, function(req, res) {
   if (validRequest(req.body)) {
     models.Role.create({
       title: req.body.title,
@@ -24,7 +25,7 @@ router.post('/create', function(req, res) {
   }
 });
 
-router.get("/:RoleId/list", function(req, res) {
+router.get("/:RoleId/list", helpers.requireadmin, function(req, res) {
   models.Role.findById(req.params.RoleId, {
     attributes: ["title", "description", "email"], 
   }).then(function(role) {

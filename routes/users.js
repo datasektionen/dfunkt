@@ -1,8 +1,9 @@
 var models  = require('../models');
 var express = require('express');
+var helpers = require('./helpers');
 var router  = express.Router();
 
-router.post('/create', function(req, res) {
+router.post('/create', helpers.requireadmin, function(req, res) {
   if (req.body.first_name !== "") {
     models.User.create({
       first_name: req.body.first_name,
@@ -18,7 +19,7 @@ router.post('/create', function(req, res) {
   }
 });
 
-router.get('/:user_id/destroy', function(req, res) {
+router.get('/:user_id/destroy', helpers.requireadmin, function(req, res) {
   models.User.destroy({
     where: {
       id: req.params.user_id
