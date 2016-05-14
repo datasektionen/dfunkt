@@ -38,10 +38,10 @@ block content
             each user in users
                     option(value=user.id)
                       = user.first_name + " " + user.last_name
-                select(name="roleId", placeholder="Role")
-                  each role in roles
-                    option(value=role.id)
-                      = role.title
+          select(name="roleId", placeholder="Role")
+            each role in roles
+              option(value=role.id)
+                = role.title
                   
           input(type="submit")
 
