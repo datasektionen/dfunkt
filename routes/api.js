@@ -9,67 +9,181 @@ var moment = require('moment');
 // DONE - lista alla roller
 // DONE - lista en specifik användare och dess nuvarande roller
 // DONE - lista en specifik användare och dess nuvarande och gamla roller
-// - lista alla roller av en viss typ med senaste
-// - lista alla roller av en viss typ med all historik
-// - lista alla roller med senaste
-// - lista alla roller med all historik
-// - lista en specifik roll med nuvarande
-// - lista en specifik roll med all historik
+// DONE - lista alla roller av en viss typ med senaste
+// DONE - lista alla roller av en viss typ med all historik
+// DONE - lista alla roller med senaste
+// DONE - lista alla roller med all historik
+// DONE - lista en specifik roll med nuvarande
+// DONE - lista en specifik roll med all historik
 //
 
 router.get('/roles', function(req, res) {
-  models.Role.findAll({attributes: ['title', 'description', 'email']}).then(function(roles) {
+  models.Role.findAll({attributes: ['title', 'description', 'email', 'type']}).then(function(roles) {
     res.json(roles);
   });
 });
 
-//All roles who has a history and all of their history.
-router.get('/roles/all', function(req, res) {
-  models.Role.findAll({attributes: ['id', 'title', 'description', 'email']}).then(function(roles) {
-    //TODO: do some fun magick to concact theses results together. Maybe rewrite to a better query. Actually look at what ludvig wrote.
-    for (var i = roles.length - 1; i >= 0; i--) {
-      models.Mandate.findAll({
-        where: {RoleId: roles[i].id},
-        attributes: ['start', 'end'],
-        include: [{
-          model: models.User,
-          attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid'],
-        }]
-      }).then(function(result) {
-        //res.json(result);
-      });
-    };
-    res.json({'todo': 'fix this function'});
-  });
-});
-
-//TODO: see function above, needs fixing the same way. Actually look at what ludvig wrote with map and such.
-router.get('/roles/type/:type', function(req, res) {
-  models.Role.findAll({
-    where: {type: req.params.type},
-    attributes: ['id']
-  }).then(function(roles) {
-    if(!roles) {
+router.get('/role/:title/', function(req, res) {
+  models.Role.findOne({
+    where: {title: req.params.title},
+    attributes: ['id', 'title', 'description', 'email', 'type']
+  }).then(function(role) {
+    if (!role) {
       res.status(404);
       res.send('does not exist');
     } else {
-      models.Mandate.findAll({
-        where: {RoleId: {$in: roles}},
-        attributes: ['start', 'end'],
-        include: [{
-          model: models.Role,
-          attributes: ['title', 'email'],
-        },{
-          model: models.User,
-          attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid'],
-        }]
-      }).then(function(result) {
-        res.json(result);
+      getRoleMandates(role.id).then(function(result) {
+        res.json({
+          role: role,
+          mandates: result,
+        });
       });
     }
   });
 });
 
+router.get('/role/:title/current', function(req, res) {
+  models.Role.findOne({
+    where: {title: req.params.title},
+    attributes: ['id', 'title', 'description', 'email', 'type']
+  }).then(function(role) {
+    if (!role) {
+      res.status(404);
+      res.send('does not exist');
+    } else {
+      getRoleMandatesCurrent(role.id).then(function(result) {
+        res.json({
+          role: role,
+          mandates: result,
+        });
+      });
+    }
+  });
+});
+
+router.get('/roles/type/:type/all', function(req, res) {
+  models.Role.findAll({
+    where: {type: req.params.type},
+    attributes: ['id', 'title', 'description', 'email', 'type'],
+  }).then(function(roles) {
+    console.log(roles);
+    if (!roles) {
+      res.status(404);
+      res.send('does not exist');
+    } else {
+      var promises = [];
+      for (var i = roles.length - 1; i >= 0; i--) {
+        promises.push(getRoleMandates(roles[i].id));
+      };
+      Promise.all(promises).then(function(results) {
+        var _res = []
+        for (var i = results.length - 1; i >= 0; i--) {
+          var obj = {};
+          obj[roles[results.length - i - 1].title] = results[i];
+          _res.push(obj);
+        };
+        res.json(_res);
+      });
+    }
+  });
+});
+
+router.get('/roles/type/:type/all/current', function(req, res) {
+  models.Role.findAll({
+    attributes: ['id', 'title', 'description', 'email', 'type'],
+    where: {type: req.params.type},
+  }).then(function(roles) {
+    console.log(roles);
+    if (!roles) {
+      res.status(404);
+      res.send('does not exist');
+    } else {
+      var promises = [];
+      for (var i = roles.length - 1; i >= 0; i--) {
+        promises.push(getRoleMandatesCurrent(roles[i].id));
+      };
+      Promise.all(promises).then(function(results) {
+        var _res = []
+        for (var i = results.length - 1; i >= 0; i--) {
+          var obj = {};
+          obj[roles[results.length - i - 1].title] = results[i];
+          _res.push(obj);
+        };
+        res.json(_res);
+      });
+    }
+  });
+});
+
+//All roles who has a history and all of their history.
+router.get('/roles/all', function(req, res) {
+  models.Role.findAll({attributes: ['id', 'title', 'description', 'email', 'type']}).then(function(roles) {
+    var promises = [];
+    for (var i = roles.length - 1; i >= 0; i--) {
+      promises.push(getRoleMandates(roles[i].id));
+    };
+    Promise.all(promises).then(function(results) {
+      var _res = []
+      for (var i = results.length - 1; i >= 0; i--) {
+        var obj = {};
+        obj[roles[results.length - i - 1].title] = results[i];
+        _res.push(obj);
+      };
+      res.json(_res);
+    });
+  });
+});
+
+router.get('/roles/all/current', function(req, res) {
+  models.Role.findAll({attributes: ['id', 'title', 'description', 'email', 'type']}).then(function(roles) {
+    var promises = [];
+    for (var i = roles.length - 1; i >= 0; i--) {
+      promises.push(getRoleMandatesCurrent(roles[i].id));
+    };
+    Promise.all(promises).then(function(results) {
+      var _res = []
+      for (var i = results.length - 1; i >= 0; i--) {
+        var obj = {};
+        obj[roles[results.length - i - 1].title] = results[i];
+        _res.push(obj);
+      };
+      res.json(_res);
+    });
+  });
+});
+
+//promises :D
+var getRoleMandates = function(roleid) {
+  return new Promise(function(resolve, reject) {
+    models.Mandate.findAll({
+      where: {RoleId: roleid},
+      attributes: ['start', 'end'],
+      include: [{
+        model: models.User,
+        attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid'],
+      }]
+    }).then(function(result) {
+      resolve(result);
+    });
+  });
+}
+
+//promises :D
+var getRoleMandatesCurrent = function(roleid) {
+  return new Promise(function(resolve, reject) {
+    var now = new moment().format('YYYY-MM-DD');
+    models.Mandate.findAll({
+      where: {RoleId: roleid, start: {$lte: now}, end: {$gte: now}},
+      attributes: ['start', 'end'],
+      include: [{
+        model: models.User,
+        attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid'],
+      }]
+    }).then(function(result) {
+      resolve(result);
+    });
+  });
+}
 
 router.get('/users', function(req, res) {
   models.User.findAll({attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid', 'admin']}).then(function(users) {
@@ -141,73 +255,6 @@ var getUserMandates = function(user, res) {
         user: user,
         mandates: mandates
       });
-    });
-  }
-}
-
-router.get("/:RoleId/list", function(req, res) {
-  models.Role.findById(req.params.RoleId, {
-    attributes: ["title", "description", "email"], 
-  }).then(function(role) {
-    models.Mandate.findAll({
-      where: {RoleId: req.params.RoleId,},
-      attributes: ["start", "end"],
-      include: [{
-	model: models.User, 
-	attributes: ["first_name", "kthid"], //TODO: fix
-      }],
-    }).then(function(mandates) {
-      res.json({
-	title:  role.title,
-	description: role.description,
-	email: role.email,
-	mandates: mandates,
-      });
-    });
-  });
-});
-
-router.get('/list', function(req, res) {
-  models.Role.findAll({
-    attributes: ["title", "description", "email", "id"],
-  }).then(function(roles) {
-    models.Mandate.findAll({
-      attributes: ["start", "end", "RoleId"],
-      include: [{
-	model: models.User, 
-	attributes: ["first_name", "kthid"], //TODO: fix
-      }],
-    }).then(function(mandates) {
-      res.json({roles: roles.map(function(role){
-	return jsonRenderRole(role, mandates);
-      })});
-    });
-  });
-});
-
-function jsonRenderRole(role, allMandates) {
-  function byId(mandate) {
-    return mandate.RoleId === role.id;
-  };
-
-  return {
-    title:  role.title,
-    description: role.description,
-    email: role.email,
-    mandates: mostRecentMandate(allMandates.filter(byId)),
-  };
-}
-
-function mostRecentMandate(mandates) {
-  if (mandates.length == 0) {
-    return [];
-  } else {
-    return mandates.reduce(function(prev, curr) {
-      if (curr.end > prev.end) {
-	return curr;
-      } else {
-	return prev;
-      }
     });
   }
 }
