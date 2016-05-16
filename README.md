@@ -11,9 +11,7 @@ Dfunkt är ännu i ett tidigt stadium, men just nu listar den datan den har och 
 
 ## Roadmap, I guess
 
- * Administratörspanel (som nu, fast bättre)
- * Inloggning
- * Säkert mer, men det är vad jag kommer på nu
+ * Namnuppslagning -> kthid med LDAP zfinger
  * Oh right, byta till Postregsql, right? Tror den kör SQLite3 i bakgrunden nu.
 
 ## Installation
