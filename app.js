@@ -12,6 +12,7 @@ var users  = require('./routes/users');
 var roles  = require('./routes/roles');
 var mandates  = require('./routes/mandates');
 var api = require('./routes/api');
+var kthpeople = require('./routes/kthpeople');
 var login = require('./routes/login');
 
 var app = express();
@@ -40,7 +41,7 @@ app.use('/users', users);
 app.use('/roles', roles);
 app.use('/mandates', mandates);
 app.use('/api', api)
-
+app.use('/kthpeople', kthpeople)
 app.use('/login', login);
 
 // catch 404 and forward to error handler

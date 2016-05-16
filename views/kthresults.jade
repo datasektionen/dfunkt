@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    div(id='content')
+      div(class='row')
+        include sidebar.jade
+        div(class='col-sm-8 col-md-9')
+          h1 Resultat
+          each result in results
+            h3 
+              = result.cn
+            p 
+              = "kthid: "
+              b 
+                = result.uid
+
