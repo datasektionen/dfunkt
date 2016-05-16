@@ -12,11 +12,15 @@ router.post('/create', helpers.requireadmin, function(req, res) {
       kthid: req.body.kthid,
       admin: false,
     }).then(function() {
-      res.redirect('/');
+      res.render("success", {
+	message: "Created user " + req.body.first_name + " " + req.body.last_name,
+      });
     });
   } else {
     debug("User create rejected because empty name.");
-    res.redirect('/');
+    res.render("error", {
+      message: "Cannot create a user with an empty name.",
+    });
   }
 });
 

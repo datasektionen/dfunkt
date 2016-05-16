@@ -1,6 +1,8 @@
 extends layout
 
 block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+  h1= "Error: " + message
+
+  h2
+    a(href="https://github.com/datasektionen/dfunkt/issues/new")
+      = "If you believe this is a bug, please report it by clicking this text. Please include a description of what you did, and the above error message."

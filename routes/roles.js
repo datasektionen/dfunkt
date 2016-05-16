@@ -22,7 +22,7 @@ router.post('/create', helpers.requireadmin, function(req, res) {
     });
   } else {
     debug("Invalid request: " + JSON.stringify(req.body));
-    res.redirect('/');
+    res.render("error", { message: "Invalid role request."});
   }
 });
 

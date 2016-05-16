@@ -56,12 +56,12 @@ router.post('/create', helpers.requireadmin, function(req, res) {
     }, function(reason) {
       debug("Could not find one of the needed fields, reason: ", reason);
       debug("Request body: " + JSON.stringify(req.body));
-      res.redirect('/');
+      res.render("error", { message: "One of the needed fields could not be found."});
     });
   } else {
     debug("Invalid request: " + JSON.stringify(req.body));
     // TODO: Add an error page informing user that the request failed
-    res.redirect('/');
+    res.render("error", { message: "Invalid mandate request."});
   }
 });
 
