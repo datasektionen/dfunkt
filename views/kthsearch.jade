@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  div(id='content')
+    div(class='row')
+      include sidebar.jade
+      div(class='col-sm-8 col-md-9')
+        h2 Vad har person X för kth-id? Leta med namn nedan:
+        form(action="/kthpeople/search", method="get")
+          input(type="text", name="query", placeholder='Namn')
+          input(type="submit", value="Sök med namn")
+        p Notera, detta är inte google. Skriv fullt namn om du har det, annars så mycket du kan. Stava inte fel.
+
+        h2 Vem tillhör detta kth-id? Slå upp kth-id nedan:
+        form(action="/kthpeople/kthid", method="get")
+          input(type="text", name="kthid", placeholder='Kth-id')
+          input(type="submit", value="Slå upp kth-id")
