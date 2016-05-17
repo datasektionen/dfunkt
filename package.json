@@ -19,6 +19,7 @@
     "morgan": "~1.6.1",
     "passport": "^0.3.2",
     "passport-custom": "^1.0.5",
+    "pg": "^4.5.5",
     "sequelize": "^3.3.2",
     "sequelize-cli": "^1.7.1",
     "serve-favicon": "~2.3.0",
