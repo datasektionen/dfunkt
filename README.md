@@ -11,7 +11,6 @@ Dfunkt är ännu i ett tidigt stadium, men just nu listar den datan den har och 
 
 ## Roadmap, I guess
 
- * Namnuppslagning -> kthid med LDAP zfinger
  * Oh right, byta till Postregsql, right? Tror den kör SQLite3 i bakgrunden nu.
 
 ## Installation
