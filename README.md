@@ -18,4 +18,4 @@ Dfunkt är ännu i ett tidigt stadium, men just nu listar den datan den har och 
     npm install
     npm start
 
-Och sen kan du öppna `localhost:3000` i webbläsarn.
+Och sen kan du öppna `localhost:5000` i webbläsarn.

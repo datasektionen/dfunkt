@@ -42,8 +42,11 @@ router.get('/search/:query', function(req, res) {
     get_res.on('data', (d) => {
       recv_data += d;
     });
+    
     get_res.on('end', () => {
-      res.render('kthresults', JSON.parse(recv_data));
+      renderParams =  JSON.parse(recv_data);
+      renderParams.query = query;
+      res.render('kthresults', renderParams);
     });
   });
 });
