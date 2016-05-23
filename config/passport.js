@@ -15,6 +15,7 @@ module.exports = function(passport) {
         			ugkthid: user.ugkthid,
                     admin: false,
         		});
+                console.log("adding user: " + user.user);
         	} else if(!dbuser.ugkthid) { //Update user if they are loggin in for the first time.
         		dbuser.update({
         			first_name: user.first_name,
@@ -24,6 +25,7 @@ module.exports = function(passport) {
         			ugkthid: user.ugkthid,
                     admin: false,
         		});
+                console.log("updating user: " + user.user);
         	}
         });
         done(null, user.user);

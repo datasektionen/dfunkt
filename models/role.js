@@ -3,13 +3,15 @@
 module.exports = function(sequelize, DataTypes) {
   var Role = sequelize.define("Role", {
     title: DataTypes.STRING,
-    description: DataTypes.STRING,
+    description: DataTypes.TEXT(),
+    identifier: DataTypes.STRING,
     email: DataTypes.STRING,
-    type: DataTypes.STRING, //drek, project, dfunk, other
+    active: DataTypes.BOOLEAN,
   }, {
     classMethods: {
       associate: function(models) {
-        Role.hasMany(models.Mandate)
+        Role.hasMany(models.Mandate),
+        Role.belongsTo(models.Group)
       }
     }
   });

@@ -33,7 +33,7 @@ block content
               li    
                 = role.email
               li
-                = "Typ: " + role.type
+                = "Grupp: " + role.Group.name
               li    
                 = "Database id: "+role.id
               li
@@ -45,7 +45,10 @@ block content
           each mandate in mandates
             p
               li
+              if mandate.User
                 = "Användare: "+mandate.User.first_name + " " + mandate.User.last_name
+              else 
+                = "(Vakant)"
               li
                 = "Roll: "+mandate.Role.title
               li

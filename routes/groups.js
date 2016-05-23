@@ -2,24 +2,18 @@ var models  = require('../models');
 var express = require('express');
 var router  = express.Router();
 var helpers = require('./helpers');
-var debug   = require('debug')("routes");
+var debug   = require('debug')("groups");
 
 function validRequest(body) {
-  return body.title && body.title !== "" &&
-         body.description && body.description !== "" &&
-         body.email && body.email !== "" &&
+  return body.name && body.name !== "" &&
          body.identifier && body.identifier !== ""
 }
 
 router.post('/create', helpers.requireadmin, function(req, res) {
   if (validRequest(req.body)) {
-    models.Role.create({
-      title: req.body.title,
-      email: req.body.email,
-      description: req.body.description,
+    models.Group.create({
+      name: req.body.name,
       identifier: req.body.identifier,
-      type: req.body.type,
-      active: true,
     }).then(function() {
       res.redirect('/');
     });
