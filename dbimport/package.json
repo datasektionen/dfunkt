@@ -1,0 +1,16 @@
+{
+  "name": "dbimport",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "moment": "^2.13.0",
+    "mysql": "^2.10.2",
+    "pg": "^4.5.5"
+  }
+}
