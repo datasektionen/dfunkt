@@ -58,7 +58,7 @@ block content
         h2 Ta bort Administratörer
         form(action="/users/revoke-admin", method="post")
           select(name="userId", placeholder="User")
-            each user in users
+            each user in admins
               option(value=user.id)
                 = user.first_name + " " + user.last_name
           input(type="submit", value="Ta bort som administrator")

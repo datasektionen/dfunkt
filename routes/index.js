@@ -126,12 +126,17 @@ router.get('/admin', helpers.requireadmin, function(req, res) {
                                       {model: models.Role, as: "Role"}]}),
     helpers.isadmin(req.user),
     models.Group.findAll({}),
+    models.User.findAll({
+      order: 'last_name',
+      where: {admin: true}
+    }),
   ]).then(function(results) {
     var users = results[0];
     var roles = results[1];
     var mandates = results[2];
     var isadmin = results[3];
     var groups = results[4];
+    var admins = results[5];
     res.render('admin', {
       user: req.user,
       isadmin: isadmin,
@@ -139,6 +144,7 @@ router.get('/admin', helpers.requireadmin, function(req, res) {
       roles: roles,
       mandates: mandates,
       groups: groups,
+      admins: admins,
     });
   });
 });
