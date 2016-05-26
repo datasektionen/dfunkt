@@ -8,7 +8,8 @@ function validRequest(body) {
   return body.title && body.title !== "" &&
          body.description && body.description !== "" &&
          body.email && body.email !== "" &&
-         body.identifier && body.identifier !== ""
+         body.identifier && body.identifier !== "" &&
+         body.type && body.type !== ""
 }
 
 router.post('/create', helpers.requireadmin, function(req, res) {
@@ -18,8 +19,7 @@ router.post('/create', helpers.requireadmin, function(req, res) {
       email: req.body.email,
       description: req.body.description,
       identifier: req.body.identifier,
-      type: req.body.type,
-      active: true,
+      GroupId: req.body.type,
     }).then(function() {
       res.redirect('/');
     });

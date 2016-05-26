@@ -115,8 +115,13 @@ router.get('/position/:ident', function(req, res) {
 
 router.get('/admin', helpers.requireadmin, function(req, res) {
   Promise.all([
-    models.User.findAll({}),
-    models.Role.findAll({include: [{model: models.Group, as: "Group"}]}),
+    models.User.findAll({
+      order: 'last_name'
+    }),
+    models.Role.findAll({
+      include: [{model: models.Group, as: "Group"}],
+      order: 'title'
+    }),
     models.Mandate.findAll({include: [{model: models.User, as: "User"},
                                       {model: models.Role, as: "Role"}]}),
     helpers.isadmin(req.user),
