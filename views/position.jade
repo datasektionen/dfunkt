@@ -5,9 +5,10 @@ block content
       div(class='row')
         include sidebar.jade
         div(class='col-sm-8 col-md-9') 
-          if mandates[0].User
           h1
-            = mandates[0].User.first_name + " " + mandates[0].User.last_name
+            = roleobj.title
+          p
+            = roleobj.description
           table(class='table')
             thead
               tr

@@ -42,61 +42,73 @@ router.get('/', function(req, res) {
 
 router.get('/user/:kthid', function(req, res) {
   models.User.findOne({where: {kthid:req.params.kthid}}).then(function(user) {
-    Promise.all([
-      models.Mandate.findAll({
-        include: [{all: true}],
-        where: {UserId: user.id},
-        order: 'start DESC'
-      }),
-      helpers.isadmin(req.user),
-      models.Group.findAll({
-        order: 'id'
-      })
-    ]).then(function(results) {
-      var mandates = results[0];
-      var isadmin = results[1];
-      var groups = results[2];
-      res.render('user', {
-        user: req.user,
-        isadmin: isadmin,
-        mandates: mandates,
-        groups: groups,
+    if(user) {
+      Promise.all([
+        models.Mandate.findAll({
+          include: [{all: true}],
+          where: {UserId: user.id},
+          order: 'start DESC'
+        }),
+        helpers.isadmin(req.user),
+        models.Group.findAll({
+          order: 'id'
+        })
+      ]).then(function(results) {
+        var mandates = results[0];
+        var isadmin = results[1];
+        var groups = results[2];
+        res.render('user', {
+          user: req.user,
+          userobj: user,
+          isadmin: isadmin,
+          mandates: mandates,
+          groups: groups,
+        });
+      }).catch(function(e) {
+        console.log(e);
+        res.status(403);
+        res.send('error');
       });
-    }).catch(function(e) {
-      console.log(e);
-      res.status(403);
-      res.send('error');
-    });
+    } else {
+      res.status(404);
+      res.send('does not exist');
+    }
   });
 }); 
 
 router.get('/position/:ident', function(req, res) {
   models.Role.findOne({where: {identifier:req.params.ident}}).then(function(role) {
-    Promise.all([
-      models.Mandate.findAll({
-        include: [{all: true}],
-        where: {RoleId: role.id},
-        order: 'start DESC'
-      }),
-      helpers.isadmin(req.user),
-      models.Group.findAll({
-        order: 'id'
-      })
-    ]).then(function(results) {
-      var mandates = results[0];
-      var isadmin = results[1];
-      var groups = results[2];
-      res.render('user', {
-        user: req.user,
-        isadmin: isadmin,
-        mandates: mandates,
-        groups: groups,
+    if(role) {
+      Promise.all([
+        models.Mandate.findAll({
+          include: [{all: true}],
+          where: {RoleId: role.id},
+          order: 'start DESC'
+        }),
+        helpers.isadmin(req.user),
+        models.Group.findAll({
+          order: 'id'
+        })
+      ]).then(function(results) {
+        var mandates = results[0];
+        var isadmin = results[1];
+        var groups = results[2];
+        res.render('position', {
+          user: req.user,
+          isadmin: isadmin,
+          roleobj: role,
+          mandates: mandates,
+          groups: groups,
+        });
+      }).catch(function(e) {
+        console.log(e);
+        res.status(403);
+        res.send('error');
       });
-    }).catch(function(e) {
-      console.log(e);
-      res.status(403);
-      res.send('error');
-    });
+    } else {
+      res.status(404);
+      res.send('does not exist');
+    }
   });
 }); 
 

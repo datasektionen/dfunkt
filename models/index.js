@@ -7,7 +7,7 @@ var env       = process.env.NODE_ENV || "development";
 var config    = require(path.join(__dirname, '..', 'config', 'config.json'))[env];
 var sequelize;
 if (env == 'production') {
-  sequelize = new Sequelize(process.env.DATABASE_URL);
+  sequelize = new Sequelize('postgres://postgres:5f385a15134d05ecf681773a512ec9d9@jsimo.se:3182/db_dfunkt');
 } else {
   sequelize = new Sequelize(config);
 }
