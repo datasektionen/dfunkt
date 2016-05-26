@@ -1,0 +1,38 @@
+extends layout
+
+block content
+    div(id='content')
+      div(class='row')
+        include sidebar.jade
+        div(class='col-sm-8 col-md-9') 
+          if mandates[0].User
+          h1
+            = mandates[0].User.first_name + " " + mandates[0].User.last_name
+          table(class='table')
+            thead
+              tr
+                th Användare
+                th Grupp
+                th E-post
+                th Start
+                th Slut
+            tbody
+              -function prettyDate(dateString){
+                  -var date = new Date(dateString);
+                  -var d = date.getDate();
+                  -var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+                  -var m = monthNames[date.getMonth()];
+                  -var y = date.getFullYear();
+                  -return d+' '+m+' '+y;
+              -} 
+              each mandate in mandates
+                tr
+                  th
+                    a(href='/user/' + mandate.User.kthid)
+                      = mandate.User.first_name + " " + mandate.User.last_name
+                  th
+                    = groups[mandate.Role.GroupId-1].name
+                  th
+                    = mandate.Role.email
+                  th #{prettyDate(mandate.start)}
+                  th #{prettyDate(mandate.end)}

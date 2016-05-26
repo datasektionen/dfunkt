@@ -5,59 +5,27 @@ block content
       div(class='row')
         include sidebar.jade
         div(class='col-sm-8 col-md-9')
-          h1 Saker
-
-          h2 Användare, TODO: inte primärt data som vi vill visa.
-
-          ul
-          each user in users
-            p
-              li
-                = user.first_name
-              li
-                = user.last_name
-              li 
-                = user.kthid + "\@kth.se"
-              li
-                = "Databas id: "+user.id
-              
-          h2 Roller
-          
-          ul
-          each role in roles
-            p
-              li
-                = role.title
-              li    
-                = role.description
-              li    
-                = role.email
-              li
-                = "Grupp: " + role.Group.name
-              li    
-                = "Database id: "+role.id
-              li
-                form(action="/roles/"+role.id+"/destroy", method="delete")
-                  input(type="submit", value="Delete")
-
-          h2 Mandat
-          ul
-          each mandate in mandates
-            p
-              li
-              if mandate.User
-                = "Användare: "+mandate.User.first_name + " " + mandate.User.last_name
-              else 
-                = "(Vakant)"
-              li
-                = "Roll: "+mandate.Role.title
-              li
-                = "Start: " + mandate.start
-              li
-                = "Slut: " + mandate.end
-              li
-                form(action="/mandates/"+mandate.id+"/destroy", method="delete")
-                  input(type="submit", value="Delete")
+          h1 Aktuella mandat
+          table(class='table')
+            thead
+              tr
+                th Namn
+                th Grupp
+                th E-post
+                th Nuvarande innehavare
+            tbody
+              each mandate in mandates
+                tr
+                  th
+                    a(href='/position/' + mandate.Role.identifier)
+                      = mandate.Role.title
+                  th
+                    = groups[mandate.Role.GroupId-1].name
+                  th
+                    = mandate.Role.email
+                  th 
+                    a(href='/user/' + mandate.User.kthid)
+                      = mandate.User.first_name + " " + mandate.User.last_name
 
         div(class='clear')
       
