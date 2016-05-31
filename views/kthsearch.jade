@@ -17,12 +17,42 @@ block content
           input(type="text", name="kthid", placeholder='Kth-id')
           input(type="submit", value="Slå upp kth-id")
   script(type="text/babel").
+    function zfingerParseUser(user) {
+      return {
+        fullname: user.cn,
+        kthid: user.uid,
+      };
+    }
+
+    var ResultBox = React.createClass({
+      getInitialState: function() {
+        return {data: []};
+      },
+      getResults: function() {
+        $.ajax({
+          url: "/kthpeople/search/Jesper%20S",
+          dataType: "json",
+          cache: false,
+          success: function(data) {
+            console.log(data);
+            this.setState({data: data.results.map(zfingerParseUser)});
+          }.bind(this),
+          failure: function(xhr, status, err) {
+            console.error(this.props.url, status, err.toString());
+          }.bind(this),
+        });
+      },
+      componentDidMount: function() {
+        this.getResults();
+      },
+      render: function() {
+        return <ResultList data={this.state.data} />;
+      }
+    });
 
     var ResultList = React.createClass({
       render: function() {
-        var results = [{fullname: "Steve Hopkins", kthid: "steve-o"}, {fullname: "Jeremiah Saltings", kthid: "jerry"}];
-        //var resultNodes = this.props.data.map(function(result) {
-        var resultNodes = results.map(function(result) {
+        var resultNodes = this.props.data.map(function(result) {
           return <Result fullname={result.fullname} kthid={result.kthid}/>;
         });
         return <div>{resultNodes}</div>;
@@ -46,8 +76,10 @@ block content
       }
     });
 
+    var results = [{fullname: "Steve Hopkins", kthid: "steve-o"}, {fullname: "Jeremiah Saltings", kthid: "jerry"}];
     ReactDOM.render(
-      <ResultList />,
+      <ResultBox data={results} />,
       document.getElementById('name-results')
     );
+
 

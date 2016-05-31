@@ -33,6 +33,13 @@ router.get('/kthid/:kthid', function(req, res) {
 router.get('/search', function(req, res) {
   res.redirect('/kthpeople/search/' + req.query.query);
 });
+/*
+router.get('/search/:query', function(req, res) {
+  var query = req.params.query;
+  var url = 'https://zfinger.datasektionen.se/users/' + encodeURIComponent(query);
+  res.redirect(url);
+});
+*/
 router.get('/search/:query', function(req, res) {
   var query = req.params.query;
   var url = 'https://zfinger.datasektionen.se/users/' + encodeURIComponent(query);
@@ -44,11 +51,11 @@ router.get('/search/:query', function(req, res) {
     });
     
     get_res.on('end', () => {
-      renderParams =  JSON.parse(recv_data);
-      renderParams.query = query;
-      res.render('kthresults', renderParams);
+      //renderParams = JSON.parse(recv_data);
+      //renderParams.query = query;
+      //res.render('kthresults', renderParams);
+      res.send(recv_data);
     });
   });
 });
-
 module.exports = router;
