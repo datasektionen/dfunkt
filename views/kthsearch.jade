@@ -10,8 +10,29 @@ block content
           input(type="text", name="query", placeholder='Namn')
           input(type="submit", value="Sök med namn")
         p Notera, detta är inte google. Skriv fullt namn om du har det, annars så mycket du kan. Stava inte fel.
+        div(id="name-results")
 
         h2 Vem tillhör detta kth-id? Slå upp kth-id nedan:
         form(action="/kthpeople/kthid", method="get")
           input(type="text", name="kthid", placeholder='Kth-id')
           input(type="submit", value="Slå upp kth-id")
+  script(type="text/babel").
+    // tutorial4.js
+    var Comment = React.createClass({
+      render: function() {
+        return (
+          <div className="comment">
+            <h2 className="commentAuthor">
+              {this.props.author}
+            </h2>
+            {this.props.children}
+          </div>
+        );
+      }
+    });
+
+    ReactDOM.render(
+      <Comment author="Arnold S" />,
+      document.getElementById('name-results')
+    );
+
