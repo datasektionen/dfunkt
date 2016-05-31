@@ -17,14 +17,29 @@ block content
           input(type="text", name="kthid", placeholder='Kth-id')
           input(type="submit", value="Slå upp kth-id")
   script(type="text/babel").
+
+    var ResultList = React.createClass({
+      render: function() {
+        var results = [{fullname: "Steve Hopkins", kthid: "steve-o"}, {fullname: "Jeremiah Saltings", kthid: "jerry"}];
+        //var resultNodes = this.props.data.map(function(result) {
+        var resultNodes = results.map(function(result) {
+          return <Result fullname={result.fullname} kthid={result.kthid}/>;
+        });
+        return <div>{resultNodes}</div>;
+      }
+    });
+
     // tutorial4.js
-    var Comment = React.createClass({
+    var Result = React.createClass({
       render: function() {
         return (
           <div className="comment">
-            <h2 className="commentAuthor">
-              {this.props.author}
-            </h2>
+            <h3 className="commentAuthor">
+              {this.props.fullname}
+            </h3>
+            <p> 
+              kthid: <b>{this.props.kthid}</b>
+            </p>
             {this.props.children}
           </div>
         );
@@ -32,7 +47,7 @@ block content
     });
 
     ReactDOM.render(
-      <Comment author="Arnold S" />,
+      <ResultList />,
       document.getElementById('name-results')
     );
 
