@@ -5,11 +5,12 @@ block content
     div(class='row')
       include sidebar.jade
       div(class='col-sm-8 col-md-9')
+        div(id='reactform')
+        hr
         h2 Vad har person X för kth-id? Leta med namn nedan:
         form(action="/kthpeople/search", method="get")
           input(type="text", name="query", placeholder='Namn')
           input(type="submit", value="Sök med namn")
-        p Notera, detta är inte google. Skriv fullt namn om du har det, annars så mycket du kan. Stava inte fel.
         div(id="name-results")
 
         h2 Vem tillhör detta kth-id? Slå upp kth-id nedan:
@@ -23,6 +24,54 @@ block content
         kthid: user.uid,
       };
     }
+    var SearchBar = React.createClass({
+      getInitialState: function() {
+        return {query: "Name to search for"};
+      },
+      onClick: function() {
+        this.props.handleSubmit(this.state.query);
+      },
+      onChange: function(event) {
+        this.setState({query: event.target.value});
+      },
+      render: function() {
+        return (
+          <div>
+            <input type='text' onChange={this.onChange} value={this.state.query} />
+            <input type='button' onClick={this.onClick} value="Sök med namn"/>
+          </div>
+        );
+      },
+    });
+
+    var SearchBox = React.createClass({
+      getInitialState: function() {
+        return {data: []};
+      },
+      handleSubmit: function(query) {
+        $.ajax({
+          url: "/kthpeople/search/" + encodeURIComponent(query),
+          dataType: "json",
+          cache: false,
+          success: function(data) {
+            console.log(data);
+            this.setState({data: data.results.map(zfingerParseUser)});
+          }.bind(this),
+          failure: function(xhr, status, err) {
+            console.error(this.props.url, status, err.toString());
+          }.bind(this),
+        });
+        alert(query);
+      },
+      render: function() {
+        return (
+          <div>
+            <SearchBar handleSubmit={this.handleSubmit} />
+            <ResultList data={this.state.data} />
+          </div>
+        );
+      }
+    });
 
     var ResultBox = React.createClass({
       getInitialState: function() {
@@ -43,7 +92,7 @@ block content
         });
       },
       componentDidMount: function() {
-        this.getResults();
+        //this.getResults();
       },
       render: function() {
         return <ResultList data={this.state.data} />;
@@ -76,10 +125,16 @@ block content
       }
     });
 
+
+
     var results = [{fullname: "Steve Hopkins", kthid: "steve-o"}, {fullname: "Jeremiah Saltings", kthid: "jerry"}];
     ReactDOM.render(
       <ResultBox data={results} />,
       document.getElementById('name-results')
+    );
+    ReactDOM.render(
+      <SearchBox data={results} />,
+      document.getElementById('reactform')
     );
 
 
