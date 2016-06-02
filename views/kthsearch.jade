@@ -22,31 +22,42 @@ block content
           data: [],
           searching: false,
           didSearch: false,
+          gotError: false,
         };
       },
       handleSubmit: function(query) {
-        this.setState({searching: true, didSearch: true, data: []});
-        $.ajax({
-          url: "/kthpeople/search/" + encodeURIComponent(query),
-          dataType: "json",
-          cache: false,
-          success: function(data) {
-            console.log(data);
+        this.setState({searching: true, didSearch: true, error: false, data: []});
+        var request = new XMLHttpRequest();
+        request.responseType = "json";
+        request.open('GET', this.props.url + encodeURIComponent(query), true);
+        request.onload = function() {
+          if (request.status >= 200 && request.status < 400) {
+            // Success!
+            var data = request.response;
             this.setState({data: data.results.map(zfingerParseUser), searching: false});
-          }.bind(this),
-          failure: function(xhr, status, err) {
-            console.error(this.props.url, status, err.toString());
-            this.setState({searching: false});
-          }.bind(this),
-        });
+          } else {
+            console.error(this.props.url, request.statusText);
+            this.setState({searching: false, error: true});
+            // We reached our target server, but it returned an error
+          }
+        }.bind(this);
+
+        request.onerror = function() {
+            console.error(this.props.url, request.statusText);
+            this.setState({searching: false, error: true});
+        }.bind(this);
+
         console.log('Sending search for "' + query + '"');
+        request.send();
       },
       render: function() {
         var results;
-        if (this.state.searching) {
+        if (this.state.error) {
+          results = <p>Något gick fel. Bugg? <a href="https://github.com/datasektionen/dfunkt/issues/new">Rapportera det!</a></p>
+        } else if (this.state.searching) {
           results = <p>Söker...</p>;
         } else if (this.state.didSearch && this.state.data.length == 0) {
-          results = <p>Inga resultat alls. Du stavade rätt va?</p>;
+          results = <p>Inga resultat alls. Du stavade allt rätt, eller hur?</p>;
         } else {
           results = <ResultList data={this.state.data} />;
         }
@@ -116,7 +127,7 @@ block content
 
     var results = [{fullname: "Steve Hopkins", kthid: "steve-o"}, {fullname: "Jeremiah Saltings", kthid: "jerry"}];
     ReactDOM.render(
-      <SearchBox data={results} />,
+      <SearchBox data={results} url="/kthpeople/search/" />,
       document.getElementById('reactform')
     );
 
