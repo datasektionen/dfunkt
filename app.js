@@ -16,11 +16,16 @@ var kthpeople = require('./routes/kthpeople');
 var login = require('./routes/login');
 var groups = require('./routes/groups');
 
+var jade = require("jade");
+var babel = require("jade-babel");
+
 var app = express();
 
 // view engine setup
+jade.filters.babel = babel({});
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+app.engine('jade', jade.__express);
 
 app.use(logger('dev'));
 app.use(bodyParser.json());

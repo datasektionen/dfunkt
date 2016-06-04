@@ -1,12 +1,23 @@
 var express = require('express');
 var https = require('https');
 var debug = require('debug')('dfunkt');
+var helpers = require('./helpers');
 var router  = express.Router();
 
 router.get('/', function(req, res) {
-  res.render('kthsearch');
+  Promise.all([
+    helpers.isadmin(req.user),
+  ]).then(function(results) {
+    var isadmin = results[0];
+    res.render('kthsearch', {
+      user: req.user,
+      isadmin: isadmin,
+    });
+  });
 });
 
+// TODO: Given recent improvements in zfinger, this can safely be removed.
+// Unless it is being used somewhere else?
 router.get('/kthid', function(req, res) {
   res.redirect('/kthpeople/kthid/' + req.query.kthid);
 });
@@ -44,11 +55,8 @@ router.get('/search/:query', function(req, res) {
     });
     
     get_res.on('end', () => {
-      renderParams =  JSON.parse(recv_data);
-      renderParams.query = query;
-      res.render('kthresults', renderParams);
+      res.send(recv_data);
     });
   });
 });
-
 module.exports = router;
