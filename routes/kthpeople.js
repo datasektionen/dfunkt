@@ -1,10 +1,19 @@
 var express = require('express');
 var https = require('https');
 var debug = require('debug')('dfunkt');
+var helpers = require('./helpers');
 var router  = express.Router();
 
 router.get('/', function(req, res) {
-  res.render('kthsearch');
+  Promise.all([
+    helpers.isadmin(req.user),
+  ]).then(function(results) {
+    var isadmin = results[0];
+    res.render('kthsearch', {
+      user: req.user,
+      isadmin: isadmin,
+    });
+  });
 });
 
 // TODO: Given recent improvements in zfinger, this can safely be removed.
