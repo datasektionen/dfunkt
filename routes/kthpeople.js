@@ -2,6 +2,7 @@ var express = require('express');
 var https = require('https');
 var debug = require('debug')('dfunkt');
 var helpers = require('./helpers');
+var models = require("../models");
 var router  = express.Router();
 
 router.get('/', function(req, res) {
@@ -74,10 +75,19 @@ router.get('/search', function(req, res) {
 });
 router.get('/search/:query', function(req, res) {
   var query = req.params.query;
-  searchZfinger(query).then(function(results) {
-    res.send(JSON.stringify(results));
-  }).catch(function(err) {
-    res.render('error', err);
-  });
+    searchZfinger(query).then(function(results) {
+      var searches = results.results.map( function(user) {
+        return new Promise( function(resolve, reject) {
+          models.User.findOne({where: { kthid: user.kthid }})
+            .then(function(localUser) { user.local = (null !== localUser); resolve(user);})
+        });
+      });
+      Promise.all(searches).then(function(items) {
+        res.send(JSON.stringify({results: items}));
+      });
+    }).catch(function(err) {
+      res.render('error', err);
+    });
+      
 });
 module.exports = router;
