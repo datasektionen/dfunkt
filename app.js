@@ -6,6 +6,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
+var browserify = require('browserify-middleware');
 
 var routes = require('./routes/index');
 var users  = require('./routes/users');
@@ -50,6 +51,11 @@ app.use('/api', api)
 app.use('/kthpeople', kthpeople)
 app.use('/login', login);
 app.use('/groups', groups);
+
+app.use('/js', browserify(__dirname + "/public_scripts", {
+  transform: [
+    ["babelify", {presets: ["es2015", "react"]}]
+  ]}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
