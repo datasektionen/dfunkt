@@ -126,4 +126,9 @@ var Result = React.createClass({
   }
 });
 
-module.exports = SearchBox;
+module.exports = {
+  SearchBox,
+  SearchBar,
+  ResultList,
+  Result
+}
