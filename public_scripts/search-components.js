@@ -2,6 +2,7 @@ function zfingerParseUser(user) {
   return {
     fullname: user.cn,
     kthid: user.uid,
+    ugkthid: user.ugKthid,
   };
 }
 
@@ -12,19 +13,29 @@ var ChooseUserBox = React.createClass({
     };
   },
   render: function() {
+    var searchPart;
     if (this.state.selected) {
-      return <Result {...this.state.selected} onSelect={
+      searchPart = <Result {...this.state.selected} onSelect={
         function(data) {
           this.setState({selected: null});
         }.bind(this)
       }/>;
     } else {
-      return <SearchBox {...this.props} onSelect={
+      searchPart = <SearchBox {...this.props} onSelect={
         function(data) {
           this.setState({selected: data});
         }.bind(this)
       } />;
     }
+
+    return <div>
+      <input 
+        type="hidden" 
+        name="chosen-user" 
+        value={this.state.selected ? this.state.selected.ugkthid : ""} 
+      />
+      {searchPart}
+    </div>;
   },
 });
 
@@ -127,7 +138,7 @@ var ResultList = React.createClass({
   render: function() {
     var onSelectF = this.props.onSelect;
     var resultNodes = this.props.data.map(function(result) {
-      return <Result fullname={result.fullname} kthid={result.kthid} onSelect={onSelectF}/>;
+      return <Result {...result} onSelect={onSelectF}/>;
     });
     return <div>{resultNodes}</div>;
   }
@@ -140,6 +151,7 @@ var Result = React.createClass({
       this.props.onSelect({
         fullname: this.props.fullname,
         kthid: this.props.kthid,
+        ugkthid: this.props.ugkthid,
       });
     }.bind(this);
 
