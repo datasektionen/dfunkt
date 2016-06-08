@@ -58,7 +58,7 @@ var SearchBox = React.createClass({
           return a.fullname.localeCompare(b.fullname);
         }); 
       } 
-      results = <ResultList data={dataCopy} onSelect={function(data){alert("qwe");}} />;
+      results = <ResultList data={dataCopy} onSelect={function(data){alert("selected " + data.fullname + " " + data.kthid);}} />;
     }
     return (
         <div>
@@ -113,8 +113,15 @@ var ResultList = React.createClass({
 // tutorial4.js
 var Result = React.createClass({
   render: function() {
+    var callOnSelect = function() {
+      this.props.onSelect({
+        fullname: this.props.fullname,
+        kthid: this.props.kthid,
+      });
+    }.bind(this);
+
     return (
-      <div className="comment" onClick={this.props.onSelect}>
+      <div className="comment" onClick={callOnSelect}>
         <h3 className="commentAuthor">
           {this.props.fullname}
         </h3>
