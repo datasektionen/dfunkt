@@ -5,10 +5,13 @@ var debug = require('debug')('dfunkt');
 var router  = express.Router();
 
 function validRequest(body) {
+  // TODO: Check if user is an actual user 
   return body.userId && 
          body.roleId && 
          body.start &&
          body.end &&
+         body.ugkthid &&
+         body.ugkthid != "" &&
          new Date(body.start) <= new Date(body.end);
 }
 

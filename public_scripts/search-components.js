@@ -31,7 +31,7 @@ var ChooseUserBox = React.createClass({
     return <div>
       <input 
         type="hidden" 
-        name="chosen-user" 
+        name="ugkthid" 
         value={this.state.selected ? this.state.selected.ugkthid : ""} 
       />
       {searchPart}
