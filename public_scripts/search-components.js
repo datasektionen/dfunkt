@@ -1,10 +1,3 @@
-function zfingerParseUser(user) {
-  return {
-    fullname: user.cn,
-    kthid: user.uid,
-    ugkthid: user.ugKthid,
-  };
-}
 
 var ChooseUserBox = React.createClass({
   getInitialState: function() {
@@ -58,7 +51,7 @@ var SearchBox = React.createClass({
       if (request.status >= 200 && request.status < 400) {
         // Success!
         var data = request.response;
-        this.setState({data: data.results.map(zfingerParseUser), searching: false});
+        this.setState({data: data.results, searching: false});
       } else {
         console.error(this.props.url, request.statusText);
         this.setState({searching: false, error: true});

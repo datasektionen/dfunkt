@@ -16,6 +16,34 @@ router.get('/', function(req, res) {
   });
 });
 
+function zfingerParseUser(user) {
+  return {
+    fullname: user.cn,
+    kthid: user.uid,
+    ugkthid: user.ugKthid,
+  };
+}
+
+function searchZfinger(query) {
+  return new Promise(function(resolve, reject) {
+    var url = 'https://zfinger.datasektionen.se/users/' + encodeURIComponent(query);
+
+    https.get(url, (get_res) => {
+      recv_data = "";
+      get_res.on('data', (d) => {
+        recv_data += d;
+      });
+      
+      get_res.on('end', () => {
+        var resp = JSON.parse(recv_data);
+        resolve({results: resp.results.map(zfingerParseUser)});
+      });
+    }).on("error", function(err) {
+      reject(err);
+    });
+  });
+}
+
 // TODO: Given recent improvements in zfinger, this can safely be removed.
 // Unless it is being used somewhere else?
 router.get('/kthid', function(req, res) {
@@ -46,17 +74,10 @@ router.get('/search', function(req, res) {
 });
 router.get('/search/:query', function(req, res) {
   var query = req.params.query;
-  var url = 'https://zfinger.datasektionen.se/users/' + encodeURIComponent(query);
-
-  https.get(url, (get_res) => {
-    recv_data = "";
-    get_res.on('data', (d) => {
-      recv_data += d;
-    });
-    
-    get_res.on('end', () => {
-      res.send(recv_data);
-    });
+  searchZfinger(query).then(function(results) {
+    res.send(JSON.stringify(results));
+  }).catch(function(err) {
+    res.render('error', err);
   });
 });
 module.exports = router;
