@@ -58,7 +58,7 @@ var SearchBox = React.createClass({
           return a.fullname.localeCompare(b.fullname);
         }); 
       } 
-      results = <ResultList data={dataCopy} />;
+      results = <ResultList data={dataCopy} onSelect={function(data){alert("qwe");}} />;
     }
     return (
         <div>
@@ -94,7 +94,7 @@ var SearchBar = React.createClass({
     return (
       <div onKeyPress={this.onKey} >
         <input type='text' placeholder="Namn" onChange={this.onChange} value={this.state.query} />
-        <input type='submit' onClick={this.onSubmit} value="Sök"/>
+        <input type='button' onClick={this.onSubmit} value="Sök"/>
       </div>
     );
   },
@@ -102,8 +102,9 @@ var SearchBar = React.createClass({
 
 var ResultList = React.createClass({
   render: function() {
+    var onSelectF = this.props.onSelect;
     var resultNodes = this.props.data.map(function(result) {
-      return <Result fullname={result.fullname} kthid={result.kthid}/>;
+      return <Result fullname={result.fullname} kthid={result.kthid} onSelect={onSelectF}/>;
     });
     return <div>{resultNodes}</div>;
   }
@@ -113,7 +114,7 @@ var ResultList = React.createClass({
 var Result = React.createClass({
   render: function() {
     return (
-      <div className="comment">
+      <div className="comment" onClick={this.props.onSelect}>
         <h3 className="commentAuthor">
           {this.props.fullname}
         </h3>

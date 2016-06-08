@@ -7,6 +7,23 @@ block content
       div(class='col-sm-8 col-md-9')
         h1 Adminstrativa saker
 
+        h2 Skapa Mandat
+        form(action="/mandates/create", method="post")
+          div(id="react-user-search")
+          script(type="text/javascript", src="/js/user-search.js")
+          input(type="date", name="start")
+          input(type="date", name="end")
+          select(name="userId", placeholder="User")
+            each user in users
+                    option(value=user.id)
+                      = user.first_name + " " + user.last_name
+          select(name="roleId", placeholder="Role")
+            each role in roles
+              option(value=role.id)
+                = role.title
+                  
+          input(type="submit")
+
         h2 Skapa grupp
         form(action="/groups/create", method="post")
           input(type="text", name="name" placeholder='gruppnamn')
@@ -32,20 +49,6 @@ block content
           input(type="email", name="email", placeholder="email")
           input(type="submit")
 
-        h2 Skapa Mandat
-        form(action="/mandates/create", method="post")
-          input(type="date", name="start")
-          input(type="date", name="end")
-          select(name="userId", placeholder="User")
-            each user in users
-                    option(value=user.id)
-                      = user.first_name + " " + user.last_name
-          select(name="roleId", placeholder="Role")
-            each role in roles
-              option(value=role.id)
-                = role.title
-                  
-          input(type="submit")
 
         h2 Lägga till Administratörer
         form(action="/users/make-admin", method="post")

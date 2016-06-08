@@ -23,7 +23,6 @@
     "passport-custom": "^1.0.5",
     "pg": "^4.5.5",
     "react": "^0.10.0",
-    "react-forms": "^0.5.7",
     "sequelize": "^3.3.2",
     "sequelize-cli": "^1.9.2",
     "serve-favicon": "~2.3.0",
