@@ -5,6 +5,29 @@ function zfingerParseUser(user) {
   };
 }
 
+var ChooseUserBox = React.createClass({
+  getInitialState: function() {
+    return {
+      selected: null,
+    };
+  },
+  render: function() {
+    if (this.state.selected) {
+      return <Result {...this.state.selected} onSelect={
+        function(data) {
+          this.setState({selected: null});
+        }.bind(this)
+      }/>;
+    } else {
+      return <SearchBox {...this.props} onSelect={
+        function(data) {
+          this.setState({selected: data});
+        }.bind(this)
+      } />;
+    }
+  },
+});
+
 var SearchBox = React.createClass({
   getInitialState: function() {
     return {
@@ -58,7 +81,7 @@ var SearchBox = React.createClass({
           return a.fullname.localeCompare(b.fullname);
         }); 
       } 
-      results = <ResultList data={dataCopy} onSelect={function(data){alert("selected " + data.fullname + " " + data.kthid);}} />;
+      results = <ResultList data={dataCopy} onSelect={this.props.onSelect} />;
     }
     return (
         <div>
@@ -135,6 +158,7 @@ var Result = React.createClass({
 });
 
 module.exports = {
+  ChooseUserBox,
   SearchBox,
   SearchBar,
   ResultList,
