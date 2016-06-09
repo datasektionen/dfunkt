@@ -118,14 +118,15 @@ var SearchBar = React.createClass({
   },
   onKey: function(e) {
     const enter = 13;
-    if (enter == e.keyCode || enter == e.charCode) { // If it's enter
+    if (enter == e.keyCode || enter == e.charCode) {
+      e.preventDefault();
       this.onSubmit();
     } 
   },
   render: function() {
     return (
-      <div onKeyPress={this.onKey} >
-        <input type='text' placeholder="Namn" onChange={this.onChange} value={this.state.query} />
+      <div >
+        <input type='text' placeholder="Namn" onChange={this.onChange} value={this.state.query} onKeyDown={this.onKey} />
         <input type='button' onClick={this.onSubmit} value="Sök"/>
       </div>
     );
