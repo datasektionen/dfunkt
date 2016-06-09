@@ -35,6 +35,27 @@ function byKthid(kthid) {
   });
 }
 
+function search(query) {
+  return new Promise(function(resolve, reject) {
+    var url = 'https://zfinger.datasektionen.se/users/' + encodeURIComponent(query);
+
+    https.get(url, (get_res) => {
+      recv_data = "";
+      get_res.on('data', (d) => {
+        recv_data += d;
+      });
+      
+      get_res.on('end', () => {
+        var resp = JSON.parse(recv_data);
+        resolve({results: resp.results.map(zfingerParseUser)});
+      });
+    }).on("error", function(err) {
+      reject(err);
+    });
+  });
+}
+
 module.exports = {
   byKthid,
+  search,
 };

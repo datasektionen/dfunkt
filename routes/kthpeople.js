@@ -1,6 +1,7 @@
 var express = require('express');
 var https = require('https');
 var debug = require('debug')('dfunkt');
+var zfinger = require("../util/zfinger");
 var helpers = require('./helpers');
 var models = require("../models");
 var router  = express.Router();
@@ -16,34 +17,6 @@ router.get('/', function(req, res) {
     });
   });
 });
-
-function zfingerParseUser(user) {
-  return {
-    fullname: user.cn,
-    kthid: user.uid,
-    ugkthid: user.ugKthid,
-  };
-}
-
-function searchZfinger(query) {
-  return new Promise(function(resolve, reject) {
-    var url = 'https://zfinger.datasektionen.se/users/' + encodeURIComponent(query);
-
-    https.get(url, (get_res) => {
-      recv_data = "";
-      get_res.on('data', (d) => {
-        recv_data += d;
-      });
-      
-      get_res.on('end', () => {
-        var resp = JSON.parse(recv_data);
-        resolve({results: resp.results.map(zfingerParseUser)});
-      });
-    }).on("error", function(err) {
-      reject(err);
-    });
-  });
-}
 
 // TODO: Given recent improvements in zfinger, this can safely be removed.
 // Unless it is being used somewhere else?
@@ -75,19 +48,10 @@ router.get('/search', function(req, res) {
 });
 router.get('/search/:query', function(req, res) {
   var query = req.params.query;
-    searchZfinger(query).then(function(results) {
-      var searches = results.results.map( function(user) {
-        return new Promise( function(resolve, reject) {
-          models.User.findOne({where: { kthid: user.kthid }})
-            .then(function(localUser) { user.local = (null !== localUser); resolve(user);})
-        });
-      });
-      Promise.all(searches).then(function(items) {
-        res.send(JSON.stringify({results: items}));
-      });
+    zfinger.search(query).then(function(results) {
+      res.send(results);
     }).catch(function(err) {
       res.render('error', err);
     });
-      
 });
 module.exports = router;
