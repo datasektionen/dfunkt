@@ -1,6 +1,7 @@
 var models  = require('../models');
 var express = require('express');
 var helpers = require('./helpers');
+var zfinger = require('../util/zfinger');
 var debug = require('debug')('dfunkt');
 var router  = express.Router();
 
@@ -12,6 +13,8 @@ function validRequest(body) {
          body.end &&
          body.ugkthid &&
          body.ugkthid != "" &&
+         body.kthid &&
+         body.kthid != "" &&
          new Date(body.start) <= new Date(body.end);
 }
 
@@ -25,22 +28,52 @@ function makeSureNoneNull(values) {
   return Promise.resolve(values);
 };
 
+function findOrCreateUser(user) {
+  debug("GOind to find or create dis: " + user);
+  return models.User.findOrCreate({
+    where: {
+      first_name: user.first_name,
+      last_name: user.last_name,
+      kthid: user.kthid,
+      ugkthid: user.ugkthid,
+    },
+    defaults: {
+      admin: false, 
+    },
+  });
+}
+
+function findThisUser(kthid) {
+  return models.User.findOne({
+    where: {
+      kthid: kthid
+    }
+  }).then(function(maybeUser) {
+    debug("after findOne user");
+    if (!maybeUser) {
+      debug("But it was not found");
+      return zfinger.queryKthid(kthid)
+        .catch(function(err){ debug("err zfingering user: " + err); return Promise.reject(err);})
+        .then(findOrCreateUser)
+        .catch(function(err){ debug("err creating user: " + err); return Promise.reject(err);});
+    } else {
+      debug("It was found, returning it!");
+      return maybeUser;
+    }
+  }).catch(function(err){ debug("err findThisUser: " + err); return Promise.reject(err);});
+}
+
 router.post('/create', helpers.requireadmin, function(req, res) {
   debug("Request body: " + JSON.stringify(req.body));
 
   if (validRequest(req.body)) {
     Promise.all([
-      models.User.findOne({
-        where: {
-          id:req.body.userId
-        }
-      }),
-      models.Role.findOne({
-        where: {
-          id:req.body.roleId
-        }
-      }),
-    ]).then( makeSureNoneNull )
+      findThisUser(req.body.kthid), // TODO: add validation with ugkthid smh // Might have just done this
+      models.Role.findOne({ where: {
+        id:req.body.roleId
+      }}),
+    ]).catch(function (err){ debug("Error finding user/role: " + err);return Promise.reject(err);})
+    .then( makeSureNoneNull )
     .then(function (results) {
       var user = results[0];
       var role = results[1];
