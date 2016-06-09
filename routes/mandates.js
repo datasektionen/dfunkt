@@ -52,6 +52,7 @@ function findThisUser(kthid) {
     }
   }).then(function(maybeUser) {
     if (maybeUser) {
+      debug("User with kthid " + kthid + " found locally.");
       return maybeUser;
     } else {
       debug("User with kthid " + kthid + " not found locally, will create new one with data from zfinger.");
