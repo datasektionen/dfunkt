@@ -40,6 +40,8 @@ function findOrCreateUser(user) {
     defaults: {
       admin: false, 
     },
+  }).then(function (result) {
+    return result[0];
   });
 }
 
@@ -49,19 +51,14 @@ function findThisUser(kthid) {
       kthid: kthid
     }
   }).then(function(maybeUser) {
-    debug("after findOne user");
-    if (!maybeUser) {
-      debug("But it was not found");
-      var p = zfinger.queryKthid(kthid);
-      p.catch(function(err){ debug("err zfingering user: " + err); return Promise.reject(err);})
-      p.then(findOrCreateUser)
-      p.catch(function(err){ debug("err creating user: " + err); return Promise.reject(err);});
-      return p;
-    } else {
-      debug("It was found, returning it!");
+    if (maybeUser) {
       return maybeUser;
+    } else {
+      debug("User with kthid " + kthid + " not found locally, will create new one with data from zfinger.");
+      return zfinger.byKthid(kthid)
+        .then(findOrCreateUser)
     }
-  }).catch(function(err){ debug("err findThisUser: " + err); return Promise.reject(err);});
+  });
 }
 
 router.post('/create', helpers.requireadmin, function(req, res) {
@@ -79,15 +76,18 @@ router.post('/create', helpers.requireadmin, function(req, res) {
       var user = results[0];
       var role = results[1];
 
-      debug("creating with user" + JSON.stringify(user));
-      debug("creating with role" + JSON.stringify(role));
-
-      models.Mandate.create({
+      debug("creating mandate with user" + JSON.stringify(user));
+      debug("creating mandate with role" + JSON.stringify(role));
+      var createSpec = {
         start: req.body.start,
         end: req.body.end,
         UserId: user.id,
         RoleId: role.id,
-      }).then(function() {
+      };
+      debug("ISITMISSING???? " + createSpec.UserId);
+      debug("Creating mandate with spec: " + JSON.stringify(createSpec));
+      models.Mandate.create(createSpec).then(function() {
+        debug("Creating apparently worked.");
         res.redirect('/');
       });
     }, function(reason) {
@@ -97,7 +97,6 @@ router.post('/create', helpers.requireadmin, function(req, res) {
     });
   } else {
     debug("Invalid request: " + JSON.stringify(req.body));
-    // TODO: Add an error page informing user that the request failed
     res.render("error", { message: "Invalid mandate request."});
   }
 });

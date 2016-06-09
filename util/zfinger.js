@@ -11,7 +11,7 @@ function zfingerParseUser(user) {
   };
 }
 
-function queryKthid(kthid) {
+function byKthid(kthid) {
   return new Promise(function(resolve, reject) {
     var url = 'https://zfinger.datasektionen.se/user/' + kthid;
 
@@ -36,5 +36,5 @@ function queryKthid(kthid) {
 }
 
 module.exports = {
-  queryKthid,
+  byKthid,
 };
