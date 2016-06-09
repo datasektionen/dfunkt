@@ -7,8 +7,7 @@ var router  = express.Router();
 
 function validRequest(body) {
   // TODO: Check if user is an actual user 
-  return body.userId && 
-         body.roleId && 
+  return body.roleId && 
          body.start &&
          body.end &&
          body.ugkthid &&
