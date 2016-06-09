@@ -44,18 +44,19 @@ function findOrCreateUser(user) {
   });
 }
 
-function findThisUser(kthid) {
+function findThisUser(kthid, ugkthid) {
   return models.User.findOne({
     where: {
-      kthid: kthid
+      kthid: kthid,
+      ugkthid: ugkthid,
     }
   }).then(function(maybeUser) {
     if (maybeUser) {
-      debug("User with kthid " + kthid + " found locally.");
+      debug("User with kthid " + kthid + "/" + ugkthid + " found locally.");
       return maybeUser;
     } else {
-      debug("User with kthid " + kthid + " not found locally, will create new one with data from zfinger.");
-      return zfinger.byKthid(kthid)
+      debug("User with kthid " + kthid + "/" + ugkthid + " not found locally, will create new one with data from zfinger.");
+      return zfinger.byUgkthid(ugkthid)
         .then(findOrCreateUser)
     }
   });
@@ -66,7 +67,7 @@ router.post('/create', helpers.requireadmin, function(req, res) {
 
   if (validRequest(req.body)) {
     Promise.all([
-      findThisUser(req.body.kthid), // TODO: add validation with ugkthid smh // Might have just done this
+      findThisUser(req.body.kthid, req.body.ugkthid), // TODO: add validation with ugkthid smh // Might have just done this
       models.Role.findOne({ where: {
         id:req.body.roleId
       }}),

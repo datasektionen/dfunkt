@@ -27,7 +27,6 @@ function httpsGet(url) {
   });
 }
 
-
 function byKthid(kthid) {
   var url = 'https://zfinger.datasektionen.se/user/' + kthid;
   return httpsGet(url).then(function(response) {
@@ -36,6 +35,18 @@ function byKthid(kthid) {
       return Promise.resolve(zfingerParseUser(resp));
     } catch (e) {
       return Promise.reject("No user found on zfinger with kthid " + kthid + ". Zfinger responded: " + recv_data);
+    }
+  });
+}
+
+function byUgkthid(ugkthid) {
+  var url = 'https://zfinger.datasektionen.se/ugkthid/' + ugkthid;
+  return httpsGet(url).then(function(response) {
+    try {
+      var resp = JSON.parse(response);
+      return Promise.resolve(zfingerParseUser(resp));
+    } catch (e) {
+      return Promise.reject("No user found on zfinger with ugkthid " + ugkthid + ". Zfinger responded: " + recv_data);
     }
   });
 }
@@ -50,5 +61,6 @@ function search(query) {
 
 module.exports = {
   byKthid,
+  byUgkthid,
   search,
 };
