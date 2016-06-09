@@ -1,3 +1,4 @@
+var https = require('https');
 var debug = require('debug')('dfunkt');
 
 function zfingerParseUser(user) {
@@ -11,28 +12,26 @@ function zfingerParseUser(user) {
 }
 
 function queryKthid(kthid) {
-  return Promise( function(resolve, reject) {
+  return new Promise(function(resolve, reject) {
     var url = 'https://zfinger.datasektionen.se/user/' + kthid;
-    var request = new XMLHttpRequest();
-    request.responseType = "json";
-    request.open('GET', this.props.url + encodeURIComponent(query), true);
-    request.onload = function() {
-      if (request.status >= 200 && request.status < 400) {
-        // Success!
-        var user = request.response;
-        user = zfingerParseUser(user);
-        debug("resolving zfinger query with " + user);
-        resolve(user);
-      } else {
-        reject("Had problems connecting to zfinger to create new user.");
-      }
-    }.bind(this);
 
-    request.onerror = function() {
-      reject("Could not connect to zfinger to create new user.");
-    }.bind(this);
-
-    request.send();
+    https.get(url, (get_res) => {
+      recv_data = "";
+      get_res.on('data', (d) => {
+        recv_data += d;
+      });
+      
+      get_res.on('end', () => {
+        try {
+          var resp = JSON.parse(recv_data);
+          resolve(zfingerParseUser(resp));
+        } catch (e) {
+          reject("No user found on zfinger with kthid " + kthid + ". Zfinger responded: " + recv_data);
+        }
+      });
+    }).on("error", function(err) {
+      reject("Error searching zfinger: " + err);
+    });
   });
 }
 

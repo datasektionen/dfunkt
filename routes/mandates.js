@@ -52,10 +52,11 @@ function findThisUser(kthid) {
     debug("after findOne user");
     if (!maybeUser) {
       debug("But it was not found");
-      return zfinger.queryKthid(kthid)
-        .catch(function(err){ debug("err zfingering user: " + err); return Promise.reject(err);})
-        .then(findOrCreateUser)
-        .catch(function(err){ debug("err creating user: " + err); return Promise.reject(err);});
+      var p = zfinger.queryKthid(kthid);
+      p.catch(function(err){ debug("err zfingering user: " + err); return Promise.reject(err);})
+      p.then(findOrCreateUser)
+      p.catch(function(err){ debug("err creating user: " + err); return Promise.reject(err);});
+      return p;
     } else {
       debug("It was found, returning it!");
       return maybeUser;
