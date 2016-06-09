@@ -11,47 +11,40 @@ function zfingerParseUser(user) {
   };
 }
 
-function byKthid(kthid) {
-  return new Promise(function(resolve, reject) {
-    var url = 'https://zfinger.datasektionen.se/user/' + kthid;
-
+function httpsGet(url) {
+  return new Promise( function(resolve, reject) {
     https.get(url, (get_res) => {
       recv_data = "";
       get_res.on('data', (d) => {
         recv_data += d;
       });
-      
       get_res.on('end', () => {
-        try {
-          var resp = JSON.parse(recv_data);
-          resolve(zfingerParseUser(resp));
-        } catch (e) {
-          reject("No user found on zfinger with kthid " + kthid + ". Zfinger responded: " + recv_data);
-        }
+        resolve(recv_data);
       });
     }).on("error", function(err) {
-      reject("Error searching zfinger: " + err);
+      reject("error GETing from " + url + ": " + err);
     });
   });
 }
 
-function search(query) {
-  return new Promise(function(resolve, reject) {
-    var url = 'https://zfinger.datasektionen.se/users/' + encodeURIComponent(query);
 
-    https.get(url, (get_res) => {
-      recv_data = "";
-      get_res.on('data', (d) => {
-        recv_data += d;
-      });
-      
-      get_res.on('end', () => {
-        var resp = JSON.parse(recv_data);
-        resolve({results: resp.results.map(zfingerParseUser)});
-      });
-    }).on("error", function(err) {
-      reject(err);
-    });
+function byKthid(kthid) {
+  var url = 'https://zfinger.datasektionen.se/user/' + kthid;
+  return httpsGet(url).then(function(response) {
+    try {
+      var resp = JSON.parse(response);
+      return Promise.resolve(zfingerParseUser(resp));
+    } catch (e) {
+      return Promise.reject("No user found on zfinger with kthid " + kthid + ". Zfinger responded: " + recv_data);
+    }
+  });
+}
+
+function search(query) {
+  var url = 'https://zfinger.datasektionen.se/users/' + encodeURIComponent(query);
+  return httpsGet(url).then( function(response) {
+    var resp = JSON.parse(response);
+    return {results: resp.results.map(zfingerParseUser)};
   });
 }
 
