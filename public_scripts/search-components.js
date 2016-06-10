@@ -41,7 +41,7 @@ var SearchBox = React.createClass({
   getInitialState: function() {
     return {
       data: [],
-      doSort: true,
+      doSort: false,
       searching: false,
       didSearch: false,
       gotError: false,
