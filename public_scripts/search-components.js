@@ -6,34 +6,44 @@ var ChooseUserBox = React.createClass({
     };
   },
   render: function() {
-    var searchPart;
-    if (this.state.selected) {
-      searchPart = <Result {...this.state.selected} onSelect={
-        function(data) {
-          this.setState({selected: null});
-        }.bind(this)
-      }/>;
-    } else {
-      searchPart = <SearchBox {...this.props} onSelect={
-        function(data) {
-          this.setState({selected: data});
-        }.bind(this)
-      } />;
-    }
-
-    return <div>
-      <input 
-        type="hidden" 
-        name="ugkthid" 
-        value={this.state.selected ? this.state.selected.ugkthid : ""} 
-      />
-      <input 
-        type="hidden" 
-        name="kthid" 
-        value={this.state.selected ? this.state.selected.kthid : ""} 
-      />
-      {searchPart}
-    </div>;
+    var selected = !!this.state.selected;
+    var styleResult = selected ? {} : {display:"none"};
+    var styleSearchbox = selected ? {display:"none"} : {};
+    return (
+      <div>
+        <input 
+          type="hidden" 
+          name="ugkthid" 
+          value={this.state.selected ? this.state.selected.ugkthid : ""} 
+        />
+        <input 
+          type="hidden" 
+          name="kthid" 
+          value={this.state.selected ? this.state.selected.kthid : ""} 
+        />
+        <div style={styleResult}>
+          <Result 
+            {...this.state.selected}
+            onSelect={
+              function(data) {
+                this.setState({selected: null});
+              }.bind(this)
+            }
+          />
+        </div>
+        <div style={styleSearchbox}>
+          <SearchBox 
+            {...this.props}
+            key="searchbox" 
+            onSelect={
+              function(data) {
+                this.setState({selected: data});
+              }.bind(this)
+            } 
+          />
+        </div>
+      </div>
+    );
   },
 });
 
