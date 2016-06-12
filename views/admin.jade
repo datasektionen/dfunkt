@@ -21,28 +21,28 @@ block content
           input(type="submit")
 
         h2 Skapa grupp
-        form(action="/groups/create", method="post")
-          input(type="text", name="name" placeholder='gruppnamn')
-          input(type="text", name="identifier" placeholder='identifierare, ex. Drek')
+        form(action="/groups/create", method="post")#form-create-group
+          input(type="text", name="name" placeholder='gruppnamn' required)
+          input(type="text", name="identifier" placeholder='identifierare, ex. Drek' required)
           input(type="submit")
 
         h2 Skapa användare
-        form(action="/users/create", method="post")
-          input(type="text", name="first_name" placeholder='förnamn')
-          input(type="text", name="last_name" placeholder='efternamn')
-          input(type="text", name="kthid" placeholder='kth-id, ex. jsimo')
+        form(action="/users/create", method="post")#form-create-user
+          input(type="text", name="first_name" placeholder='förnamn' required)
+          input(type="text", name="last_name" placeholder='efternamn' required)
+          input(type="text", name="kthid" placeholder='kth-id, ex. jsimo' required)
           input(type="submit")
           
         h2 Skapa roller
-        form(action="/roles/create", method="post")
-          input(type="text", name="title", placeholder="titel")
-          input(type="text", name="description", placeholder="beskrivning")
-          select(name="type")
+        form(action="/roles/create", method="post")#form-create-role
+          input(type="text", name="title", placeholder="titel" required)
+          input(type="text", name="description", placeholder="beskrivning" required)
+          select(name="type" required)
             each group in groups
               option(value=group.id)
                 = group.name
-          input(type="text", name="identifier", placeholder="identifierare")
-          input(type="email", name="email", placeholder="email")
+          input(type="text", name="identifier", placeholder="identifierare" required)
+          input(type="email", name="email", placeholder="email" required)
           input(type="submit")
 
 
