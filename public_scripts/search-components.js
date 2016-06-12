@@ -22,6 +22,7 @@ var ChooseUserBox = React.createClass({
           value={this.state.selected ? this.state.selected.kthid : ""} 
         />
         <div style={styleResult}>
+          <p>Klicka för att avmarkera.</p>
           <Result 
             {...this.state.selected}
             onSelect={
