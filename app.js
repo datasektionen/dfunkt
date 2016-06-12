@@ -1,7 +1,6 @@
 var express = require('express');
 var session = require('express-session');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -35,10 +34,11 @@ app.use(cookieParser());
 app.use('/public/', express.static(path.join(__dirname, 'public')));
 
 app.use(session({
-	saveUninitialized: true,
-	resave: true,
-	secret: 'temporarySuperSecretKey#¤%&'
+  saveUninitialized: true,
+  resave: true,
+  secret: 'temporarySuperSecretKey#¤%&'
 }));
+
 require('./config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
@@ -47,15 +47,16 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/roles', roles);
 app.use('/mandates', mandates);
-app.use('/api', api)
-app.use('/kthpeople', kthpeople)
+app.use('/api', api);
+app.use('/kthpeople', kthpeople);
 app.use('/login', login);
 app.use('/groups', groups);
 
 app.use('/js', browserify(__dirname + "/public_scripts", {
   transform: [
     ["babelify", {presets: ["es2015", "react"]}]
-  ]}));
+  ]
+}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

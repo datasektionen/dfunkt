@@ -1,24 +1,16 @@
 var express = require('express');
-var models = require('../models');
 var router  = express.Router();
 var moment = require('moment');
-
-//
-// API:
-// DONE - lista alla användare 
-// DONE - lista alla roller
-// DONE - lista en specifik användare och dess nuvarande roller
-// DONE - lista en specifik användare och dess nuvarande och gamla roller
-// DONE - lista alla roller av en viss typ med senaste
-// DONE - lista alla roller av en viss typ med all historik
-// DONE - lista alla roller med senaste
-// DONE - lista alla roller med all historik
-// DONE - lista en specifik roll med nuvarande
-// DONE - lista en specifik roll med all historik
-//
+var models = require('../models');
 
 router.get('/roles', function(req, res) {
-  models.Role.findAll({attributes: ['title', 'description', 'email', 'type']}).then(function(roles) {
+  models.Role.findAll({
+    attributes: ['title', 'description', 'email'],
+    include: [{
+      model: models.Group,
+      attributes: ['name', 'identifier'],
+    }],
+  }).then(function(roles) {
     res.json(roles);
   });
 });
@@ -26,7 +18,11 @@ router.get('/roles', function(req, res) {
 router.get('/role/:title/', function(req, res) {
   models.Role.findOne({
     where: {title: req.params.title},
-    attributes: ['id', 'title', 'description', 'email', 'type']
+    attributes: ['id', 'title', 'description', 'email'],
+    include: [{
+      model: models.Group,
+      attributes: ['name', 'identifier'],
+    }],
   }).then(function(role) {
     if (!role) {
       res.status(404);
@@ -45,7 +41,11 @@ router.get('/role/:title/', function(req, res) {
 router.get('/role/:title/current', function(req, res) {
   models.Role.findOne({
     where: {title: req.params.title},
-    attributes: ['id', 'title', 'description', 'email', 'type']
+    attributes: ['id', 'title', 'description', 'email'],
+    include: [{
+      model: models.Group,
+      attributes: ['name', 'identifier'],
+    }],
   }).then(function(role) {
     if (!role) {
       res.status(404);
@@ -64,7 +64,11 @@ router.get('/role/:title/current', function(req, res) {
 router.get('/roles/type/:type/all', function(req, res) {
   models.Role.findAll({
     where: {type: req.params.type},
-    attributes: ['id', 'title', 'description', 'email', 'type'],
+    attributes: ['id', 'title', 'description', 'email'],
+    include: [{
+      model: models.Group,
+      attributes: ['name', 'identifier'],
+    }],
   }).then(function(roles) {
     console.log(roles);
     if (!roles) {
@@ -74,14 +78,14 @@ router.get('/roles/type/:type/all', function(req, res) {
       var promises = [];
       for (var i = roles.length - 1; i >= 0; i--) {
         promises.push(getRoleMandates(roles[i].id));
-      };
+      }
       Promise.all(promises).then(function(results) {
-        var _res = []
+        var _res = [];
         for (var i = results.length - 1; i >= 0; i--) {
           var obj = {};
           obj[roles[results.length - i - 1].title] = results[i];
           _res.push(obj);
-        };
+        }
         res.json(_res);
       });
     }
@@ -90,8 +94,12 @@ router.get('/roles/type/:type/all', function(req, res) {
 
 router.get('/roles/type/:type/all/current', function(req, res) {
   models.Role.findAll({
-    attributes: ['id', 'title', 'description', 'email', 'type'],
     where: {type: req.params.type},
+    attributes: ['id', 'title', 'description', 'email'],
+    include: [{
+      model: models.Group,
+      attributes: ['name', 'identifier'],
+    }],
   }).then(function(roles) {
     console.log(roles);
     if (!roles) {
@@ -101,14 +109,14 @@ router.get('/roles/type/:type/all/current', function(req, res) {
       var promises = [];
       for (var i = roles.length - 1; i >= 0; i--) {
         promises.push(getRoleMandatesCurrent(roles[i].id));
-      };
+      }
       Promise.all(promises).then(function(results) {
-        var _res = []
+        var _res = [];
         for (var i = results.length - 1; i >= 0; i--) {
           var obj = {};
           obj[roles[results.length - i - 1].title] = results[i];
           _res.push(obj);
-        };
+        }
         res.json(_res);
       });
     }
@@ -117,36 +125,48 @@ router.get('/roles/type/:type/all/current', function(req, res) {
 
 //All roles who has a history and all of their history.
 router.get('/roles/all', function(req, res) {
-  models.Role.findAll({attributes: ['id', 'title', 'description', 'email', 'type']}).then(function(roles) {
+  models.Role.findAll({
+    attributes: ['id', 'title', 'description', 'email'],
+    include: [{
+      model: models.Group,
+      attributes: ['name', 'identifier'],
+    }],
+  }).then(function(roles) {
     var promises = [];
     for (var i = roles.length - 1; i >= 0; i--) {
       promises.push(getRoleMandates(roles[i].id));
-    };
+    }
     Promise.all(promises).then(function(results) {
-      var _res = []
+      var _res = [];
       for (var i = results.length - 1; i >= 0; i--) {
         var obj = {};
         obj[roles[results.length - i - 1].title] = results[i];
         _res.push(obj);
-      };
+      }
       res.json(_res);
     });
   });
 });
 
 router.get('/roles/all/current', function(req, res) {
-  models.Role.findAll({attributes: ['id', 'title', 'description', 'email', 'type']}).then(function(roles) {
+  models.Role.findAll({
+    attributes: ['id', 'title', 'description', 'email'],
+    include: [{
+      model: models.Group,
+      attributes: ['name', 'identifier'],
+    }],
+  }).then(function(roles) {
     var promises = [];
     for (var i = roles.length - 1; i >= 0; i--) {
       promises.push(getRoleMandatesCurrent(roles[i].id));
-    };
+    }
     Promise.all(promises).then(function(results) {
-      var _res = []
+      var _res = [];
       for (var i = results.length - 1; i >= 0; i--) {
         var obj = {};
         obj[roles[results.length - i - 1].title] = results[i];
         _res.push(obj);
-      };
+      }
       res.json(_res);
     });
   });
@@ -166,7 +186,7 @@ var getRoleMandates = function(roleid) {
       resolve(result);
     });
   });
-}
+};
 
 //promises :D
 var getRoleMandatesCurrent = function(roleid) {
@@ -183,7 +203,7 @@ var getRoleMandatesCurrent = function(roleid) {
       resolve(result);
     });
   });
-}
+};
 
 router.get('/users', function(req, res) {
   models.User.findAll({attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid', 'admin']}).then(function(users) {
@@ -236,7 +256,7 @@ var getUserMandatesCurrent = function(user, res) {
       });
     });
   }
-}
+};
 
 var getUserMandates = function(user, res) {
   if(!user) {
@@ -257,6 +277,6 @@ var getUserMandates = function(user, res) {
       });
     });
   }
-}
+};
 
 module.exports = router;
