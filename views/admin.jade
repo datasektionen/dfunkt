@@ -61,12 +61,3 @@ block content
               option(value=user.id)
                 = user.first_name + " " + user.last_name
           input(type="submit", value="Ta bort som administrator")
-
-        h2 Radera Användare
-        form(action="/users/destroy", method="delete")
-          select(name="userId", placeholder="User")
-            each user in users
-              option(value=user.id)
-                = user.first_name + " " + user.last_name
-          input(type="submit", value="Radera användare")
-
