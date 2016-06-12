@@ -87,11 +87,14 @@ var SearchBox = React.createClass({
   },
   render: function() {
     var results;
+    var sortCheckbox;
+    var clickLabel;
+    var resultsLength = this.state.data.length;
     if (this.state.error) {
       results = <p>Något gick fel. Bugg? <a href="https://github.com/datasektionen/dfunkt/issues/new">Rapportera det!</a></p>
     } else if (this.state.searching) {
       results = <p>Söker...</p>;
-    } else if (this.state.didSearch && this.state.data.length == 0) {
+    } else if (this.state.didSearch && resultsLength == 0) {
       results = <p>Inga resultat alls. Du stavade allt rätt, eller hur?</p>;
     } else {
       var dataCopy = this.state.data.slice(0);
@@ -101,14 +104,21 @@ var SearchBox = React.createClass({
         }); 
       } 
       results = <ResultList data={dataCopy} onSelect={this.props.onSelect} />;
-    }
-    return (
-        <div>
-          <SearchBar handleSubmit={this.handleSubmit} />
+      if (resultsLength > 1) {
+        sortCheckbox = (
           <p>
             <input type='checkbox' checked={this.state.doSort} onChange={this.handleCheckbox} />
             Sortera alfabetiskt
           </p>
+        );
+        clickLabel = <p>Klicka för att välja användare.</p>;
+      }
+    }
+    return (
+        <div>
+          <SearchBar handleSubmit={this.handleSubmit} />
+          {sortCheckbox}
+          {clickLabel}
           {results}
         </div>
     );
@@ -165,11 +175,11 @@ var Result = React.createClass({
     }.bind(this);
 
     return (
-      <div className="comment" onClick={callOnSelect}>
-        <h3 className="commentAuthor">
+      <div className="result" onClick={callOnSelect} >
+        <h3 className="result-name">
           {this.props.fullname}
         </h3>
-        <p> 
+        <p className="result-kthid"> 
           kthid: <b>{this.props.kthid}</b>
         </p>
         {this.props.children}
