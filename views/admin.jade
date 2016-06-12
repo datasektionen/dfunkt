@@ -8,12 +8,12 @@ block content
         h1 Adminstrativa saker
 
         h2 Skapa Mandat
-        form(action="/mandates/create", method="post")
+        form(action="/mandates/create", method="post" )#form-create-mandate
           div(id="react-user-search")
           script(type="text/javascript", src="/js/user-search.js")
-          input(type="date", name="start")
-          input(type="date", name="end")
-          select(name="roleId", placeholder="Role")
+          input(type="date", name="start" required)
+          input(type="date", name="end" required)
+          select(name="roleId", placeholder="Role" required)
             each role in roles
               option(value=role.id)
                 = role.title
