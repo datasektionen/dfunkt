@@ -3,13 +3,23 @@ var router  = express.Router();
 var moment = require('moment');
 var models = require('../models');
 
+var includeGroupSpec = {
+  model: models.Group,
+  attributes: ['name', 'identifier'],
+};
+var includeRoleSpec = {
+  model: models.Role,
+  attributes: ['title', 'email'],
+};
+var includeUserSpec = {
+  model: models.User,
+  attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid'],
+};
+
 router.get('/roles', function(req, res) {
   models.Role.findAll({
     attributes: ['title', 'description', 'email'],
-    include: [{
-      model: models.Group,
-      attributes: ['name', 'identifier'],
-    }],
+    include: [includeGroupSpec],
   }).then(function(roles) {
     res.json(roles);
   });
@@ -19,10 +29,7 @@ router.get('/role/:title/', function(req, res) {
   models.Role.findOne({
     where: {title: req.params.title},
     attributes: ['id', 'title', 'description', 'email'],
-    include: [{
-      model: models.Group,
-      attributes: ['name', 'identifier'],
-    }],
+    include: [includeGroupSpec],
   }).then(function(role) {
     if (!role) {
       res.status(404);
@@ -42,10 +49,7 @@ router.get('/role/:title/current', function(req, res) {
   models.Role.findOne({
     where: {title: req.params.title},
     attributes: ['id', 'title', 'description', 'email'],
-    include: [{
-      model: models.Group,
-      attributes: ['name', 'identifier'],
-    }],
+    include: [includeGroupSpec],
   }).then(function(role) {
     if (!role) {
       res.status(404);
@@ -65,10 +69,7 @@ router.get('/roles/type/:type/all', function(req, res) {
   models.Role.findAll({
     where: {type: req.params.type},
     attributes: ['id', 'title', 'description', 'email'],
-    include: [{
-      model: models.Group,
-      attributes: ['name', 'identifier'],
-    }],
+    include: [includeGroupSpec],
   }).then(function(roles) {
     console.log(roles);
     if (!roles) {
@@ -96,10 +97,7 @@ router.get('/roles/type/:type/all/current', function(req, res) {
   models.Role.findAll({
     where: {type: req.params.type},
     attributes: ['id', 'title', 'description', 'email'],
-    include: [{
-      model: models.Group,
-      attributes: ['name', 'identifier'],
-    }],
+    include: [includeGroupSpec],
   }).then(function(roles) {
     console.log(roles);
     if (!roles) {
@@ -127,10 +125,7 @@ router.get('/roles/type/:type/all/current', function(req, res) {
 router.get('/roles/all', function(req, res) {
   models.Role.findAll({
     attributes: ['id', 'title', 'description', 'email'],
-    include: [{
-      model: models.Group,
-      attributes: ['name', 'identifier'],
-    }],
+    include: [includeGroupSpec],
   }).then(function(roles) {
     var promises = [];
     for (var i = roles.length - 1; i >= 0; i--) {
@@ -151,10 +146,7 @@ router.get('/roles/all', function(req, res) {
 router.get('/roles/all/current', function(req, res) {
   models.Role.findAll({
     attributes: ['id', 'title', 'description', 'email'],
-    include: [{
-      model: models.Group,
-      attributes: ['name', 'identifier'],
-    }],
+    include: [includeGroupSpec],
   }).then(function(roles) {
     var promises = [];
     for (var i = roles.length - 1; i >= 0; i--) {
@@ -172,41 +164,27 @@ router.get('/roles/all/current', function(req, res) {
   });
 });
 
-//promises :D
 var getRoleMandates = function(roleid) {
-  return new Promise(function(resolve, reject) {
-    models.Mandate.findAll({
-      where: {RoleId: roleid},
-      attributes: ['start', 'end'],
-      include: [{
-        model: models.User,
-        attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid'],
-      }]
-    }).then(function(result) {
-      resolve(result);
-    });
+  models.Mandate.findAll({
+    where: {RoleId: roleid},
+    attributes: ['start', 'end'],
+    include: [includeUserSpec],
   });
 };
 
-//promises :D
 var getRoleMandatesCurrent = function(roleid) {
-  return new Promise(function(resolve, reject) {
-    var now = new moment().format('YYYY-MM-DD');
-    models.Mandate.findAll({
-      where: {RoleId: roleid, start: {$lte: now}, end: {$gte: now}},
-      attributes: ['start', 'end'],
-      include: [{
-        model: models.User,
-        attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid'],
-      }]
-    }).then(function(result) {
-      resolve(result);
-    });
+  var now = new moment().format('YYYY-MM-DD');
+  return models.Mandate.findAll({
+    where: {RoleId: roleid, start: {$lte: now}, end: {$gte: now}},
+    attributes: ['start', 'end'],
+    include: [includeUserSpec],
   });
 };
 
 router.get('/users', function(req, res) {
-  models.User.findAll({attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid', 'admin']}).then(function(users) {
+  models.User.findAll({
+    attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid', 'admin']
+  }).then(function(users) {
     res.json(users);
   });
 });
@@ -245,10 +223,7 @@ var getUserMandatesCurrent = function(user, res) {
     models.Mandate.findAll({
       where: {UserId: user.id, end: {$gte: now}, start: {$lte: now}},
       attributes: ['start', 'end'],
-      include: [{
-        model: models.Role,
-        attributes: ['title', 'email']
-      }]
+      include: [includeRoleSpec],
     }).then(function(mandates) {
       res.json({
         user: user,
@@ -266,10 +241,7 @@ var getUserMandates = function(user, res) {
     models.Mandate.findAll({
       where: {UserId: user.id},
       attributes: ['start', 'end'],
-      include: [{
-        model: models.Role,
-        attributes: ['title', 'email']
-      }]
+      include: [includeRoleSpec],
     }).then(function(mandates) {
       res.json({
         user: user,
