@@ -1,12 +1,13 @@
-var models  = require('../models');
 var express = require('express');
 var router  = express.Router();
-var helpers = require('./helpers');
 var debug   = require('debug')("groups");
+var helpers = require('./helpers');
+var validate = require("../util/validate.js");
+var models  = require('../models');
 
 function validRequest(body) {
-  return body.name && body.name !== "" &&
-         body.identifier && body.identifier !== ""
+  return isNonemptyString(body.name) &&
+         isNonemptyString(body.identifier);
 }
 
 router.post('/create', helpers.requireadmin, function(req, res) {

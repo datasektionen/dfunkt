@@ -1,3 +1,4 @@
+var validate = require("../util/validate.js");
 var search_comps = require("./search-components.js");
 var ChooseUserBox = search_comps.ChooseUserBox;
 ReactDOM.render(
@@ -23,12 +24,9 @@ function validate(form, validator) {
 function nonemptyStringElements(strings) {
   var result = true;
   for (s in strings) {
-    result = result && isNonemptyString(s.value);
+    result = result && validate.isNonemptyString(s.value);
   }
   return result;
 }
 
-function isNonemptyString(str) {
-  return typeof(str) == 'string' && str != '';
-}
     

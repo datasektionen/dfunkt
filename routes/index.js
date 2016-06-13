@@ -77,7 +77,9 @@ router.get('/user/:kthid', function(req, res) {
 }); 
 
 router.get('/position/:ident', function(req, res) {
-  models.Role.findOne({where: {identifier:req.params.ident}}).then(function(role) {
+  models.Role.findOne({
+    where: {identifier:req.params.ident}
+  }).then(function(role) {
     if(role) {
       Promise.all([
         models.Mandate.findAll({
@@ -111,7 +113,6 @@ router.get('/position/:ident', function(req, res) {
     }
   });
 }); 
-
 
 router.get('/admin', helpers.requireadmin, function(req, res) {
   Promise.all([

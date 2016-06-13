@@ -3,19 +3,6 @@ var router  = express.Router();
 var moment = require('moment');
 var models = require('../models');
 
-var includeGroupSpec = {
-  model: models.Group,
-  attributes: ['name', 'identifier'],
-};
-var includeRoleSpec = {
-  model: models.Role,
-  attributes: ['title', 'email'],
-};
-var includeUserSpec = {
-  model: models.User,
-  attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid'],
-};
-
 router.get('/roles', function(req, res) {
   models.Role.findAll({
     attributes: ['title', 'description', 'email'],
@@ -31,11 +18,11 @@ router.get('/role/:title/', function(req, res) {
     attributes: ['id', 'title', 'description', 'email'],
     include: [includeGroupSpec],
   }).then(function(role) {
-    if (!role) {
+    if (role) {
       res.status(404);
       res.send('does not exist');
     } else {
-      getRoleMandates(role.id).then(function(result) {
+      GetRoleMandates(role.id).then(function(result) {
         res.json({
           role: role,
           mandates: result,
@@ -55,7 +42,7 @@ router.get('/role/:title/current', function(req, res) {
       res.status(404);
       res.send('does not exist');
     } else {
-      getRoleMandatesCurrent(role.id).then(function(result) {
+      getCurrentMandatesForRole(role.id).then(function(result) {
         res.json({
           role: role,
           mandates: result,
@@ -78,7 +65,7 @@ router.get('/roles/type/:type/all', function(req, res) {
     } else {
       var promises = [];
       for (var i = roles.length - 1; i >= 0; i--) {
-        promises.push(getRoleMandates(roles[i].id));
+        promises.push(getMandatesForRole(roles[i].id));
       }
       Promise.all(promises).then(function(results) {
         var _res = [];
@@ -106,7 +93,7 @@ router.get('/roles/type/:type/all/current', function(req, res) {
     } else {
       var promises = [];
       for (var i = roles.length - 1; i >= 0; i--) {
-        promises.push(getRoleMandatesCurrent(roles[i].id));
+        promises.push(getCurrentMandatesForRole(roles[i].id));
       }
       Promise.all(promises).then(function(results) {
         var _res = [];
@@ -129,7 +116,7 @@ router.get('/roles/all', function(req, res) {
   }).then(function(roles) {
     var promises = [];
     for (var i = roles.length - 1; i >= 0; i--) {
-      promises.push(getRoleMandates(roles[i].id));
+      promises.push(getMandatesForRole(roles[i].id));
     }
     Promise.all(promises).then(function(results) {
       var _res = [];
@@ -150,7 +137,7 @@ router.get('/roles/all/current', function(req, res) {
   }).then(function(roles) {
     var promises = [];
     for (var i = roles.length - 1; i >= 0; i--) {
-      promises.push(getRoleMandatesCurrent(roles[i].id));
+      promises.push(getCurrentMandatesForRole(roles[i].id));
     }
     Promise.all(promises).then(function(results) {
       var _res = [];
@@ -164,22 +151,6 @@ router.get('/roles/all/current', function(req, res) {
   });
 });
 
-var getRoleMandates = function(roleid) {
-  models.Mandate.findAll({
-    where: {RoleId: roleid},
-    attributes: ['start', 'end'],
-    include: [includeUserSpec],
-  });
-};
-
-var getRoleMandatesCurrent = function(roleid) {
-  var now = new moment().format('YYYY-MM-DD');
-  return models.Mandate.findAll({
-    where: {RoleId: roleid, start: {$lte: now}, end: {$gte: now}},
-    attributes: ['start', 'end'],
-    include: [includeUserSpec],
-  });
-};
 
 router.get('/users', function(req, res) {
   models.User.findAll({
@@ -191,34 +162,68 @@ router.get('/users', function(req, res) {
 
 router.get('/user/kthid/:kthid', function(req, res) {
   models.User.findOne({where: {kthid:req.params.kthid}}).then(function(user) {
-    getUserMandates(user, res);
+    sendUserAndHisMandates(user, res);
   });
 });
 
 router.get('/user/kthid/:kthid/current', function(req, res) {
   models.User.findOne({where: {kthid:req.params.kthid}}).then(function(user) {
-    getUserMandatesCurrent(user, res);
+    sendUserAndHisCurrentMandates(user, res);
   });
 });
 
 router.get('/user/ugkthid/:ugkthid', function(req, res) {
   models.User.findOne({where: {ugkthid:req.params.ugkthid}}).then(function(user) {
-    getUserMandates(user, res);
+    sendUserAndHisMandates(user, res);
   });
 });
 
 router.get('/user/ugkthid/:ugkthid/current', function(req, res) {
   models.User.findOne({where: {ugkthid:req.params.ugkthid}}).then(function(user) {
-    getUserMandatesCurrent(user, res);
+    sendUserAndHisCurrentMandates(user, res);
   });
 });
 
+
+var getMandatesForRole = function(roleid) {
+  models.Mandate.findAll({
+    where: {RoleId: roleid},
+    attributes: ['start', 'end'],
+    include: [includeUserSpec],
+  });
+};
+
+var getCurrentMandatesForRole = function(roleid) {
+  var now = new moment().format('YYYY-MM-DD');
+  return models.Mandate.findAll({
+    where: {RoleId: roleid, start: {$lte: now}, end: {$gte: now}},
+    attributes: ['start', 'end'],
+    include: [includeUserSpec],
+  });
+};
+
 //Returns the user and mandates for him.
-var getUserMandatesCurrent = function(user, res) {
-  if(!user) {
+var sendUserAndHisMandates = function(user, res) {
+  if(user) {
+    models.Mandate.findAll({
+      where: {UserId: user.id},
+      attributes: ['start', 'end'],
+      include: [includeRoleSpec],
+    }).then(function(mandates) {
+      res.json({
+        user: user,
+        mandates: mandates
+      });
+    });
+  } else {
     res.status(404);
     res.send("does not exist");
-  } else {
+  }
+};
+
+//Returns the user and mandates for him.
+var sendUserAndHisCurrentMandates = function(user, res) {
+  if(user) {
     var now = new moment().format('YYYY-MM-DD');
     models.Mandate.findAll({
       where: {UserId: user.id, end: {$gte: now}, start: {$lte: now}},
@@ -230,25 +235,23 @@ var getUserMandatesCurrent = function(user, res) {
         mandates: mandates
       });
     });
+  } else {
+    res.status(404);
+    res.send("does not exist");
   }
 };
 
-var getUserMandates = function(user, res) {
-  if(!user) {
-    res.status(404);
-    res.send("does not exist");
-  } else {
-    models.Mandate.findAll({
-      where: {UserId: user.id},
-      attributes: ['start', 'end'],
-      include: [includeRoleSpec],
-    }).then(function(mandates) {
-      res.json({
-        user: user,
-        mandates: mandates
-      });
-    });
-  }
+var includeGroupSpec = {
+  model: models.Group,
+  attributes: ['name', 'identifier'],
+};
+var includeRoleSpec = {
+  model: models.Role,
+  attributes: ['title', 'email'],
+};
+var includeUserSpec = {
+  model: models.User,
+  attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid'],
 };
 
 module.exports = router;
