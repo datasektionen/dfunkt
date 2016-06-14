@@ -2,50 +2,72 @@ var models  = require('../models');
 var express = require('express');
 var helpers = require('./helpers');
 var zfinger = require('../util/zfinger');
+var validate = require("../util/validate.js");
 var debug = require('debug')('dfunkt');
 var router  = express.Router();
 
+router.post('/create', helpers.requireadmin, function(req, res) {
+  var body = req.body;
+  debug("Request body: " + JSON.stringify(body));
+  if (validRequest(body)) {
+    Promise.all([
+      getUsThisUser(body.kthid, body.ugkthid), 
+      findRoleById(body.roleId),
+    ]).then( rejectIfAnyNull )
+    .then(function (results) {
+      var user = results[0];
+      var role = results[1];
+      debug("creating mandate with user:" 
+          + JSON.stringify(user) 
+          + " and role:" 
+          + JSON.stringify(role));
+
+      return createMandate(body.start, body.end, user.id, role.id);
+    }).then(function() {
+      res.redirect('/');
+    }).catch(function(reason) {
+      debug("Could not find one of the needed fields, reason: ", reason);
+      debug("Request body: " + JSON.stringify(req.body));
+      res.render("error", { message: "One of the needed fields could not be found."});
+    });
+  } else {
+    debug("Invalid request: " + JSON.stringify(req.body));
+    res.render("error", { message: "Invalid mandate request."});
+  }
+});
+
+function findRoleById(roleId) {
+  return models.Role.findOne({ where: {
+    id:roleId
+  }});
+}
+
+function createMandate(start, end, userId, roleId) {
+  return models.Mandate.create({
+    start: start,
+    end: end,
+    UserId: userId,
+    RoleId: roleId,
+  });
+}
+
 function validRequest(body) {
-  // TODO: Check if user is an actual user 
-  return body.roleId && 
+  return validate.isNonemptyString(body.kthid) &&
+         validate.isNonemptyString(body.ugkthid) &&
+         body.roleId && 
          body.start &&
          body.end &&
-         body.ugkthid &&
-         body.ugkthid != "" &&
-         body.kthid &&
-         body.kthid != "" &&
          new Date(body.start) <= new Date(body.end);
 }
 
-function makeSureNoneNull(values) {
-  for (var i = 0; i < values.length; i++) {
-    var value = values[i];
-    if (value === null) {
-      return Promise.reject(Error("Value #" + i + " was null."));
+function rejectIfAnyNull(values) {
+  for (v in values) {
+    if (v == null) {
+      return Promise.reject(Error("A value was null."));
     }
   }
   return Promise.resolve(values);
 };
-
-
-function findThisUser(kthid, ugkthid) {
-  return models.User.findOne({
-    where: {
-      kthid: kthid,
-      ugkthid: ugkthid,
-    }
-  }).then(function(maybeUser) {
-    if (maybeUser) {
-      debug("User with kthid " + kthid + "/" + ugkthid + " found locally.");
-      return Promise.resolve(maybeUser);
-    } else {
-      debug("User with kthid " + kthid + "/" + ugkthid + " not found locally, will create new one with data from zfinger.");
-      return Promise.reject("No such user " + kthid + "/" + ugkthid + " locally");
-      return zfinger.byUgkthid(ugkthid)
-        .then(findOrCreateUser)
-    }
-  });
-}
 
 function getUsThisUser(kthid, ugkthid) {
   return findExactUserLocally(kthid, ugkthid)
@@ -78,14 +100,11 @@ function zfingerUpdateUser(ugkthid, userToUpdate) {
 }
 
 function zfingerCreateUser(ugkthid) {
-  return zfinger.byUgkthid(ugkthid)
-    .then( function(zfingerUser) { //TODO: arrow
-      return findOrCreateUser(zfingerUser);
-    });
+  return zfinger.byUgkthid(ugkthid).then(findOrCreateUser);
 }
 
 function findOrCreateUser(user) {
-  debug("GOind to find or create dis: " + user);
+  debug("Going to find or create this user: " + user);
   return models.User.findOrCreate({
     where: {
       first_name: user.first_name,
@@ -96,8 +115,9 @@ function findOrCreateUser(user) {
     defaults: {
       admin: false, 
     },
-  }).then(function (result) {
-    return result[0];
+  }).spread(function (result, didCreate) {
+    debug(didCreate ? "Created the user." : "The user was found.");
+    return result;
   });
 }
 
@@ -141,46 +161,5 @@ function findUgkthidUserLocally(ugkthid) {
       : Promise.reject("User with ugkthid " + ugkthid + " was not found locally.");
   });
 }
-
-
-router.post('/create', helpers.requireadmin, function(req, res) {
-  debug("Request body: " + JSON.stringify(req.body));
-
-  if (validRequest(req.body)) {
-    Promise.all([
-      getUsThisUser(req.body.kthid, req.body.ugkthid), 
-      models.Role.findOne({ where: {
-        id:req.body.roleId
-      }}),
-    ]).catch(function (err){ debug("Error finding user/role: " + err);return Promise.reject(err);})
-    .then( makeSureNoneNull )
-    .then(function (results) {
-      var user = results[0];
-      var role = results[1];
-
-      debug("creating mandate with user" + JSON.stringify(user));
-      debug("creating mandate with role" + JSON.stringify(role));
-      var createSpec = {
-        start: req.body.start,
-        end: req.body.end,
-        UserId: user.id,
-        RoleId: role.id,
-      };
-      debug("ISITMISSING???? " + createSpec.UserId);
-      debug("Creating mandate with spec: " + JSON.stringify(createSpec));
-      models.Mandate.create(createSpec).then(function() {
-        debug("Creating apparently worked.");
-        res.redirect('/');
-      });
-    }, function(reason) {
-      debug("Could not find one of the needed fields, reason: ", reason);
-      debug("Request body: " + JSON.stringify(req.body));
-      res.render("error", { message: "One of the needed fields could not be found."});
-    });
-  } else {
-    debug("Invalid request: " + JSON.stringify(req.body));
-    res.render("error", { message: "Invalid mandate request."});
-  }
-});
 
 module.exports = router;
