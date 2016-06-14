@@ -13,17 +13,18 @@ router.post('/create', helpers.requireadmin, function(req, res) {
     Promise.all([
       getUsThisUser(body.kthid, body.ugkthid), 
       findRoleById(body.roleId),
-    ]).then( rejectIfAnyNull )
-    .then(function (results) {
-      var user = results[0];
-      var role = results[1];
-      debug("creating mandate with user:" 
-          + JSON.stringify(user) 
-          + " and role:" 
-          + JSON.stringify(role));
+    ]).then(rejectIfAnyNull)
+      .then( function (results) {
+        var user = results[0];
+        var role = results[1];
+        debug("creating mandate with user:" 
+            + JSON.stringify(user) 
+            + " and role:" 
+            + JSON.stringify(role));
 
-      return createMandate(body.start, body.end, user.id, role.id);
-    }).then(function() {
+        return createMandate(body.start, body.end, user.id, role.id);
+      })
+    .then(function() {
       res.redirect('/');
     }).catch(function(reason) {
       debug("Could not find one of the needed fields, reason: ", reason);
