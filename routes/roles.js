@@ -1,15 +1,17 @@
-var models  = require('../models');
+
 var express = require('express');
 var router  = express.Router();
+var debug   = require('debug')("dfunkt");
+var models  = require('../models');
+var validate = require("../util/validate.js");
 var helpers = require('./helpers');
-var debug   = require('debug')("routes");
 
 function validRequest(body) {
-  return body.title && body.title !== "" &&
-         body.description && body.description !== "" &&
-         body.email && body.email !== "" &&
-         body.identifier && body.identifier !== "" &&
-         body.type && body.type !== ""
+  return validate.isNonemptyString(body.title) &&
+         validate.isNonemptyString(body.description) &&
+         validate.isNonemptyString(body.email) &&
+         validate.isNonemptyString(body.identifier) && 
+         validate.isNonemptyString(body.type);
 }
 
 router.post('/create', helpers.requireadmin, function(req, res) {
