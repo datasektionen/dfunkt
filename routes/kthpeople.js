@@ -7,15 +7,7 @@ var models = require("../models");
 var router  = express.Router();
 
 router.get('/', function(req, res) {
-  Promise.all([
-    helpers.isadmin(req.user),
-  ]).then(function(results) {
-    var isadmin = results[0];
-    res.render('kthsearch', {
-      user: req.user,
-      isadmin: isadmin,
-    });
-  });
+  res.render('kthsearch');
 });
 
 router.get('/search', function(req, res) {
@@ -23,10 +15,8 @@ router.get('/search', function(req, res) {
 });
 router.get('/search/:query', function(req, res) {
   var query = req.params.query;
-    zfinger.search(query).then(function(results) {
-      res.send(results);
-    }).catch(function(err) {
-      res.render('error', err);
-    });
+  zfinger.search(query)
+    .then((results) => res.send(results))
+    .catch((err) => res.render('error', err));
 });
 module.exports = router;
