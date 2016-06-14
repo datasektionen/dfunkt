@@ -112,7 +112,7 @@ var SearchBox = React.createClass({
             Sortera alfabetiskt
           </p>
         );
-        clickLabel = <p>Klicka för att välja användare.</p>;
+        clickLabel = <p>Klicka på en användare för att välja dem.</p>;
       }
     }
     return (
