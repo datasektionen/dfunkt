@@ -18,15 +18,25 @@ var moment = require('moment');
 //
 
 router.get('/roles', function(req, res) {
-  models.Role.findAll({attributes: ['title', 'description', 'email', 'type']}).then(function(roles) {
+  models.Role.findAll({
+      attributes: ['title', 'identifier', 'description', 'email'],
+      include: [{
+        model: models.Group, 
+        attributes: ["name", "identifier"],
+      }],
+    }).then(function(roles) {
     res.json(roles);
   });
 });
 
-router.get('/role/:title/', function(req, res) {
+router.get('/role/:identifier/', function(req, res) {
   models.Role.findOne({
-    where: {title: req.params.title},
-    attributes: ['id', 'title', 'description', 'email', 'type']
+    where: {identifier: req.params.identifier},
+    attributes: ['id', 'title', 'identifier', 'description', 'email'],
+    include: [{
+      model: models.Group, 
+      attributes: ["name", "identifier"],
+    }],
   }).then(function(role) {
     if (!role) {
       res.status(404);
@@ -42,10 +52,14 @@ router.get('/role/:title/', function(req, res) {
   });
 });
 
-router.get('/role/:title/current', function(req, res) {
+router.get('/role/:identifier/current', function(req, res) {
   models.Role.findOne({
-    where: {title: req.params.title},
-    attributes: ['id', 'title', 'description', 'email', 'type']
+    where: {identifier: req.params.identifier},
+    attributes: ['id', 'title', 'identifier', 'description', 'email'],
+    include: [{
+      model: models.Group, 
+      attributes: ["name", "identifier"],
+    }],
   }).then(function(role) {
     if (!role) {
       res.status(404);
@@ -61,10 +75,15 @@ router.get('/role/:title/current', function(req, res) {
   });
 });
 
-router.get('/roles/type/:type/all', function(req, res) {
+router.get('/roles/type/:identifier/all', function(req, res) {
   models.Role.findAll({
-    where: {type: req.params.type},
-    attributes: ['id', 'title', 'description', 'email', 'type'],
+    attributes: ['id', 'title', 'description', 'email'],
+    include: [{
+      model: models.Group, 
+      required: true,
+      where: {identifier: req.params.identifier},
+      attributes: ["name", "identifier"],
+    }],
   }).then(function(roles) {
     console.log(roles);
     if (!roles) {
@@ -88,10 +107,15 @@ router.get('/roles/type/:type/all', function(req, res) {
   });
 });
 
-router.get('/roles/type/:type/all/current', function(req, res) {
+router.get('/roles/type/:identifier/all/current', function(req, res) {
   models.Role.findAll({
-    attributes: ['id', 'title', 'description', 'email', 'type'],
-    where: {type: req.params.type},
+    attributes: ['id', 'title', 'description', 'email'],
+    include: [{
+      model: models.Group, 
+      required: true,
+      where: {identifier: req.params.identifier},
+      attributes: ["name", "identifier"],
+    }],
   }).then(function(roles) {
     console.log(roles);
     if (!roles) {
@@ -117,7 +141,13 @@ router.get('/roles/type/:type/all/current', function(req, res) {
 
 //All roles who has a history and all of their history.
 router.get('/roles/all', function(req, res) {
-  models.Role.findAll({attributes: ['id', 'title', 'description', 'email', 'type']}).then(function(roles) {
+  models.Role.findAll({
+    attributes: ['id', 'title', 'description', 'email'],
+    include: [{
+      model: models.Group, 
+      attributes: ["name", "identifier"],
+    }],
+  }).then(function(roles) {
     var promises = [];
     for (var i = roles.length - 1; i >= 0; i--) {
       promises.push(getRoleMandates(roles[i].id));
@@ -135,7 +165,13 @@ router.get('/roles/all', function(req, res) {
 });
 
 router.get('/roles/all/current', function(req, res) {
-  models.Role.findAll({attributes: ['id', 'title', 'description', 'email', 'type']}).then(function(roles) {
+  models.Role.findAll({
+    attributes: ['id', 'title', 'description', 'email'],
+    include: [{
+      model: models.Group, 
+      attributes: ["name", "identifier"],
+    }],
+  }).then(function(roles) {
     var promises = [];
     for (var i = roles.length - 1; i >= 0; i--) {
       promises.push(getRoleMandatesCurrent(roles[i].id));
