@@ -3,25 +3,10 @@ var models  = require('../models');
 var express = require('express');
 var router  = express.Router();
 var helpers = require('./helpers');
-var moment = require('moment');
 
 router.get('/', function(req, res) {
-  var now = new moment().format('YYYY-MM-DD');
   Promise.all([
-    models.Role.findAll({
-      include: [{
-        model: models.Mandate, 
-        required: false,
-        where: {start: {$lte: now}, end: {$gte: now}},
-        include: [{model: models.User}],
-      },{
-        model: models.Group, 
-      }],
-      order: [
-        [models.Group, 'name'],
-        ['title'],
-      ] 
-    }),
+    helpers.rolesFindAllCurrent(),
     helpers.isadmin(req.user),
   ]).then(function(results) {
     var rolemandates = results[0];
