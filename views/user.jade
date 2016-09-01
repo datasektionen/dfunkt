@@ -30,7 +30,7 @@ block content
                     a(href='/position/' + mandate.Role.identifier)
                       = mandate.Role.title
                   th
-                    = groups[mandate.Role.GroupId-1].name
+                    = mandate.Role.Group.name
                   th
                     = mandate.Role.email
                   th #{prettyDate(mandate.start)}
