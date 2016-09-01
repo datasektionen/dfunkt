@@ -8,25 +8,29 @@ var moment = require('moment');
 router.get('/', function(req, res) {
   var now = new moment().format('YYYY-MM-DD');
   Promise.all([
-    models.User.findAll({}),
-    models.Role.findAll({include: [{model: models.Group, as: "Group"}]}),
-    models.Mandate.findAll({
-      include: [{all: true, nested: true}],
-      where: {start: {$lte: now}, end: {$gte: now}},
-      order: '"Role.GroupId", "Role.title"'
+    models.Role.findAll({
+      include: [{
+        model: models.Mandate, 
+        required: false,
+        where: {start: {$lte: now}, end: {$gte: now}},
+        include: [{model: models.User}],
+      },{
+        model: models.Group, 
+      }],
+      order: [
+        [models.Group, 'name'],
+        ['title'],
+      ] 
     }),
     helpers.isadmin(req.user),
   ]).then(function(results) {
-    var users = results[0];
-    var roles = results[1];
-    var mandates = results[2];
-    var isadmin = results[3];
+    var rolemandates = results[0];
+    console.log(rolemandates);
+    var isadmin = results[1];
     res.render('index', {
       user: req.user,
       isadmin: isadmin,
-      users: users,
-      roles: roles,
-      mandates: mandates,
+      rolemandates: rolemandates,
     });
   }).catch(function(e) {
     console.log(e);

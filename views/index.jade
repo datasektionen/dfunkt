@@ -16,18 +16,31 @@ block content
                 th E-post
                 th Nuvarande innehavare
             tbody
-              each mandate in mandates
-                tr
-                  th
-                    a(href='/position/' + mandate.Role.identifier)
-                      = mandate.Role.title
-                  th
-                    = mandate.Role.Group.name
-                  th
-                    = mandate.Role.email
-                  th 
-                    a(href='/user/' + mandate.User.kthid)
-                      = mandate.User.first_name + " " + mandate.User.last_name
+              each rolemandate in rolemandates
+                if !rolemandate.Mandates.length
+                  tr
+                    th
+                      a(href='/position/' + rolemandate.identifier)
+                        = rolemandate.title
+                    th
+                      = rolemandate.Group.name
+                    th
+                      = rolemandate.email
+                    th 
+                      = '(Vakant)'
+                else
+                  each mandate in rolemandate.Mandates
+                    tr
+                      th
+                        a(href='/position/' + rolemandate.identifier)
+                          = rolemandate.title
+                      th
+                        = rolemandate.Group.name
+                      th
+                        = rolemandate.email
+                      th 
+                        a(href='/user/' + mandate.User.kthid)
+                          = mandate.User.first_name + " " + mandate.User.last_name
 
         div(class='clear')
       
