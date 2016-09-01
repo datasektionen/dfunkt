@@ -176,15 +176,15 @@ var Result = React.createClass({
     }.bind(this);
 
     return (
-      <div className="result" onClick={callOnSelect} >
-        <h3 className="result-name">
-          {this.props.fullname}
-        </h3>
-        <p className="result-kthid"> 
-          kthid: <b>{this.props.kthid}</b>
-        </p>
-        {this.props.children}
-      </div>
+        <div className="result btn btn-default btn-sm btn-block" onClick={callOnSelect} >
+          <h3 className="result-name">
+            {this.props.fullname}
+          </h3>
+          <p className="result-kthid">
+            kthid: <b>{this.props.kthid}</b>
+          </p>
+          {this.props.children}
+        </div>
     );
   }
 });
