@@ -55,7 +55,12 @@ function search(query) {
   var url = 'https://zfinger.datasektionen.se/users/' + encodeURIComponent(query);
   return httpsGet(url).then( function(response) {
     var resp = JSON.parse(response);
-    return {results: resp.results.map(zfingerParseUser)};
+    var results = resp.results.map(zfingerParseUser);
+    //TODO: maybe do something when we have more than 100 results.
+    if (results.length > 100) {
+      results = results.splice(0, 100);
+    }
+    return {results: results};
   });
 }
 
