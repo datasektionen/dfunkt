@@ -3,35 +3,19 @@ var models  = require('../models');
 var express = require('express');
 var router  = express.Router();
 var helpers = require('./helpers');
-var moment = require('moment');
 
 router.get('/', function(req, res) {
-  var now = new moment().format('YYYY-MM-DD');
   Promise.all([
-    models.User.findAll({}),
-    models.Role.findAll({include: [{model: models.Group, as: "Group"}]}),
-    models.Mandate.findAll({
-      include: [{all: true}],
-      where: {start: {$lte: now}, end: {$gte: now}},
-      order: '"Role.GroupId", "Role.title"'
-    }),
+    helpers.rolesFindAllCurrent(),
     helpers.isadmin(req.user),
-    models.Group.findAll({
-      order: 'id'
-    }),
   ]).then(function(results) {
-    var users = results[0];
-    var roles = results[1];
-    var mandates = results[2];
-    var isadmin = results[3];
-    var groups = results[4];
+    var rolemandates = results[0];
+    console.log(rolemandates);
+    var isadmin = results[1];
     res.render('index', {
       user: req.user,
       isadmin: isadmin,
-      users: users,
-      roles: roles,
-      mandates: mandates,
-      groups: groups,
+      rolemandates: rolemandates,
     });
   }).catch(function(e) {
     console.log(e);
@@ -45,24 +29,19 @@ router.get('/user/:kthid', function(req, res) {
     if(user) {
       Promise.all([
         models.Mandate.findAll({
-          include: [{all: true}],
+          include: [{all: true, nested: true}],
           where: {UserId: user.id},
           order: 'start DESC'
         }),
         helpers.isadmin(req.user),
-        models.Group.findAll({
-          order: 'id'
-        })
       ]).then(function(results) {
         var mandates = results[0];
         var isadmin = results[1];
-        var groups = results[2];
         res.render('user', {
           user: req.user,
           userobj: user,
           isadmin: isadmin,
           mandates: mandates,
-          groups: groups,
         });
       }).catch(function(e) {
         console.log(e);
@@ -81,24 +60,19 @@ router.get('/position/:ident', function(req, res) {
     if(role) {
       Promise.all([
         models.Mandate.findAll({
-          include: [{all: true}],
+          include: [{all: true, nested: true}],
           where: {RoleId: role.id},
           order: 'start DESC'
         }),
         helpers.isadmin(req.user),
-        models.Group.findAll({
-          order: 'id'
-        })
       ]).then(function(results) {
         var mandates = results[0];
         var isadmin = results[1];
-        var groups = results[2];
         res.render('position', {
           user: req.user,
           isadmin: isadmin,
           roleobj: role,
           mandates: mandates,
-          groups: groups,
         });
       }).catch(function(e) {
         console.log(e);
