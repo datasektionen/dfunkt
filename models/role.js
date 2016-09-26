@@ -6,6 +6,7 @@ module.exports = function(sequelize, DataTypes) {
     description: DataTypes.TEXT(),
     identifier: DataTypes.STRING,
     email: DataTypes.STRING,
+    active: DataTypes.BOOLEAN,
   }, {
     classMethods: {
       associate: function(models) {

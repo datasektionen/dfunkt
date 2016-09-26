@@ -1,0 +1,63 @@
+extends layout
+
+block content
+  div(id='content')
+    div(class='row')
+      include sidebar
+      div(class='col-sm-8 col-md-9')
+        h1 Adminstrativa saker
+
+        h2 Skapa Mandat
+        form(action="/mandates/create", method="post" )#form-create-mandate
+          div(id="react-user-search")
+          script(type="text/javascript", src="/js/user-search.js")
+          input(type="date", name="start" required)
+          input(type="date", name="end" required)
+          select(name="roleId", placeholder="Role" required)
+            each role in roles
+              option(value=role.id)
+                = role.title
+                  
+          input(type="submit")
+
+        h2 Skapa grupp
+        form(action="/groups/create", method="post")#form-create-group
+          input(type="text", name="name" placeholder='gruppnamn' required)
+          input(type="text", name="identifier" placeholder='identifierare, ex. Drek' required)
+          input(type="submit")
+
+        h2 Skapa användare
+        form(action="/users/create", method="post")#form-create-user
+          input(type="text", name="first_name" placeholder='förnamn' required)
+          input(type="text", name="last_name" placeholder='efternamn' required)
+          input(type="text", name="kthid" placeholder='kth-id, ex. jsimo' required)
+          input(type="submit")
+          
+        h2 Skapa roller
+        form(action="/roles/create", method="post")#form-create-role
+          input(type="text", name="title", placeholder="titel" required)
+          input(type="text", name="description", placeholder="beskrivning" required)
+          select(name="type" required)
+            each group in groups
+              option(value=group.id)
+                = group.name
+          input(type="text", name="identifier", placeholder="identifierare" required)
+          input(type="email", name="email", placeholder="email" required)
+          input(type="submit")
+
+
+        h2 Lägga till Administratörer
+        form(action="/users/make-admin", method="post")
+          select(name="userId", placeholder="User")
+            each user in users
+              option(value=user.id)
+                = user.first_name + " " + user.last_name
+          input(type="submit", value="Gör till administrator")
+
+        h2 Ta bort Administratörer
+        form(action="/users/revoke-admin", method="post")
+          select(name="userId", placeholder="User")
+            each user in admins
+              option(value=user.id)
+                = user.first_name + " " + user.last_name
+          input(type="submit", value="Ta bort som administrator")

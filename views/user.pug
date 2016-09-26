@@ -3,16 +3,14 @@ extends layout
 block content
     div(id='content')
       div(class='row')
-        include sidebar.jade
+        include sidebar
         div(class='col-sm-8 col-md-9') 
           h1
-            = roleobj.title
-          p
-            = roleobj.description
+            = userobj.first_name + ' ' + userobj.last_name
           table(class='table')
             thead
               tr
-                th Användare
+                th Namn
                 th Grupp
                 th E-post
                 th Start
@@ -29,8 +27,8 @@ block content
               each mandate in mandates
                 tr
                   th
-                    a(href='/user/' + mandate.User.kthid)
-                      = mandate.User.first_name + " " + mandate.User.last_name
+                    a(href='/position/' + mandate.Role.identifier)
+                      = mandate.Role.title
                   th
                     = mandate.Role.Group.name
                   th

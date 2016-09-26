@@ -1,11 +1,11 @@
 var express = require('express');
 var session = require('express-session');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
+var browserify = require('browserify-middleware');
 
 var routes = require('./routes/index');
 var users  = require('./routes/users');
@@ -16,16 +16,16 @@ var kthpeople = require('./routes/kthpeople');
 var login = require('./routes/login');
 var groups = require('./routes/groups');
 
-var jade = require("jade");
+var pug = require("pug");
 var babel = require("jade-babel");
 
 var app = express();
 
 // view engine setup
-jade.filters.babel = babel({});
+pug.filters.babel = babel({});
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-app.engine('jade', jade.__express);
+app.set('view engine', 'pug');
+app.engine('pug', pug.__express);
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -50,6 +50,11 @@ app.use('/api', api)
 app.use('/kthpeople', kthpeople)
 app.use('/login', login);
 app.use('/groups', groups);
+
+app.use('/js', browserify(__dirname + "/public_scripts", {
+  transform: [
+    ["babelify", {presets: ["es2015", "react"]}]
+  ]}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,7 +1,9 @@
 var express = require('express');
 var https = require('https');
 var debug = require('debug')('dfunkt');
+var zfinger = require("../util/zfinger");
 var helpers = require('./helpers');
+var models = require("../models");
 var router  = express.Router();
 
 router.get('/', function(req, res) {
@@ -46,17 +48,10 @@ router.get('/search', function(req, res) {
 });
 router.get('/search/:query', function(req, res) {
   var query = req.params.query;
-  var url = 'https://zfinger.datasektionen.se/users/' + encodeURIComponent(query);
-
-  https.get(url, (get_res) => {
-    recv_data = "";
-    get_res.on('data', (d) => {
-      recv_data += d;
+    zfinger.search(query).then(function(results) {
+      res.send(results);
+    }).catch(function(err) {
+      res.render('error', err);
     });
-    
-    get_res.on('end', () => {
-      res.send(recv_data);
-    });
-  });
 });
 module.exports = router;
