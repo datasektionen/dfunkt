@@ -17,6 +17,9 @@ block content
                 th E-post
                 th Start
                 th Slut
+                if isadmin
+                  th Submit
+                  th Delete
             tbody
               -function prettyDate(dateString){
                   -var date = new Date(dateString);
@@ -27,13 +30,35 @@ block content
                   -return d+' '+m+' '+y;
               -} 
               each mandate in mandates
-                tr
-                  th
-                    a(href='/user/' + mandate.User.kthid)
-                      = mandate.User.first_name + " " + mandate.User.last_name
-                  th
-                    = mandate.Role.Group.name
-                  th
-                    = mandate.Role.email
-                  th #{prettyDate(mandate.start)}
-                  th #{prettyDate(mandate.end)}
+                if isadmin
+                  tr
+                  form(action="/mandate/update", method="post")
+                    th
+                      a(href='/user/' + mandate.User.kthid)
+                        = mandate.User.first_name + " " + mandate.User.last_name
+                    th
+                      = mandate.Role.Group.name
+                    th
+                      = mandate.Role.email
+                    th
+                      input(type="date", name="start", value=mandate.start, required) 
+                    th 
+                      input(type="date", name="end", value=mandate.end, required)
+                    th
+                      input(type="submit", value="Update")
+                  form(action="/mandate/delete", method="post")
+                    th 
+                      input(type="submit", value="Delete")
+
+
+                else
+                  tr
+                    th
+                      a(href='/user/' + mandate.User.kthid)
+                        = mandate.User.first_name + " " + mandate.User.last_name
+                    th
+                      = mandate.Role.Group.name
+                    th
+                      = mandate.Role.email
+                    th #{prettyDate(mandate.start)}
+                    th #{prettyDate(mandate.end)}
