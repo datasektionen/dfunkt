@@ -38,7 +38,7 @@ exports.requireadmin = function(req, res, next) {
   }); 
 }
 
-var roleAtt = ['title', 'description', 'identifier', 'email'];
+var roleAtt = ['title', 'description', 'identifier', 'email', 'active',];
 var userAtt = ['first_name', 'last_name', 'email', 'kthid', 'ugkthid'];
 var groupAtt = ['name', 'identifier'];
 var mandateAtt = ['start', 'end'];

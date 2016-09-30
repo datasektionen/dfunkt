@@ -20,7 +20,7 @@ var helpers = require('./helpers.js');
 
 router.get('/roles', function(req, res) {
   models.Role.findAll({
-      attributes: ['title', 'identifier', 'description', 'email'],
+      attributes: ['title', 'identifier', 'description', 'email', 'active'],
       include: [{
         model: models.Group, 
         attributes: ["name", "identifier"],
@@ -33,7 +33,7 @@ router.get('/roles', function(req, res) {
 router.get('/role/:identifier/', function(req, res) {
   models.Role.findOne({
     where: {identifier: req.params.identifier},
-    attributes: ['id', 'title', 'identifier', 'description', 'email'],
+    attributes: ['id', 'title', 'identifier', 'description', 'email', 'active'],
     include: [{
       model: models.Group, 
       attributes: ["name", "identifier"],
@@ -56,7 +56,7 @@ router.get('/role/:identifier/', function(req, res) {
 router.get('/role/:identifier/current', function(req, res) {
   models.Role.findOne({
     where: {identifier: req.params.identifier},
-    attributes: ['id', 'title', 'identifier', 'description', 'email'],
+    attributes: ['id', 'title', 'identifier', 'description', 'email', 'active'],
     include: [{
       model: models.Group, 
       attributes: ["name", "identifier"],

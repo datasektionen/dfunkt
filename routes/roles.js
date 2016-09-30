@@ -13,12 +13,18 @@ function validRequest(body) {
 }
 
 router.post('/create', helpers.requireadmin, function(req, res) {
+  console.log("====================================================");
+  console.log(req.body);
+  console.log("====================================================");
   if (validRequest(req.body)) {
+    var active = (req.body.active ? true : false);
+    console.log(active);
     models.Role.create({
       title: req.body.title,
       email: req.body.email,
       description: req.body.description,
       identifier: req.body.identifier,
+      active: active,
       GroupId: req.body.type,
     }).then(function() {
       res.redirect('/');
