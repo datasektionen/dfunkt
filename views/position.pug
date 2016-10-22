@@ -43,7 +43,7 @@ block content
                     th
                       input(type="date", name="start", value=new Date(mandate.start).toJSON().slice(0,10), required) 
                     th 
-                      input(type="date", name="end", value=new Date(mandate.start).toJSON().slice(0,10), required)
+                      input(type="date", name="end", value=new Date(mandate.end).toJSON().slice(0,10), required)
                     th
                       input(type="submit", value="Update")
                   form(action="/mandate/delete", method="post")
