@@ -29,7 +29,6 @@ block content
                   -var y = date.getFullYear();
                   -return d+' '+m+' '+y;
               -} 
-              -function date(dateString) {return date.getDate();}
               each mandate in mandates
                 if isadmin
                   tr
@@ -42,9 +41,9 @@ block content
                     th
                       = mandate.Role.email
                     th
-                      input(type="date", name="start", value=#{date(mandate.start)}, required) 
+                      input(type="date", name="start", value=new Date(mandate.start).toJSON().slice(0,10), required) 
                     th 
-                      input(type="date", name="end", value=#{date(mandate.start)}, required)
+                      input(type="date", name="end", value=new Date(mandate.start).toJSON().slice(0,10), required)
                     th
                       input(type="submit", value="Update")
                   form(action="/mandate/delete", method="post")
