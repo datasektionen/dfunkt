@@ -1,0 +1,74 @@
+form(action="/roles/delete/"+roleobj.id, method="post")
+  div(class='form-group')
+    input(id='roledelete', class='btn-danger', type='submit', value='Delete')
+form(class='form-horizontal', action="/roles/update", method="post" )
+  input(type='hidden', value=roleobj.id, name='id')
+  div(class='form-group')
+    label(for='roletitle', class='col-sm-2 control-label') Titel
+    div(class='col-sm-10')
+      input(id='roletitle', class='form-control', type='text', value=roleobj.title, name='title')
+  div(class='form-group')
+    label(for='roledesc', class='col-sm-2 control-label') Description
+    div(class='col-sm-10')
+      textarea(id='roledesc', class='form-control', rows='3', name='description')
+        = roleobj.description
+  div(class='form-group')
+    label(for='roleemail', class='col-sm-2 control-label') Email
+    div(class='col-sm-10')
+      input(id='roleemail', class='form-control' type='text', value=roleobj.email, name='email')
+  div(class='form-group')
+    label(for='roleident', class='col-sm-2 control-label') Identifier
+    div(class='col-sm-10')
+      input(id='roleident', class='form-control' type='text', value=roleobj.identifier, name='identifier')
+    p(class='col-sm-offset-2 col-sm-10') Varning! Ändring av identifier kan orsaka problem för system som anser att denna attribut är unik!
+  div(class='form-group')
+    label(for='rolegroup', class='col-sm-2 control-label') Grupp
+    div(class='col-sm-10')
+      select(id='rolegroup', class='form-control', name="type")
+        each group in groups
+          if roleobj.GroupId == group.id
+            option(value=group.id, selected)
+              = group.name
+          else 
+            option(value=group.id)
+              = group.name
+  div(class='form-group')
+    label(for='roleactive', class='col-sm-2 control-label') Aktiv
+    div(class='col-sm-10')
+      select(id='roleactive', class='form-control', name='active')
+        if roleobj.active
+          option(value='true', selected) Ja (Posten finns)
+          option(value='false') Nej (Posten finns inte längre)
+        else 
+          option(value='true') Ja (Posten finns)
+          option(value='false', selected) Nej (Posten finns inte längre)
+  div(class='form-group')
+    div(class='col-sm-offset-2 col-sm-10')
+      input(class='btn-warning', type='submit', value='Update')
+table(class='table')
+  thead
+    tr
+      th Användare
+      th Grupp
+      th Start
+      th Slut
+      th Submit
+      th Delete
+  tbody
+    each mandate in mandates
+      tr
+      form(action="/mandate/update", method="post")
+        th
+          a(href='/user/' + mandate.User.kthid)
+            = mandate.User.first_name + " " + mandate.User.last_name
+        th
+          = mandate.Role.Group.name
+        th
+          input(type="date", name="start", value=new Date(mandate.start).toJSON().slice(0,10), required) 
+        th 
+          input(type="date", name="end", value=new Date(mandate.end).toJSON().slice(0,10), required)
+        th
+          input(class='btn-warning', type="submit", value="Update")
+      form(action="/mandate/delete/"+mandate.id, method="post")
+        th 
+          input(class='btn-danger', type="submit", value="Delete")

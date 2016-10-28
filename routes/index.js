@@ -65,14 +65,17 @@ router.get('/position/:ident', function(req, res) {
           order: 'start DESC'
         }),
         helpers.isadmin(req.user),
+        models.Group.findAll({}),
       ]).then(function(results) {
         var mandates = results[0];
         var isadmin = results[1];
+        var groups = results[2];
         res.render('position', {
           user: req.user,
           isadmin: isadmin,
           roleobj: role,
           mandates: mandates,
+          groups: groups,
         });
       }).catch(function(e) {
         console.log(e);

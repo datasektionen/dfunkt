@@ -4,3 +4,4 @@ npm-debug.log
 *.sqlite
 *.swp
 .tern-project
+yarn.lock

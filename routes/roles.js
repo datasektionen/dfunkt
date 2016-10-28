@@ -13,12 +13,8 @@ function validRequest(body) {
 }
 
 router.post('/create', helpers.requireadmin, function(req, res) {
-  console.log("====================================================");
-  console.log(req.body);
-  console.log("====================================================");
   if (validRequest(req.body)) {
     var active = (req.body.active ? true : false);
-    console.log(active);
     models.Role.create({
       title: req.body.title,
       email: req.body.email,
@@ -33,6 +29,39 @@ router.post('/create', helpers.requireadmin, function(req, res) {
     debug("Invalid request: " + JSON.stringify(req.body));
     res.render("error", { message: "Invalid role request."});
   }
+});
+
+router.post('/update', helpers.requireadmin, function(req, res) {
+  console.log("================");
+  console.log(req.body.type);
+  console.log("================");
+  if (validRequest(req.body)) {
+    var active = req.body.active;
+    models.Role.update({
+      title: req.body.title,
+      email: req.body.email,
+      description: req.body.description,
+      identifier: req.body.identifier,
+      active: active,
+      GroupId: req.body.type,
+    }, {
+      where: {id: req.body.id}
+    }).then(function() {
+      res.redirect('/position/' + req.body.identifier);
+    });
+  } else {
+    res.render("error", { message: "Invalid role update request."});
+  }
+});
+
+router.post('/delete/:id', helpers.requireadmin, function(req, res) {
+  //TODO: this leaves old mandates left in the system. Good enough for now.
+  var id = req.params.id;
+  models.Role.destroy({
+    where: {id: id}
+  }).then(function() {
+    res.redirect('/');
+  });
 });
 
 module.exports = router;
