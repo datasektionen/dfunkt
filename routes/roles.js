@@ -55,7 +55,7 @@ router.post('/delete/:id', helpers.requireadmin, function(req, res) {
   //TODO: this leaves old mandates left in the system. Good enough for now.
   var id = req.params.id;
   models.Role.destroy({
-    where: {id: id}
+    where: {id: id, identifier: req.body.identifier} //Additional verification so less accidental deletes.
   }).then(function() {
     res.redirect('/');
   });
