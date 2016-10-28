@@ -5,6 +5,30 @@ var zfinger = require('../util/zfinger');
 var debug = require('debug')('dfunkt');
 var router  = express.Router();
 
+router.post('/delete/:id', helpers.requireadmin, function(req, res) {
+  var id = req.params.id;
+  models.Mandate.destroy({
+    where: {id: id}
+  }).then(function() {
+    res.redirect('/'); //TODO: redirect somewhere better
+  });
+});
+
+router.post('/update', helpers.requireadmin, function(req, res) {
+  if(req.body.start && req.body.end && req.body.id) {
+    models.Mandate.update({
+      start: req.body.start,
+      end: req.body.end,
+    }, {
+      where: {id: req.body.id}
+    }).then(function() {
+      res.redirect('/');
+    });
+  } else {
+    res.render("error", { message: "Invalid mandate update request."});
+  }
+});
+
 function validRequest(body) {
   // TODO: Check if user is an actual user 
   return body.roleId && 

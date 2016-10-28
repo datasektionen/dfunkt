@@ -32,9 +32,6 @@ router.post('/create', helpers.requireadmin, function(req, res) {
 });
 
 router.post('/update', helpers.requireadmin, function(req, res) {
-  console.log("================");
-  console.log(req.body.type);
-  console.log("================");
   if (validRequest(req.body)) {
     var active = req.body.active;
     models.Role.update({
