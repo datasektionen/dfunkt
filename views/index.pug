@@ -26,7 +26,8 @@ block content
                       th
                         = rolemandate.Group.name
                       th
-                        = rolemandate.email
+                        a(href='mailto:' + rolemandate.email)
+                          = rolemandate.email
                       th 
                         = '(Vakant)'
                   else
@@ -38,7 +39,8 @@ block content
                         th
                           = rolemandate.Group.name
                         th
-                          = rolemandate.email
+                          a(href='mailto:' + rolemandate.email)
+                            = rolemandate.email
                         th 
                           a(href='/user/' + mandate.User.kthid)
                             = mandate.User.first_name + " " + mandate.User.last_name

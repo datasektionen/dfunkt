@@ -32,6 +32,7 @@ block content
                   th
                     = mandate.Role.Group.name
                   th
-                    = mandate.Role.email
+                    a(href='mailto:' + mandate.Role.email)
+                      = mandate.Role.email
                   th #{prettyDate(mandate.start)}
                   th #{prettyDate(mandate.end)}
