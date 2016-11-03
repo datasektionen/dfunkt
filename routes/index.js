@@ -1,4 +1,5 @@
 var Sequelize = require("sequelize");
+var Promise = require("bluebird");
 var models  = require('../models');
 var express = require('express');
 var router  = express.Router();
@@ -56,38 +57,39 @@ router.get('/user/:kthid', function(req, res) {
 }); 
 
 router.get('/position/:ident', function(req, res) {
-  models.Role.findOne({where: {identifier:req.params.ident}}).then(function(role) {
-    if(role) {
-      Promise.all([
-        models.Mandate.findAll({
-          include: [{all: true, nested: true}],
-          where: {RoleId: role.id},
-          order: 'start DESC'
-        }),
-        helpers.isadmin(req.user),
-        models.Group.findAll({}),
-      ]).then(function(results) {
-        var mandates = results[0];
-        var isadmin = results[1];
-        var groups = results[2];
-        res.render('position', {
-          user: req.user,
-          isadmin: isadmin,
-          roleobj: role,
-          mandates: mandates,
-          groups: groups,
-        });
-      }).catch(function(e) {
-        console.log(e);
-        res.status(403);
-        res.send('error');
+  var identifier = req.params.ident;
+  models.Role.findOne({where: {identifier}})
+    .then(function(role) {
+      if ( role == null ) {
+        res.status(404);
+        res.send(`Position with identifier ${identifier} does not exist`);
+        return;
+      }
+
+      let mandatesWithRoleIdP = models.Mandate.findAll({
+        include: [{all: true, nested: true}],
+        where:   {RoleId: role.id},
+        order:   'start DESC'
       });
-    } else {
-      res.status(404);
-      res.send('does not exist');
-    }
-  });
-}); 
+
+      return Promise.all([ mandatesWithRoleIdP, helpers.isadmin(req.user), models.Group.findAll({}) ])
+        .spread(function (mandates, isadmin, groups) {
+          res.render(
+            'position', {
+              user:     req.user,
+              isadmin:  isadmin,
+              roleobj:  role,
+              mandates: mandates,
+              groups:   groups,
+            }
+          );
+        });
+    }).catch(function (e) {
+      console.log(e);
+      res.status(403);
+      res.send('error');
+    });
+});
 
 
 router.get('/admin', helpers.requireadmin, function(req, res) {
