@@ -56,13 +56,13 @@ router.get('/user/:kthid', function(req, res) {
   });
 }); 
 
-router.get('/position/:ident', function(req, res) {
-  var identifier = req.params.ident;
-  models.Role.findOne({where: {identifier}})
+router.get('/position/id/:id', function(req, res) {
+  var id = req.params.id;
+  models.Role.findOne({where: {id}})
     .then(function(role) {
       if ( role == null ) {
         res.status(404);
-        res.send(`Position with identifier ${identifier} does not exist`);
+        res.send(`Bad position id ${id}`);
         return;
       }
 
@@ -76,11 +76,11 @@ router.get('/position/:ident', function(req, res) {
         .spread(function (mandates, isadmin, groups) {
           res.render(
             'position', {
-              user:     req.user,
-              isadmin:  isadmin,
-              roleobj:  role,
-              mandates: mandates,
-              groups:   groups,
+              user: req.user,
+              isadmin,
+              roleobj: role,
+              mandates,
+              groups,
             }
           );
         });

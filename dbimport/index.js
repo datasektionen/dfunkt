@@ -4,7 +4,7 @@
 // (OBS: THIS REQUIRES THE DB TO BE EMPTY BEFORE STARTING.)
 
 var pg = require('pg');
-var moment = require('moment')
+var moment = require('moment');
 var pgcon = ""; //add url  here
 
 var mysql  = require('mysql');
@@ -112,10 +112,10 @@ function PGrunQuery(query, params, callback) {
 	    done();
 
 	    if(err) {
-	      console.log(query)
+	      console.log(query);
 	      return console.error('error running query', err);
 	    }
 		return callback(result);
 	  });
 	});
-};
+}

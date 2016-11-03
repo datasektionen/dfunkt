@@ -4,7 +4,7 @@ var moment = require('moment');
 var denied = function(res) {
   res.status(403);
   res.send('denied');
-}
+};
 
 exports.isadmin = function(user) {
   return new Promise(function(resolve, reject) {
@@ -17,7 +17,7 @@ exports.isadmin = function(user) {
       resolve(isadmin);
     });
   });
-}
+};
 
 exports.requirelogin = function(req, res, next) {
   if(req.user) {
@@ -25,7 +25,7 @@ exports.requirelogin = function(req, res, next) {
   } else {
     denied(res);
   }
-}
+};
 
 exports.requireadmin = function(req, res, next) {
   models.User.findOne({where: {kthid:req.user}}).then(function(user) {
@@ -36,9 +36,9 @@ exports.requireadmin = function(req, res, next) {
       denied(res);
     }
   }); 
-}
+};
 
-var roleAtt = ['title', 'description', 'identifier', 'email', 'active',];
+var roleAtt = ['title', 'description', 'identifier', 'email', 'active', 'id'];
 var userAtt = ['first_name', 'last_name', 'email', 'kthid', 'ugkthid'];
 var groupAtt = ['name', 'identifier'];
 var mandateAtt = ['start', 'end'];
@@ -67,7 +67,7 @@ exports.rolesFindAllTypeCurrent = function(identifier) {
       ['title'],
     ] 
   });
-}
+};
 
 exports.rolesFindAllType = function(identifier) {
   return models.Role.findAll({
@@ -91,7 +91,7 @@ exports.rolesFindAllType = function(identifier) {
       ['title'],
     ] 
   });
-}
+};
 
 exports.rolesFindAll = function() {
   return models.Role.findAll({
@@ -113,7 +113,7 @@ exports.rolesFindAll = function() {
       ['title'],
     ] 
   });
-}
+};
 
 exports.rolesFindAllCurrent = function() {
   var now = new moment().format('YYYY-MM-DD');
@@ -137,4 +137,4 @@ exports.rolesFindAllCurrent = function() {
       ['title'],
     ] 
   });
-}
+};

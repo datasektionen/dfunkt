@@ -135,7 +135,7 @@ var getRoleMandates = function(roleid) {
       resolve(result);
     });
   });
-}
+};
 
 //promises :D
 var getRoleMandatesCurrent = function(roleid) {
@@ -152,7 +152,7 @@ var getRoleMandatesCurrent = function(roleid) {
       resolve(result);
     });
   });
-}
+};
 
 router.get('/users', function(req, res) {
   models.User.findAll({attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid', 'admin']}).then(function(users) {
@@ -205,7 +205,7 @@ var getUserMandatesCurrent = function(user, res) {
       });
     });
   }
-}
+};
 
 var getUserMandates = function(user, res) {
   if(!user) {
@@ -226,6 +226,6 @@ var getUserMandates = function(user, res) {
       });
     });
   }
-}
+};
 
 module.exports = router;

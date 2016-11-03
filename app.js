@@ -46,8 +46,8 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/roles', roles);
 app.use('/mandates', mandates);
-app.use('/api', api)
-app.use('/kthpeople', kthpeople)
+app.use('/api', api);
+app.use('/kthpeople', kthpeople);
 app.use('/login', login);
 app.use('/groups', groups);
 

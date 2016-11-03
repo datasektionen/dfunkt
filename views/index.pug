@@ -21,7 +21,7 @@ block content
                   if !rolemandate.Mandates.length
                     tr
                       th
-                        a(href='/position/' + rolemandate.identifier)
+                        a(href='/position/id/' + rolemandate.id)
                           = rolemandate.title
                       th
                         = rolemandate.Group.name
@@ -33,7 +33,7 @@ block content
                     each mandate in rolemandate.Mandates
                       tr
                         th
-                          a(href='/position/' + rolemandate.identifier)
+                          a(href='/position/id/' + rolemandate.id)
                             = rolemandate.title
                         th
                           = rolemandate.Group.name
