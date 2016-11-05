@@ -10,7 +10,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        Role.hasMany(models.Mandate),
+        Role.hasMany(models.Mandate, {onDelete: 'cascade'}),
         Role.belongsTo(models.Group)
       }
     }
