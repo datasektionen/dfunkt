@@ -1,3 +1,5 @@
+"use strict";
+
 var express = require('express');
 var models = require('../models');
 var router  = express.Router();
@@ -44,52 +46,94 @@ router.get("/role/id/:id", function(req, res) {
 });
 
 function getOneRoleWithGroup(query, res) {
-  models.Role.findOne({
-    where: query,
-    attributes: defaultRoleAttributes,
-    include: [{
-      model: models.Group,
-      attributes: ["name", "identifier"],
-    }],
-  }).then(function(role) {
-    if (!role) {
-      res.status(404);
-      res.send("Role not found");
-      return;
-    }
-
-    getRoleMandates(role.id).then(function(roleMandates) {
+  getOneRole(query).then(
+    function (role) {
+      return getRoleMandates(role.id).then(
+        function (roleMandates) {
       res.json({
         role: role,
         mandates: roleMandates,
       });
     });
+    }
+  ).catch(
+    e => {
+      res.status(404);
+      res.send(e.message);
   });
 }
 
-// TODO ADd replacement
+
 router.get('/role/:identifier/current', function(req, res) {
-  models.Role.findOne({
-    where: {identifier: req.params.identifier},
-    attributes: ['id', 'title', 'identifier', 'description', 'email', 'active'],
-    include: [{
-      model: models.Group, 
-      attributes: ["name", "identifier"],
-    }],
-  }).then(function(role) {
-    if (!role) {
-      res.status(404);
-      res.send('does not exist');
-    } else {
-      getRoleMandatesCurrent(role.id).then(function(result) {
-        res.json({
-          role: role,
-          mandates: result,
-        });
-      });
-    }
-  });
+  getRoleCurrent({identifier: req.params.identifier}, res);
 });
+
+router.get(
+  '/role/id/:id/current', function (req, res) {
+    getRoleCurrent({id: req.params.id}, res);
+  }
+);
+
+function getRoleCurrent(query, res) {
+  getOneRole(query).then(
+    function (role) {
+      return getRoleMandatesCurrent(role.id).then(
+        function (mandates) {
+          res.json(
+            {
+              role,
+              mandates,
+            }
+          );
+        }
+      );
+    }
+  ).catch(
+    e => {
+      res.status(404);
+      res.send(e.message);
+    }
+  );
+}
+
+function getOneRole(query) {
+  return models.Role.findOne(
+    {
+      where:      query,
+      attributes: defaultRoleAttributes,
+      include:    [
+        {
+          model:      models.Group,
+          attributes: ["name", "identifier"],
+        }
+      ],
+    }
+  ).then(
+    role => {
+      if ( role == null ) {
+        throw new Error("Role not found!");
+      }
+
+      return role;
+    }
+  );
+}
+
+function getRoleMandatesCurrent(roleid) {
+  var now = new moment().format('YYYY-MM-DD');
+  return models.Mandate.findAll(
+    {
+      where:      {RoleId: roleid, start: {$lte: now}, end: {$gte: now}},
+      attributes: ['start', 'end'],
+      include:    [
+        {
+          model:      models.User,
+          attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid'],
+        }
+      ]
+    }
+  );
+}
 
 // TODO ADd replacement
 router.get('/roles/type/:identifier/all', function(req, res) {
@@ -155,23 +199,6 @@ var getRoleMandates = function(roleid) {
   });
 };
 
-//promises :D
-// TODO Clean up, this is ugly promise usage. Sequelize supports promises built-it, right?
-var getRoleMandatesCurrent = function(roleid) {
-  return new Promise(function(resolve) {
-    var now = new moment().format('YYYY-MM-DD');
-    models.Mandate.findAll({
-      where: {RoleId: roleid, start: {$lte: now}, end: {$gte: now}},
-      attributes: ['start', 'end'],
-      include: [{
-        model: models.User,
-        attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid'],
-      }]
-    }).then(function(result) {
-      resolve(result);
-    });
-  });
-};
 
 router.get('/users', function(req, res) {
   models.User.findAll({attributes: ['first_name', 'last_name', 'email', 'kthid', 'ugkthid', 'admin']}).then(function(users) {
