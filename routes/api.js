@@ -18,10 +18,13 @@ var helpers = require('./helpers.js');
 // DONE - lista en specifik roll med all historik
 //
 
+
+var defaultRoleAttributes = ['id', 'title', 'description', 'identifier', 'email', 'active'];
+
 router.get('/roles', function(req, res) {
   models.Role.findAll({
-      attributes: ['title', 'identifier', 'description', 'email', 'active'],
-      include: [{
+      attributes: ['title', 'description', 'identifier', 'email', 'active'],
+      include:    [{
         model: models.Group, 
         attributes: ["name", "identifier"],
       }],
@@ -31,28 +34,40 @@ router.get('/roles', function(req, res) {
 });
 
 router.get('/role/:identifier/', function(req, res) {
+  let identifier = req.params.identifier;
+  getOneRoleWithGroup({identifier}, res);
+});
+
+router.get("/role/id/:id", function(req, res) {
+  let id = req.params.id;
+  getOneRoleWithGroup({id}, res);
+});
+
+function getOneRoleWithGroup(query, res) {
   models.Role.findOne({
-    where: {identifier: req.params.identifier},
-    attributes: ['id', 'title', 'identifier', 'description', 'email', 'active'],
+    where: query,
+    attributes: defaultRoleAttributes,
     include: [{
-      model: models.Group, 
+      model: models.Group,
       attributes: ["name", "identifier"],
     }],
   }).then(function(role) {
     if (!role) {
       res.status(404);
-      res.send('does not exist');
-    } else {
-      getRoleMandates(role.id).then(function(result) {
-        res.json({
-          role: role,
-          mandates: result,
-        });
-      });
+      res.send("Role not found");
+      return;
     }
-  });
-});
 
+    getRoleMandates(role.id).then(function(roleMandates) {
+      res.json({
+        role: role,
+        mandates: roleMandates,
+      });
+    });
+  });
+}
+
+// TODO ADd replacement
 router.get('/role/:identifier/current', function(req, res) {
   models.Role.findOne({
     where: {identifier: req.params.identifier},
@@ -76,6 +91,7 @@ router.get('/role/:identifier/current', function(req, res) {
   });
 });
 
+// TODO ADd replacement
 router.get('/roles/type/:identifier/all', function(req, res) {
   helpers.rolesFindAllType(req.params.identifier).then(function(roles) {
     if (!roles) {
@@ -87,6 +103,7 @@ router.get('/roles/type/:identifier/all', function(req, res) {
   });
 });
 
+// TODO ADd replacement
 router.get('/roles/type/:identifier/all/current', function(req, res) {
   helpers.rolesFindAllTypeCurrent(req.params.identifier).then(function(roles) {
     if (!roles) {
@@ -122,8 +139,9 @@ router.get('/roles/all/current', function(req, res) {
 });
 
 //promises :D
+// TODO Clean up, this is ugly promise usage. Sequelize supports promises built-it, right?
 var getRoleMandates = function(roleid) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function(resolve) {
     models.Mandate.findAll({
       where: {RoleId: roleid},
       attributes: ['start', 'end'],
@@ -138,8 +156,9 @@ var getRoleMandates = function(roleid) {
 };
 
 //promises :D
+// TODO Clean up, this is ugly promise usage. Sequelize supports promises built-it, right?
 var getRoleMandatesCurrent = function(roleid) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function(resolve) {
     var now = new moment().format('YYYY-MM-DD');
     models.Mandate.findAll({
       where: {RoleId: roleid, start: {$lte: now}, end: {$gte: now}},
