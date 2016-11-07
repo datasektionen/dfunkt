@@ -7,7 +7,7 @@ var denied = function(res) {
 };
 
 exports.isadmin = function(user) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve) {
       models.User.findOne({where: {kthid:user}}).then(function(user) {
       console.log(user);
       var isadmin = false;
@@ -43,7 +43,7 @@ var userAtt = ['first_name', 'last_name', 'email', 'kthid', 'ugkthid'];
 var groupAtt = ['name', 'identifier'];
 var mandateAtt = ['start', 'end'];
 
-exports.rolesFindAllTypeCurrent = function(identifier) {
+exports.rolesFindAllTypeCurrent = function (groupIdentifier) {
   var now = new moment().format('YYYY-MM-DD');
   return models.Role.findAll({
     attributes: roleAtt,
@@ -58,9 +58,9 @@ exports.rolesFindAllTypeCurrent = function(identifier) {
       }],
     },{
       attributes: groupAtt,
-      required: true,
-      where: {identifier: identifier},
-      model: models.Group, 
+      required:   true,
+      where:      {identifier: groupIdentifier},
+      model:      models.Group,
     }],
     order: [
       [models.Group, 'name'],
@@ -69,7 +69,7 @@ exports.rolesFindAllTypeCurrent = function(identifier) {
   });
 };
 
-exports.rolesFindAllType = function(identifier) {
+exports.rolesFindAllType = function (groupIdentifier) {
   return models.Role.findAll({
     attributes: roleAtt,
     include: [{
@@ -82,9 +82,9 @@ exports.rolesFindAllType = function(identifier) {
       }],
     },{
       attributes: groupAtt,
-      required: true,
-      where: {identifier: identifier},
-      model: models.Group, 
+      required:   true,
+      where:      {identifier: groupIdentifier},
+      model:      models.Group,
     }],
     order: [
       [models.Group, 'name'],

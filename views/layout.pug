@@ -10,13 +10,13 @@ html
 
     script(type="text/javascript").
       function getLoginUrl() {
-        var callback = ""
-        callback += location.protocol + "//"
-        callback += location.hostname
+        var callback = "";
+        callback += location.protocol + "//";
+        callback += location.hostname;
         if(location.port) {
           callback += ":" + location.port
         }
-        callback += "/login/dauth/"
+        callback += "/login/dauth/";
         return "http://login2.datasektionen.se/login?callback=" + callback
       }
 
@@ -37,7 +37,7 @@ html
         login_href: login_href,
         delta_invert: true,
         topbar_items: []
-      }
+      };
     script(async="", src="//methone.datasektionen.se").
   body
     div(id='methone-container-replace')
