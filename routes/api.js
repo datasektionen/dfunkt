@@ -25,7 +25,7 @@ var defaultRoleAttributes = ['id', 'title', 'description', 'identifier', 'email'
 
 router.get('/roles', function (req, res) {
   models.Role.findAll({
-    attributes: ['title', 'description', 'identifier', 'email', 'active'],
+    attributes: ['id', 'title', 'description', 'identifier', 'email', 'active'],
     include:    [
       {
         model:      models.Group,
