@@ -36,4 +36,4 @@ module.exports = function(passport) {
     });
 
     require('./strategies/dauth.js')();
-}
+};

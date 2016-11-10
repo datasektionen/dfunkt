@@ -44,7 +44,7 @@ router.post('/update', helpers.requireadmin, function(req, res) {
     }, {
       where: {id: req.body.id}
     }).then(function() {
-      res.redirect('/position/' + req.body.identifier);
+      res.redirect('/position/id/' + req.body.id);
     });
   } else {
     res.render("error", { message: "Invalid role update request."});

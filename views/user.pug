@@ -27,7 +27,7 @@ block content
               each mandate in mandates
                 tr
                   th
-                    a(href='/position/' + mandate.Role.identifier)
+                    a(href='/position/id/' + mandate.Role.id)
                       = mandate.Role.title
                   th
                     = mandate.Role.Group.name

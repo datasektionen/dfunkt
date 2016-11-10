@@ -196,4 +196,4 @@ module.exports = {
   SearchBar,
   ResultList,
   Result
-}
+};
