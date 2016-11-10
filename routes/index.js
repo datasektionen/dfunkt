@@ -1,3 +1,4 @@
+"use strict";
 var Sequelize = require("sequelize");
 var Promise = require("bluebird");
 var models  = require('../models');
