@@ -28,17 +28,14 @@ html
         login_href = "/login/logout";
       }
 
-      window.tbaas_conf = {
+      window.methone_conf = {
         system_name: "dfunkt",
-        target_id: "methone-container-replace",
-        primary_color: "#ab47bc",
-        secondary_color: "white",
+        color_scheme: "purple",
         login_text: login_text,
         login_href: login_href,
-        delta_invert: true,
-        topbar_items: []
+        links: []
       };
-    script(async="", src="//methone.datasektionen.se").
+    script(async="", src="//methone.datasektionen.se/bar.js").
   body
     div(id='methone-container-replace')
     div(id='application' class='purple')
