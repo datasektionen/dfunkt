@@ -1,3 +1,4 @@
+"use strict";
 var Sequelize = require("sequelize");
 var Promise = require("bluebird");
 var models  = require('../models');
@@ -54,42 +55,58 @@ router.get('/user/:kthid', function(req, res) {
       res.send('This user does not exist in dfunkt.');
     }
   });
-}); 
+});
 
-router.get('/position/:ident', function(req, res) {
-  var identifier = req.params.ident;
+router.get('/position/:identifier', function(req, res) {
+  var identifier = req.params.identifier;
   models.Role.findOne({where: {identifier}})
-    .then(function(role) {
+    .then(role => {
       if ( role == null ) {
         res.status(404);
-        res.send(`Position with identifier ${identifier} does not exist`);
+        res.send(`Bad position identfier ${identifier}`);
         return;
       }
 
-      let mandatesWithRoleIdP = models.Mandate.findAll({
-        include: [{all: true, nested: true}],
-        where:   {RoleId: role.id},
-        order:   'start DESC'
-      });
+      return respondPositionWithRole(role, req, res);
+    });
+});
 
-      return Promise.all([ mandatesWithRoleIdP, helpers.isadmin(req.user), models.Group.findAll({}) ])
-        .spread(function (mandates, isadmin, groups) {
-          res.render(
-            'position', {
-              user:     req.user,
-              isadmin:  isadmin,
-              roleobj:  role,
-              mandates: mandates,
-              groups:   groups,
-            }
-          );
-        });
+router.get('/position/id/:id', function(req, res) {
+  var id = req.params.id;
+  models.Role.findOne({where: {id}})
+    .then(function(role) {
+      if ( role == null ) {
+        res.status(404);
+        res.send(`Bad position id ${id}`);
+        return;
+      }
+
+      return respondPositionWithRole(role, req, res);
+    })
+});
+
+function respondPositionWithRole(role, req, res) {
+  let mandatesWithRoleIdP = models.Mandate.findAll({
+    include: [{all: true, nested: true}],
+    where:   {RoleId: role.id},
+    order:   'start DESC'
+  });
+
+  return Promise.all([ mandatesWithRoleIdP, helpers.isadmin(req.user), models.Group.findAll({}) ])
+    .spread(function (mandates, isadmin, groups) {
+      res.render( 'position', {
+        user: req.user,
+        isadmin,
+        roleobj: role,
+        mandates,
+        groups,
+      });
     }).catch(function (e) {
       console.log(e);
       res.status(403);
       res.send('error');
     });
-});
+}
 
 
 router.get('/admin', helpers.requireadmin, function(req, res) {

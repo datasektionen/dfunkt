@@ -1,4 +1,4 @@
-var passport = require('passport')
+var passport = require('passport');
 var CustomStrategy = require('passport-custom').Strategy;
 var https = require('https');
 
@@ -7,7 +7,7 @@ function verify(token, callback) {
     host: "login2.datasektionen.se",
     path: "/verify/" + token + ".json?api_key=" + process.env.LOGIN2_KEY,
     method: "GET"
-  }
+  };
 
   var requestCallback = function(res) {
       var collectedData = "";
@@ -36,8 +36,7 @@ function verify(token, callback) {
     };
     var request = https.request(options, requestCallback);
     request.end();
-};
-
+}
 module.exports = function() {
   passport.use('dauth', new CustomStrategy(
     function(req, done) {
@@ -51,4 +50,4 @@ module.exports = function() {
       });
     }
   ));
-}
+};

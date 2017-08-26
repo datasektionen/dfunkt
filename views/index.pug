@@ -21,24 +21,26 @@ block content
                   if !rolemandate.Mandates.length
                     tr
                       th
-                        a(href='/position/' + rolemandate.identifier)
+                        a(href='/position/id/' + rolemandate.id)
                           = rolemandate.title
                       th
                         = rolemandate.Group.name
                       th
-                        = rolemandate.email
+                        a(href='mailto:' + rolemandate.email)
+                          = rolemandate.email
                       th 
                         = '(Vakant)'
                   else
                     each mandate in rolemandate.Mandates
                       tr
                         th
-                          a(href='/position/' + rolemandate.identifier)
+                          a(href='/position/id/' + rolemandate.id)
                             = rolemandate.title
                         th
                           = rolemandate.Group.name
                         th
-                          = rolemandate.email
+                          a(href='mailto:' + rolemandate.email)
+                            = rolemandate.email
                         th 
                           a(href='/user/' + mandate.User.kthid)
                             = mandate.User.first_name + " " + mandate.User.last_name

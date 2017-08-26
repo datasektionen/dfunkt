@@ -49,9 +49,7 @@ function makeSureNoneNull(values) {
     }
   }
   return Promise.resolve(values);
-};
-
-
+}
 function findThisUser(kthid, ugkthid) {
   return models.User.findOne({
     where: {

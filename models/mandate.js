@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         Mandate.belongsTo(models.User);
-        Mandate.belongsTo(models.Role);
+        Mandate.belongsTo(models.Role, {onDelete: 'cascade'});
       }
     }
   });

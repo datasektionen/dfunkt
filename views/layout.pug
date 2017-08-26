@@ -3,20 +3,20 @@ html
   head
     meta(charset="utf-8")
     title Dfunkt
-    link(rel='stylesheet', href='http://aurora.datasektionen.se/', type="text/css")
+    link(rel='stylesheet', href='//aurora.datasektionen.se/', type="text/css")
     link(rel="icon", href="/public/favicon.png", type="image/png")
     script(type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.min.js")
     script(type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.min.js")
 
     script(type="text/javascript").
       function getLoginUrl() {
-        var callback = ""
-        callback += location.protocol + "//"
-        callback += location.hostname
+        var callback = "";
+        callback += location.protocol + "//";
+        callback += location.hostname;
         if(location.port) {
           callback += ":" + location.port
         }
-        callback += "/login/dauth/"
+        callback += "/login/dauth/";
         return "http://login2.datasektionen.se/login?callback=" + callback
       }
 
@@ -37,7 +37,7 @@ html
         login_href: login_href,
         delta_invert: true,
         topbar_items: []
-      }
+      };
     script(async="", src="//methone.datasektionen.se").
   body
     div(id='methone-container-replace')

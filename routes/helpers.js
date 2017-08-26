@@ -4,10 +4,10 @@ var moment = require('moment');
 var denied = function(res) {
   res.status(403);
   res.send('denied');
-}
+};
 
 exports.isadmin = function(user) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve) {
       models.User.findOne({where: {kthid:user}}).then(function(user) {
       console.log(user);
       var isadmin = false;
@@ -17,7 +17,7 @@ exports.isadmin = function(user) {
       resolve(isadmin);
     });
   });
-}
+};
 
 exports.requirelogin = function(req, res, next) {
   if(req.user) {
@@ -25,7 +25,7 @@ exports.requirelogin = function(req, res, next) {
   } else {
     denied(res);
   }
-}
+};
 
 exports.requireadmin = function(req, res, next) {
   models.User.findOne({where: {kthid:req.user}}).then(function(user) {
@@ -36,14 +36,14 @@ exports.requireadmin = function(req, res, next) {
       denied(res);
     }
   }); 
-}
+};
 
-var roleAtt = ['title', 'description', 'identifier', 'email', 'active',];
+var roleAtt = ['title', 'description', 'identifier', 'email', 'active', 'id'];
 var userAtt = ['first_name', 'last_name', 'email', 'kthid', 'ugkthid'];
 var groupAtt = ['name', 'identifier'];
 var mandateAtt = ['start', 'end'];
 
-exports.rolesFindAllTypeCurrent = function(identifier) {
+exports.rolesFindAllTypeCurrent = function (groupIdentifier) {
   var now = new moment().format('YYYY-MM-DD');
   return models.Role.findAll({
     attributes: roleAtt,
@@ -58,18 +58,18 @@ exports.rolesFindAllTypeCurrent = function(identifier) {
       }],
     },{
       attributes: groupAtt,
-      required: true,
-      where: {identifier: identifier},
-      model: models.Group, 
+      required:   true,
+      where:      {identifier: groupIdentifier},
+      model:      models.Group,
     }],
     order: [
       [models.Group, 'name'],
       ['title'],
     ] 
   });
-}
+};
 
-exports.rolesFindAllType = function(identifier) {
+exports.rolesFindAllType = function (groupIdentifier) {
   return models.Role.findAll({
     attributes: roleAtt,
     include: [{
@@ -82,16 +82,16 @@ exports.rolesFindAllType = function(identifier) {
       }],
     },{
       attributes: groupAtt,
-      required: true,
-      where: {identifier: identifier},
-      model: models.Group, 
+      required:   true,
+      where:      {identifier: groupIdentifier},
+      model:      models.Group,
     }],
     order: [
       [models.Group, 'name'],
       ['title'],
     ] 
   });
-}
+};
 
 exports.rolesFindAll = function() {
   return models.Role.findAll({
@@ -113,7 +113,7 @@ exports.rolesFindAll = function() {
       ['title'],
     ] 
   });
-}
+};
 
 exports.rolesFindAllCurrent = function() {
   var now = new moment().format('YYYY-MM-DD');
@@ -137,4 +137,4 @@ exports.rolesFindAllCurrent = function() {
       ['title'],
     ] 
   });
-}
+};
