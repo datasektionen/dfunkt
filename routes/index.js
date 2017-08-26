@@ -51,7 +51,7 @@ router.get('/user/:kthid', function(req, res) {
       });
     } else {
       res.status(404);
-      res.send('does not exist');
+      res.send('This user does not exist in dfunkt.');
     }
   });
 }); 
