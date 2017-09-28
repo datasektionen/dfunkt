@@ -226,7 +226,6 @@ var getUserMandatesCurrent = function (user, res) {
       include:    [
         {
           model:      models.Role,
-          attributes: ['title', 'email']
         }
       ]
     }).then(function (mandates) {
@@ -249,7 +248,7 @@ var getUserMandates = function (user, res) {
       include:    [
         {
           model:      models.Role,
-          attributes: ['title', 'email']
+          attributes: ['title', 'identifier', 'email']
         }
       ]
     }).then(function (mandates) {
