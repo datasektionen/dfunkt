@@ -66,7 +66,7 @@ var SearchBox = React.createClass({
     request.responseType = "json";
     request.open('GET', this.props.url + encodeURIComponent(query), true);
     request.onload = function() {
-      if (request.status >= 200 && request.status < 400) {
+      if (request.status >= 200 && request.status < 400 && request.response !== null) {
         // Success!
         var data = request.response;
         this.setState({data: data.results, searching: false});
