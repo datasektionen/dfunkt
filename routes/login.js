@@ -10,8 +10,8 @@ router.get('/test', function(req, res) {
 });
 
 router.get('/dauth/:token', passport.authenticate('dauth', {
-	successRedirect: '/',
-    failureRedirect: '/',
+  successRedirect: '/',
+  failureRedirect: '/',
 }));
 
 router.get('/logout', function(req, res) {

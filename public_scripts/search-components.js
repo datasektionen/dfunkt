@@ -38,9 +38,9 @@ var ChooseUserBox = React.createClass({
             key="searchbox" 
             onSelect={
               function(data) {
-                //this.setState({selected: data});
+                this.setState({selected: data});
                 // VIklunds suggestion:
-                location.href = "/user/" + data.kthid;
+                //location.href = "/user/" + data.kthid;
               }.bind(this)
             } 
           />
