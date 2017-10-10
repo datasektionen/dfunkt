@@ -37,11 +37,17 @@ var ChooseUserBox = React.createClass({
             {...this.props}
             key="searchbox" 
             onSelect={
-              function(data) {
-                this.setState({selected: data});
-                // VIklunds suggestion:
-                //location.href = "/user/" + data.kthid;
-              }.bind(this)
+              this.props.userSelectable 
+                ? function(data) {
+                  this.setState({selected: data});
+                  // VIklunds suggestion:
+                  //location.href = "/user/" + data.kthid;
+                }.bind(this)
+                : function(data) {
+                  //this.setState({selected: data});
+                  //VIklunds suggestion:
+                  location.href = "/user/" + data.kthid;
+                }.bind(this)
             } 
           />
         </div>
