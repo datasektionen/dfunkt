@@ -45,20 +45,3 @@ block content
           input(type="email", name="email", placeholder="email" required)
           input(type="checkbox", name="active")
           input(type="submit")
-
-
-        h2 Lägga till Administratörer
-        form(action="/users/make-admin", method="post")
-          select(name="userId", placeholder="User")
-            each user in users
-              option(value=user.id)
-                = user.first_name + " " + user.last_name
-          input(type="submit", value="Gör till administrator")
-
-        h2 Ta bort Administratörer
-        form(action="/users/revoke-admin", method="post")
-          select(name="userId", placeholder="User")
-            each user in admins
-              option(value=user.id)
-                = user.first_name + " " + user.last_name
-          input(type="submit", value="Ta bort som administrator")

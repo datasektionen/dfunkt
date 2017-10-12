@@ -24,33 +24,4 @@ router.post('/create', helpers.requireadmin, function(req, res) {
   }
 });
 
-router.post('/make-admin', helpers.requireadmin, function(req, res) {
-  toggleAdmin(req.body.userId, true).then(function() {
-    res.redirect('/');
-  }).catch(function (err) {
-    res.render('error', {message: err});
-  });
-});
-
-router.post('/revoke-admin', helpers.requireadmin, function(req, res) {
-  toggleAdmin(req.body.userId, false).then(function() {
-    res.redirect('/');
-  }).catch(function (err) {
-    res.render('error', {message: err});
-  });
-});
-
-function toggleAdmin(user_id, set_admin) {
-  return models.User.findById(user_id).then(function(user) {
-    if (user) {
-      return user.update({admin: set_admin}).then(function() {
-        debug("User " + user.first_name + " admin made " + set_admin);
-      });
-    } else {
-      debug("Failed to update admin status: No user for id " + user_id);
-      return Promise.reject("Failed to update admin status: No user for id " + user_id);
-    }
-  });
-}
-
 module.exports = router;
