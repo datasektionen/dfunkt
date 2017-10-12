@@ -1,23 +1,27 @@
 var models  = require('../models');
 var moment = require('moment');
+var request = require('request');
 
 var denied = function(res) {
   res.status(403);
   res.send('denied');
 };
 
-exports.isadmin = function(user) {
+var isadmin = function(user) {
+  var plsurl = "https://pls.datasektionen.se/api/user/" + user + "/dfunkt/admin";
   return new Promise(function (resolve) {
-      models.User.findOne({where: {kthid:user}}).then(function(user) {
-      console.log(user);
-      var isadmin = false;
-      if(user && user.admin) {
-        isadmin = true;
+    request({uri: plsurl, method: 'GET'}, function (error, response, body) {
+      if(error) console.log('error:', error); 
+      if (body === "true") {
+        resolve(true);
+      } else {
+        resolve(false);
       }
-      resolve(isadmin);
     });
   });
 };
+
+exports.isadmin = isadmin; 
 
 exports.requirelogin = function(req, res, next) {
   if(req.user) {
@@ -28,14 +32,15 @@ exports.requirelogin = function(req, res, next) {
 };
 
 exports.requireadmin = function(req, res, next) {
-  models.User.findOne({where: {kthid:req.user}}).then(function(user) {
-    console.log(user);
-    if(user && user.admin) {
-      next()
+  isadmin(req.user).then(function(admin) {
+    if(admin) {
+      next();
     } else {
       denied(res);
     }
-  }); 
+  }).catch(function(e) {
+    console.log(e);
+  });
 };
 
 var roleAtt = ['title', 'description', 'identifier', 'email', 'active', 'id'];
