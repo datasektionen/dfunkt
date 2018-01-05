@@ -5,6 +5,7 @@ var models = require('../models');
 var router = express.Router();
 var moment = require('moment');
 var helpers = require('./helpers.js');
+var cors = require('cors');
 
 //
 // API:
@@ -22,6 +23,15 @@ var helpers = require('./helpers.js');
 
 
 var defaultRoleAttributes = ['id', 'title', 'description', 'identifier', 'email', 'active'];
+
+router.use(cors());
+
+router.use(function(req, res, next) {
+   res.header("Access-Control-Allow-Origin", "*");
+   res.header('Access-Control-Allow-Methods', 'DELETE, PUT, GET, POST');
+   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+   next();
+});
 
 router.get('/roles', function (req, res) {
   models.Role.findAll({
