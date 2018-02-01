@@ -1,8 +1,12 @@
+"use strict";
+
+var Promise = require("bluebird");
 var models  = require('../models');
 var express = require('express');
 var helpers = require('./helpers');
 var debug = require("debug")("dfunkt");
 var router  = express.Router();
+const zfinger = require("../util/zfinger");
 
 router.post('/create', helpers.requireadmin, function(req, res) {
   if (req.body.first_name !== "") {
@@ -13,7 +17,7 @@ router.post('/create', helpers.requireadmin, function(req, res) {
       admin: false,
     }).then(function() {
       res.render("success", {
-	message: "Created user " + req.body.first_name + " " + req.body.last_name,
+        message: "Created user " + req.body.first_name + " " + req.body.last_name,
       });
     });
   } else {
@@ -25,7 +29,6 @@ router.post('/create', helpers.requireadmin, function(req, res) {
 });
 
 router.get("/fix_nulls", helpers.requireadmin, function (req, res) {
-  console.log("FINDING USERs");
   models.User.findAll({
     where: {
       $or: [
@@ -36,7 +39,26 @@ router.get("/fix_nulls", helpers.requireadmin, function (req, res) {
     }
   })
   .then(function (users) {
-    res.send(users);
+    const updates = users.map(user => {
+      return zfinger.byUgkthid(user.ugkthid)
+      .then(userFromZfinger => {
+        return user.update({
+          first_name: userFromZfinger.first_name,
+          last_name: userFromZfinger.last_name,
+          email: userFromZfinger.email,
+        });
+      })
+      .then((newUser) => {
+        const ret = newUser.first_name + newUser.last_name;
+        return ret;
+      });
+    });
+    Promise.all(updates)
+    .then(fixed_names => {
+      console.log("fixed names");
+      res.send(fixed_names)
+    })
+    .catch(err => res.send(err));
   });
 });
 
