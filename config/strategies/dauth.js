@@ -2,6 +2,7 @@ var passport = require('passport');
 var CustomStrategy = require('passport-custom').Strategy;
 var https = require('https');
 
+
 function verify(token, callback) {
   var options = {
     host: "login2.datasektionen.se",
@@ -37,6 +38,8 @@ function verify(token, callback) {
     var request = https.request(options, requestCallback);
     request.end();
 }
+
+
 module.exports = function() {
   passport.use('dauth', new CustomStrategy(
     function(req, done) {

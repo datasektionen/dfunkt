@@ -9,7 +9,11 @@ var sequelize;
 if (env == 'production') {
   sequelize = new Sequelize(process.env.DATABASE_URL);
 } else {
-  sequelize = new Sequelize(config);
+  sequelize = new Sequelize({
+    "dialect": "sqlite",
+    "storage": "./db.development.sqlite",
+    "logging": false
+  });
 }
 var db        = {};
 

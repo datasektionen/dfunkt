@@ -1,11 +1,22 @@
 var request = require('request');
 var debug = require('debug')('dfunkt');
 
+function extractFirstName(fullname) {
+  const names = fullname.split(" ");
+  return names[0] || "";
+}
+
+function extractLastName(fullname) {
+  const firstName = extractFirstName(fullname);
+  const lastName = fullname.substring(firstName.length + 1);
+  return lastName;
+}
+
 function zfingerParseUser(user) {
   return {
     fullname: user.cn,
-    first_name: user.givenName,
-    last_name: user.sn,
+    first_name: user.givenName || extractFirstName(user.cn),
+    last_name: user.sn || extractLastName(user.cn),
     kthid: user.uid,
     ugkthid: user.ugKthid,
   };
