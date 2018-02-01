@@ -5,7 +5,7 @@ block content
       div(class='row')
         include sidebar
         div(class='col-sm-8 col-md-9') 
-          h1
+          h1(data-usersource=userobj)
             = userobj.first_name + ' ' + userobj.last_name
           table(class='table')
             thead
