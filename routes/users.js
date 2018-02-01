@@ -24,4 +24,20 @@ router.post('/create', helpers.requireadmin, function(req, res) {
   }
 });
 
+router.get("/fix_nulls", helpers.requireadmin, function (req, res) {
+  console.log("FINDING USERs");
+  models.User.findAll({
+    where: {
+      $or: [
+        {email: null},
+        {first_name: null},
+        {last_name: null},
+      ]
+    }
+  })
+  .then(function (users) {
+    res.send(users);
+  });
+});
+
 module.exports = router;
