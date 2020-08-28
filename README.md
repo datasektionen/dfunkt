@@ -6,8 +6,22 @@ Dfunkt är ännu i ett tidigt stadium, men just nu listar den datan den har och 
 
 ## Usage (rest api)
 
- * `GET /roles/list` listar alla roller, och deras senaste mandat.
- * `GET /roles/:RoleId/list` listar en specifik roll, och alla mandat på den (som nånsin varit ever).
+Endpoint: https://dfunkt.datasektionen.se
+
+* `GET /api/roles` - Listar alla roller
+* `GET api/role/:identifier` - Listar en specifik roll och alla mandat någonsin på denna roll.
+* `GET api/role/id/:id` - Listar en specifik roll (efter roll-id) och alla mandat någonsin på denna roll.
+* `GET api/role/:identifier/current` - Listar en specifik roll och dess nuvarande mandat.
+* `GET api/role/id/:id/current` - Listar en specifik roll och dess nuvarande mandat.
+* `GET api/roles/type/:groupIdentifier/all` - Listar alla roller (efter grupp-id) och alla mandat någonsin på dessa roller.
+* `GET api/roles/type/:groupIdentifier/all/current` - Listar alla roller (efter grupp-id) och nuvarande mandat på dessa roller.
+* `GET api/roles/all` - Listar alla roller och alla mandat någonsin på dessa roller.
+* `GET api/roles/all/current` - Listar alla roller och alla nuvarande mandat på dessa roller.
+* `GET api/users` - Listar alla användare någonsin (i dfunk-systemet).
+* `GET api/users/kthid/:kthid` - Listar en specifik användare.
+* `GET api/users/kthid/:kthid/current` - Listar en specifik användare och dess nuvarande mandat.
+* `GET api/users/kthid/:ugkthid` - Listar en specifik användare.
+* `GET api/users/kthid/:ugkthid/current` - Listar en specifik användare och dess nuvarande mandat.
 
 ## Roadmap, I guess
 
