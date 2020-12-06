@@ -32,10 +32,6 @@
     "require": "^2.4.20",
     "sequelize": "^3.24.3",
     "sequelize-cli": "^2.4.0",
-    "sqlite3": "^3.1.9"
-  },
-  "engines": {
-    "node": "8.1.4",
-    "npm": "5.4.2"
+    "sqlite3": "^5.0.0"
   }
 }
