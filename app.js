@@ -36,7 +36,7 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(session({
 	saveUninitialized: true,
 	resave: true,
-	secret: 'temporarySuperSecretKey#¤%&'
+	secret: process.env.SESSION_SECRET,
 }));
 require('./config/passport')(passport);
 app.use(passport.initialize());
