@@ -5,8 +5,8 @@ var https = require('https');
 
 function verify(token, callback) {
   var options = {
-    host: "login2.datasektionen.se",
-    path: "/verify/" + token + ".json?api_key=" + process.env.LOGIN2_KEY,
+    host: "login.datasektionen.se",
+    path: "/verify/" + token + ".json?api_key=" + process.env.LOGIN_KEY,
     method: "GET"
   };
 

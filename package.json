@@ -16,13 +16,13 @@
     "browserify-middleware": "^7.1.0",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
-    "debug": "^2.2.0",
+    "debug": "^2.6.9",
     "envify": "^3.4.1",
     "express": "^4.16.2",
     "express-session": "^1.14.1",
     "ipaddr": "0.0.9",
     "jade-babel": "^5.0.0",
-    "moment": "^2.15.1",
+    "moment": "^2.29.1",
     "passport": "^0.3.2",
     "passport-custom": "^1.0.5",
     "pg": "^6.1.0",
@@ -32,10 +32,6 @@
     "require": "^2.4.20",
     "sequelize": "^3.24.3",
     "sequelize-cli": "^2.4.0",
-    "sqlite3": "^3.1.9"
-  },
-  "engines": {
-    "node": "8.1.4",
-    "npm": "5.4.2"
+    "sqlite3": "^5.0.0"
   }
 }
