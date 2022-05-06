@@ -23,10 +23,4 @@ router.post('/create', helpers.requireadmin, function(req, res) {
   }
 });
 
-router.get("/all", function(_, res) {
-  models.Group.findAll({})
-  .then(groups => res.json(groups))
-  .catch(_ => res.sendStatus(500));
-})
-
 module.exports = router;

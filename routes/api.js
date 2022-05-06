@@ -223,6 +223,12 @@ router.get('/user/ugkthid/:ugkthid/current', function (req, res) {
   });
 });
 
+router.get("/groups/all", function(_, res) {
+  models.Group.findAll({})
+  .then(groups => res.json(groups))
+  .catch(_ => res.sendStatus(500));
+})
+
 //Returns the user and mandates for him.
 var getUserMandatesCurrent = function (user, res) {
   if ( !user ) {
@@ -236,7 +242,10 @@ var getUserMandatesCurrent = function (user, res) {
       include:    [
         {
           model:      models.Role,
-        }
+          include: {
+            model: models.Group,
+          },
+        },
       ]
     }).then(function (mandates) {
       res.json({
