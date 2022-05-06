@@ -236,7 +236,8 @@ var getUserMandatesCurrent = function (user, res) {
       include:    [
         {
           model:      models.Role,
-        }
+        },
+        { model: models.Group },
       ]
     }).then(function (mandates) {
       res.json({
