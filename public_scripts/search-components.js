@@ -184,7 +184,6 @@ var Result = React.createClass({
 
     return (
         <div className="result btn btn-default btn-sm btn-block" onClick={callOnSelect} >
-          <img src={"https://zfinger.datasektionen.se/user/" + this.props.kthid + "/image/128"} />
           <h3 className="result-name">
             {this.props.fullname}
           </h3>
