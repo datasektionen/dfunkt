@@ -155,7 +155,7 @@ var SearchBar = React.createClass({
   render: function() {
     return (
       <div >
-        <input type='text' placeholder="Namn" onChange={this.onChange} value={this.state.query} onKeyDown={this.onKey} />
+        <input type='text' disabled="disabled" placeholder="Namn" onChange={this.onChange} value={this.state.query} onKeyDown={this.onKey} />
         <input type='button' onClick={this.onSubmit} value="Sök"/>
       </div>
     );
