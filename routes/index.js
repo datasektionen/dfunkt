@@ -12,7 +12,6 @@ router.get('/', function(req, res) {
     helpers.isadmin(req.user),
   ]).then(function(results) {
     var rolemandates = results[0];
-    console.log(rolemandates);
     var isadmin = results[1];
     res.render('index', {
       user: req.user,
@@ -20,7 +19,7 @@ router.get('/', function(req, res) {
       rolemandates: rolemandates,
     });
   }).catch(function(e) {
-    console.log(e);
+    console.error(e);
     res.status(403);
     res.send('error');
   });
@@ -46,7 +45,7 @@ router.get('/user/:kthid', function(req, res) {
           mandates: mandates,
         });
       }).catch(function(e) {
-        console.log(e);
+        console.error(e);
         res.status(403);
         res.send('error');
       });
@@ -102,7 +101,7 @@ function respondPositionWithRole(role, req, res) {
         groups,
       });
     }).catch(function (e) {
-      console.log(e);
+      console.error(e);
       res.status(403);
       res.send('error');
     });

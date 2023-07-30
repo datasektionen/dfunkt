@@ -52,7 +52,7 @@ router.get('/search/:query', function(req, res) {
       res.send(results);
     }).catch(function(err) {
       res.render('error', err);
-      console.log(err);
+      console.error(err);
     });
 });
 module.exports = router;
