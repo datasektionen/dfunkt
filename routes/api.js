@@ -47,6 +47,21 @@ router.get('/roles', function (req, res) {
   });
 });
 
+router.get('/active-roles', function (req, res) {
+  models.Role.findAll({
+    attributes: ['id', 'title', 'description', 'identifier', 'email', 'active'],
+    where:      { "active": true },
+    include:    [
+      {
+        model:      models.Group,
+        attributes: ["name", "identifier"],
+      }
+    ],
+  }).then(function (roles) {
+    res.json(roles);
+  });
+});
+
 router.get('/role/:identifier/', function (req, res) {
   let identifier = req.params.identifier;
   getOneRoleWithGroup({identifier}, res);
