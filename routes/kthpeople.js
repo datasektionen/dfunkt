@@ -9,11 +9,14 @@ var router  = express.Router();
 router.get('/', function(req, res) {
   Promise.all([
     helpers.isadmin(req.user),
+    helpers.issearch(req.user),
   ]).then(function(results) {
     var isadmin = results[0];
+    var issearch = results[1];
     res.render('kthsearch', {
       user: req.user,
-      isadmin: isadmin,
+      isadmin,
+      issearch,
     });
   });
 });

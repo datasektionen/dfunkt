@@ -15,6 +15,7 @@ var api = require('./routes/api');
 var kthpeople = require('./routes/kthpeople');
 var login = require('./routes/login');
 var groups = require('./routes/groups');
+var helpers = require('./routes/helpers');
 
 var pug = require("pug");
 var babel = require("jade-babel");
@@ -47,7 +48,7 @@ app.use('/users', users);
 app.use('/roles', roles);
 app.use('/mandates', mandates);
 app.use('/api', api);
-app.use('/kthpeople', kthpeople);
+app.use('/kthpeople', helpers.requiresearch, kthpeople);
 app.use('/login', login);
 app.use('/groups', groups);
 

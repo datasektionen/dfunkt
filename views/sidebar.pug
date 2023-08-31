@@ -1,7 +1,7 @@
 div(class='col-sm-4 col-md-3')
   div(id='secondary-nav')
     h3
-      #user 
+      #user
       if user
         p Logged in as #{user}
       else
@@ -9,10 +9,9 @@ div(class='col-sm-4 col-md-3')
     ul
       li
         a(href='/') Hem
-      li
-        a(href='/kthpeople') Användar-lookup
-    #isadmin
-    if isadmin
-      ul
+      if issearch
+        li
+          a(href='/kthpeople') Användarsökningsfunktion
+      if isadmin
         li
           a(href='/admin') Adminstrativt

@@ -10,14 +10,17 @@ router.get('/', function(req, res) {
   Promise.all([
     helpers.rolesFindAllCurrent(),
     helpers.isadmin(req.user),
+    helpers.issearch(req.user),
   ]).then(function(results) {
     var rolemandates = results[0];
     console.log(rolemandates);
     var isadmin = results[1];
+    var issearch = results[2];
     res.render('index', {
       user: req.user,
-      isadmin: isadmin,
-      rolemandates: rolemandates,
+      isadmin,
+      issearch,
+      rolemandates,
     });
   }).catch(function(e) {
     console.log(e);
@@ -36,14 +39,17 @@ router.get('/user/:kthid', function(req, res) {
           order: 'start DESC'
         }),
         helpers.isadmin(req.user),
+        helpers.issearch(req.user),
       ]).then(function(results) {
         var mandates = results[0];
         var isadmin = results[1];
+        var issearch = results[2];
         res.render('user', {
           user: req.user,
           userobj: user,
-          isadmin: isadmin,
-          mandates: mandates,
+          isadmin,
+          mandates,
+          issearch,
         });
       }).catch(function(e) {
         console.log(e);
@@ -92,11 +98,12 @@ function respondPositionWithRole(role, req, res) {
     order:   'start DESC'
   });
 
-  return Promise.all([ mandatesWithRoleIdP, helpers.isadmin(req.user), models.Group.findAll({}) ])
-    .spread(function (mandates, isadmin, groups) {
+  return Promise.all([ mandatesWithRoleIdP, helpers.isadmin(req.user), helpers.issearch(req.user), models.Group.findAll({}) ])
+    .spread(function (mandates, isadmin, issearch, groups) {
       res.render( 'position', {
         user: req.user,
         isadmin,
+        issearch,
         roleobj: role,
         mandates,
         groups,
@@ -121,6 +128,7 @@ router.get('/admin', helpers.requireadmin, function(req, res) {
     models.Mandate.findAll({include: [{model: models.User, as: "User"},
                                       {model: models.Role, as: "Role"}]}),
     helpers.isadmin(req.user),
+    helpers.issearch(req.user),
     models.Group.findAll({}),
     models.User.findAll({
       order: 'last_name',
@@ -131,16 +139,18 @@ router.get('/admin', helpers.requireadmin, function(req, res) {
     var roles = results[1];
     var mandates = results[2];
     var isadmin = results[3];
-    var groups = results[4];
-    var admins = results[5];
+    var issearch = results[4];
+    var groups = results[5];
+    var admins = results[6];
     res.render('admin', {
       user: req.user,
-      isadmin: isadmin,
-      users: users,
-      roles: roles,
-      mandates: mandates,
-      groups: groups,
-      admins: admins,
+      isadmin,
+      issearch,
+      users,
+      roles,
+      mandates,
+      groups,
+      admins,
     });
   });
 });

@@ -155,7 +155,7 @@ var SearchBar = React.createClass({
   render: function() {
     return (
       <div >
-        <input type='text' disabled="disabled" placeholder="Namn" onChange={this.onChange} value={this.state.query} onKeyDown={this.onKey} />
+        <input type='text' placeholder="Namn" onChange={this.onChange} value={this.state.query} onKeyDown={this.onKey} />
         <input type='button' onClick={this.onSubmit} value="Sök"/>
       </div>
     );
@@ -184,6 +184,7 @@ var Result = React.createClass({
 
     return (
         <div className="result btn btn-default btn-sm btn-block" onClick={callOnSelect} >
+          <img src={"https://zfinger.datasektionen.se/user/" + this.props.kthid + "/image/128"} />
           <h3 className="result-name">
             {this.props.fullname}
           </h3>

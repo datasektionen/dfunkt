@@ -21,7 +21,23 @@ var isadmin = function(user) {
   });
 };
 
-exports.isadmin = isadmin; 
+exports.isadmin = isadmin;
+
+var issearch = function(user) {
+  var plsurl = "https://pls.datasektionen.se/api/user/" + user + "/dfunkt/search";
+  return new Promise(function (resolve) {
+    request({uri: plsurl, method: 'GET'}, function (error, response, body) {
+      if(error) console.error(error);
+      if (body === "true") {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    });
+  });
+};
+
+exports.issearch = issearch;
 
 exports.requirelogin = function(req, res, next) {
   if(req.user) {
@@ -40,6 +56,18 @@ exports.requireadmin = function(req, res, next) {
     }
   }).catch(function(e) {
     console.log(e);
+  });
+};
+
+exports.requiresearch = function(req, res, next) {
+  issearch(req.user).then(function(search) {
+    if(search) {
+      next();
+    } else {
+      denied(res);
+    }
+  }).catch(function(e) {
+    console.error(e);
   });
 };
 
