@@ -86,7 +86,7 @@ function zfingerUpdateUser(ugkthid, userToUpdate) {
         "to match zfinger user w/ ugkthid: " + zfingerUser.ugkthid +
         " (Different ugkthids. This should never happen! Our db must be corrupted).";
       debug(errMsg);
-      console.log("IMPORTANT: " + errMsg); // Because this should never ever happen
+      console.error("IMPORTANT: " + errMsg); // Because this should never ever happen
       return Promise.reject(errMsg);
     } else {
       userToUpdate.first_name = zfingerUser.first_name;

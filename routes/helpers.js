@@ -11,7 +11,7 @@ var isadmin = function(user) {
   var plsurl = "https://pls.datasektionen.se/api/user/" + user + "/dfunkt/admin";
   return new Promise(function (resolve) {
     request({uri: plsurl, method: 'GET'}, function (error, response, body) {
-      if(error) console.log('error:', error); 
+      if(error) console.error(error);
       if (body === "true") {
         resolve(true);
       } else {
@@ -55,7 +55,7 @@ exports.requireadmin = function(req, res, next) {
       denied(res);
     }
   }).catch(function(e) {
-    console.log(e);
+    console.error(e);
   });
 };
 

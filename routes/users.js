@@ -55,7 +55,6 @@ router.get("/fix_nulls", helpers.requireadmin, function (req, res) {
     });
     Promise.all(updates)
     .then(fixed_names => {
-      console.log("fixed names");
       res.send(fixed_names)
     })
     .catch(err => res.send(err));

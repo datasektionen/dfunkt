@@ -13,7 +13,6 @@ router.get('/', function(req, res) {
     helpers.issearch(req.user),
   ]).then(function(results) {
     var rolemandates = results[0];
-    console.log(rolemandates);
     var isadmin = results[1];
     var issearch = results[2];
     res.render('index', {
@@ -23,7 +22,7 @@ router.get('/', function(req, res) {
       rolemandates,
     });
   }).catch(function(e) {
-    console.log(e);
+    console.error(e);
     res.status(403);
     res.send('error');
   });
@@ -52,7 +51,7 @@ router.get('/user/:kthid', function(req, res) {
           issearch,
         });
       }).catch(function(e) {
-        console.log(e);
+        console.error(e);
         res.status(403);
         res.send('error');
       });
@@ -109,7 +108,7 @@ function respondPositionWithRole(role, req, res) {
         groups,
       });
     }).catch(function (e) {
-      console.log(e);
+      console.error(e);
       res.status(403);
       res.send('error');
     });

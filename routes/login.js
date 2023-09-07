@@ -5,7 +5,6 @@ var router  = express.Router();
 
 
 router.get('/test', function(req, res) {
-	console.log(req.user);
 	res.send('test hello ' + req.user);
 });
 

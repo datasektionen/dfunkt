@@ -11,11 +11,10 @@ var mysql  = require('mysql');
 var mysqlcon = mysql.createConnection(''); //Add url here
 
 mysqlcon.connect(function(err){
-  if(err){
-    console.log('mysql Database connection error');
-  }else{
+  if (err) {
+    console.error('mysql Database connection error');
+  } else {
     console.log('mysql Database connection successful');
-    console.log(err)
   }
 });
 

@@ -88,7 +88,6 @@ var SearchBox = React.createClass({
         this.setState({searching: false, error: true});
     }.bind(this);
 
-    console.log('Sending search for "' + query + '"');
     request.send();
   },
   handleCheckbox: function(event) {
