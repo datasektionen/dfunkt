@@ -13,10 +13,12 @@ function extractLastName(fullname) {
 }
 
 function zfingerParseUser(user) {
+  const first_name = user.givenName || extractFirstName(user.cn);
+  const last_name = user.displayName ? user.displayName.substring(first_name.length + 1) : extractLastName(user.cn);
   return {
     fullname: user.cn,
-    first_name: user.givenName || extractFirstName(user.cn),
-    last_name: user.sn || extractLastName(user.cn),
+    first_name,
+    last_name,
     kthid: user.uid,
     ugkthid: user.ugKthid,
   };
