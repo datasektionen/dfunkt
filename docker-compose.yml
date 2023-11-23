@@ -1,0 +1,30 @@
+version: "2"
+services:
+  db:
+    image: postgres:9.5
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass123
+      POSTGRES_DB: dfunkt 
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database/:/docker-entrypoint-initdb.d/
+  node:
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    user: "node"
+    working_dir: /app
+    environment:
+      - SESSION_SECRET="asdf"
+      - DATABASE_URL=postgresql://postgres:pass123@db:5432/dfunkt
+    volumes:
+      - ./:/app
+    ports:
+      - "5000:5000"
+    command: bash -c 'sleep 20; npm start' &
+
+
+    

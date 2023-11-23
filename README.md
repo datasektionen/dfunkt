@@ -25,11 +25,16 @@ Endpoint: https://dfunkt.datasektionen.se
 
 ## Roadmap, I guess
 
- * Oh right, byta till Postregsql, right? Tror den kör SQLite3 i bakgrunden nu.
+ * Wooow, such emptiness!
 
 ## Installation
 
-    npm install
-    npm start
+För att köra rekommenderas docker-compose. Ladda ner docker-compose och starta med:
+
+    $ docker-compose up
+
+För att köra med en databas. Skaffa en dump fil från produktionsdatabasen och lägg in den i `./database/`. Ändra sedan namnet i `./database/import_db.sh` till namnet på dump filen. OBS att namnet inte får sluta på `.sql` eller något annat liknande. Starta sedan som vanligt med:
+
+    $ docker-compose up
 
 Och sen kan du öppna `localhost:5000` i webbläsarn.
