@@ -6,15 +6,9 @@ var Sequelize = require("sequelize");
 var env       = process.env.NODE_ENV || "development";
 var config    = require(path.join(__dirname, '..', 'config', 'config.json'))[env];
 var sequelize;
-if (env == 'production') {
-  sequelize = new Sequelize(process.env.DATABASE_URL);
-} else {
-  sequelize = new Sequelize({
-    "dialect": "sqlite",
-    "storage": "./db.development.sqlite",
-    "logging": false
-  });
-}
+
+sequelize = new Sequelize(process.env.DATABASE_URL);
+
 var db        = {};
 
 fs
