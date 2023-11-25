@@ -1,9 +1,13 @@
 FROM node:12.22.12
 
+RUN mkdir /app && chown node:node /app
+USER node:node
 WORKDIR /app
 
-COPY . .
+COPY package.json package-lock.json ./
 
 RUN npm install
 
-# CMD [ "npm", "start", "||", "sleep", "2073600"]
+COPY . .
+
+CMD ["npm", "start"]

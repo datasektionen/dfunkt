@@ -5,18 +5,17 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: pass123
-      POSTGRES_DB: dfunkt 
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: dfunkt
     volumes:
       - ./database/:/docker-entrypoint-initdb.d/
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
   node:
     tty: true
-    build:
-      context: .
-      dockerfile: Dockerfile
-    user: "node"
-    working_dir: /app
+    build: .
     environment:
       - SESSION_SECRET="asdf"
       - DATABASE_URL=postgresql://postgres:pass123@db:5432/dfunkt
@@ -24,7 +23,6 @@ services:
       - ./:/app
     ports:
       - "5000:5000"
-    command: bash -c 'sleep 20; npm start' &
-
-
-    
+    depends_on:
+      db:
+        condition: service_healthy

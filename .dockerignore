@@ -1,0 +1,13 @@
+.idea/*
+node_modules
+npm-debug.log
+*.sqlite
+*.swp
+.tern-project
+yarn.lock
+.env
+Dockerfile
+.dockerignore
+.gitignore
+.git
+.github
