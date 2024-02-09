@@ -154,4 +154,25 @@ router.get('/admin', helpers.requireadmin, function(req, res) {
   });
 });
 
+router.get('/exports', function(req, res) {
+  Promise.all([
+    helpers.rolesFindAllCurrent(),
+    helpers.isadmin(req.user),
+    helpers.issearch(req.user),
+  ]).then(function(results) {
+    var rolemandates = results[0];
+    var isadmin = results[1];
+    var issearch = results[2];
+    res.render('exports', {
+      user: req.user,
+      isadmin,
+      issearch,
+      rolemandates,
+    });
+  }).catch(function(e) {
+    console.error(e);
+    res.status(403);
+    res.send('error');
+  });
+});
 module.exports = router;
