@@ -52,7 +52,7 @@ app.use('/api', api);
 app.use('/kthpeople', helpers.requiresearch, kthpeople);
 app.use('/login', login);
 app.use('/groups', groups);
-app.use('/exports', exports);
+app.use('/export', exports);
 
 app.use('/js', browserify(__dirname + "/public_scripts", {
   transform: [
