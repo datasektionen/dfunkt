@@ -16,6 +16,7 @@ var kthpeople = require('./routes/kthpeople');
 var login = require('./routes/login');
 var groups = require('./routes/groups');
 var helpers = require('./routes/helpers');
+var exports = require('./routes/exports');
 
 var pug = require("pug");
 var babel = require("jade-babel");
@@ -51,6 +52,7 @@ app.use('/api', api);
 app.use('/kthpeople', helpers.requiresearch, kthpeople);
 app.use('/login', login);
 app.use('/groups', groups);
+app.use('/exports', exports);
 
 app.use('/js', browserify(__dirname + "/public_scripts", {
   transform: [
