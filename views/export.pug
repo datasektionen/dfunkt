@@ -1,0 +1,22 @@
+extends layout
+
+block content
+    div(id='content')
+      script(type="text/javascript").
+
+      div(class='row')
+        include sidebar
+        div(class='col-sm-8 col-md-9')
+          h1 Aktuella mandat
+          table(class='table')
+            thead
+              tr
+                th KTH-ID
+            tbody
+              each rolemandate in rolemandates
+                    each mandate in rolemandate.Mandates
+                      tr
+                        th 
+                            = mandate.User.kthid
+        div(class='clear')
+      
