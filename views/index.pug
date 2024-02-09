@@ -32,7 +32,7 @@ block content
                       th 
                         = '(Vakant)'
                       th
-                          = mandate.end
+                          = rolemandate.end
                   else
                     each mandate in rolemandate.Mandates
                       tr
@@ -48,7 +48,7 @@ block content
                           a(href='/user/' + mandate.User.kthid)
                             = mandate.User.first_name + " " + mandate.User.last_name
                         th
-                          = mandate.end
+                          = rolemandate.end
 
         div(class='clear')
       
