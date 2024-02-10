@@ -1,0 +1,62 @@
+extends layout
+
+block content
+    div(id='content')
+      script(type="text/javascript").
+
+      div(class='row')
+        include sidebar
+        div(class='col-sm-8 col-md-9') 
+            h1 Statistik 
+                h2 Sortera på  |
+                    button(onclick='toggleStatDisplay()') Antal dagar
+            table(id='mandateCountTable')  
+                thead
+                    tr
+                    th Användare
+                    th Antal mandat
+                    th Antal dagar
+                tbody
+                 each user in sortedByMandateCount
+                    tr
+                        td 
+                            a(href='/user/' + user.user.kthid)
+                                =user.user.first_name + " " + user.user.last_name 
+                        td 
+                            =user.count
+                        td
+                            =user.days
+            table(id='daysOnMandateTable', style='display: none;')  
+                thead
+                    tr
+                    th Användare
+                    th Antal mandat
+                    th Antal dagar
+                tbody
+                 each user in sortedByDaysOnMandate
+                    tr
+                        td 
+                            a(href='/user/' + user.user.kthid)
+                                =user.user.first_name + " " + user.user.last_name 
+                        td 
+                            =user.count
+                        td
+                            =user.days
+        script.
+            function toggleStatDisplay() {
+                var mandateTable = document.getElementById('mandateCountTable');
+                var daysTable = document.getElementById('daysOnMandateTable');
+                var toggleButton = document.querySelector('button[onclick="toggleStatDisplay()"]');
+                
+                if (mandateTable.style.display === 'none') {
+                    mandateTable.style.display = ''; // Show the mandate count table
+                    daysTable.style.display = 'none'; // Hide the days on mandate table
+                    toggleButton.textContent = 'Antal dagar'; // Change button text to show "Antal dagar"
+                } else {
+                    mandateTable.style.display = 'none'; // Hide the mandate count table
+                    daysTable.style.display = ''; // Show the days on mandate table
+                    toggleButton.textContent = 'Antal mandat'; // Change button text to show "Antal mandat"
+                }
+            }
+        div(class='clear')
+      

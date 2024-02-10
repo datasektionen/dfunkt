@@ -175,4 +175,63 @@ router.get('/exports', function(req, res) {
     res.send('error');
   });
 });
+
+router.get('/stats', function(req, res) {
+  Promise.all([
+    helpers.rolesFindAll(),
+    helpers.isadmin(req.user),
+    helpers.issearch(req.user),
+  ]).then(function(results) {
+    var findAll = results[0];
+    var isadmin = results[1];
+    var issearch = results[2];
+
+    var usermandates = {};
+    findAll.forEach(function(role) {
+      role.Mandates.forEach(function(mandate) {
+        usermandates[mandate.User.ugkthid] = usermandates[mandate.User.ugkthid] || {mandates: [], user: mandate.User};
+        usermandates[mandate.User.ugkthid].mandates.push({
+          role: role.title,
+          start: mandate.start,
+          end: mandate.end,
+        });
+      });
+    });
+    // Count the number of mandates for each user and add it to the usermandates object
+    Object.keys(usermandates).forEach(function(key) {
+      usermandates[key].count = usermandates[key].mandates.length;
+      usermandates[key].days = usermandates[key].mandates.reduce(function(sum, mandate) {
+        return sum + 1 + Math.ceil(((Math.min(mandate.end, Date.now())) - mandate.start) / 86400000);
+      }, 0);
+    });
+    // Sort the usermandates object by the number of mandates and save all data in the object
+    var sortedByMandateCount = Object.keys(usermandates).sort(function(a, b) {
+      return usermandates[b].count - usermandates[a].count;
+    }).map(function(key) {
+      return usermandates[key];
+    });
+
+    // Total days for each user on a mandate
+    var sortedByDaysOnMandate = Object.keys(usermandates).sort(function(a, b) {
+      return usermandates[b].days - usermandates[a].days;
+    }).map(function(key) {
+      return usermandates[key];
+    });
+
+
+    res.render('stats', {
+      user: req.user,
+      isadmin,
+      issearch,
+      findAll,
+      usermandates,
+      sortedByMandateCount,
+      sortedByDaysOnMandate,
+    });
+  }).catch(function(e) {
+    console.error(e);
+    res.status(403);
+    res.send('error');
+  });
+});
 module.exports = router;
