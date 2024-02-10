@@ -8,16 +8,51 @@ block content
         include sidebar
         div(class='col-sm-8 col-md-9') 
             h1 Statistik 
-                h2 Sortera på
-                    button(class='button' style='margin: 0.5em' onclick='toggleStatDisplay()') Antal dagar
-            table(id='mandateCountTable')  
+                h3 Ändra sortering till
+                    if sorting === 'count'
+                        button(class='button' style='margin: 0.5em' onclick=`location.href='?page=${currentPage}&entries=${pageSize}&sorting=days'`) Antal dagar
+                    else
+                        button(class='button' style='margin: 0.5em' onclick=`location.href='?page=${currentPage}&entries=${pageSize}&sorting=count'`) Antal mandat
+                h3 Antal poster per sida
+                    select(style='margin: 0.5em' id='pageSizeSelector' class='button' onchange=`selectPageSize(${currentPage}, '${sorting}')`, selected=`${pageSize}`)
+                        option(value='20', selected = 20 == pageSize) 20
+                        option(value='50', selected = 50 == pageSize) 50
+                        option(value='100', selected = 100 == pageSize) 100
+                        option(value='200', selected = 200 == pageSize) 200
+            if totalPages > 1
+                .pagination
+                    if currentPage > 1
+                        a(style='margin: 0.5em' href=`?page=${currentPage-1}&entries=${pageSize}&sorting=${sorting}`) Prev
+                    | Page #{currentPage} of #{totalPages}
+                    if currentPage < totalPages
+                        a(style='margin: 0.5em' href=`?page=${currentPage+1}&entries=${pageSize}&sorting=${sorting}`) Next
+
+
+            table(id='mandateCountTable', style=`${sorting == "count" ? "" : "display: none;"}`)  
+                thead
+                    tr
+                        th Användare
+                        th Antal mandat
+                        th Antal dagar
+                tbody
+                    each user in paginatedItems
+                        tr
+                            td 
+                                a(href='/user/' + user.user.kthid)
+                                    =user.user.first_name + " " + user.user.last_name 
+                            td 
+                                =user.count
+                            td
+                                =user.days
+
+            table(id='daysOnMandateTable', style=`${sorting == "days" ? "" : "display: none;"}`)  
                 thead
                     tr
                     th Användare
                     th Antal mandat
                     th Antal dagar
                 tbody
-                 each user in sortedByMandateCount
+                 each user in paginatedItems
                     tr
                         td 
                             a(href='/user/' + user.user.kthid)
@@ -26,37 +61,17 @@ block content
                             =user.count
                         td
                             =user.days
-            table(id='daysOnMandateTable', style='display: none;')  
-                thead
-                    tr
-                    th Användare
-                    th Antal mandat
-                    th Antal dagar
-                tbody
-                 each user in sortedByDaysOnMandate
-                    tr
-                        td 
-                            a(href='/user/' + user.user.kthid)
-                                =user.user.first_name + " " + user.user.last_name 
-                        td 
-                            =user.count
-                        td
-                            =user.days
+                        if totalPages > 1
+            .pagination
+                if currentPage > 1
+                    a(style='margin: 0.5em' href=`?page=${currentPage-1}&entries=${pageSize}&sorting=${sorting}`) Prev
+                | Page #{currentPage} of #{totalPages}
+                if currentPage < totalPages
+                    a(style='margin: 0.5em' href=`?page=${currentPage+1}&entries=${pageSize}&sorting=${sorting}`) Next
         script.
-            function toggleStatDisplay() {
-                var mandateTable = document.getElementById('mandateCountTable');
-                var daysTable = document.getElementById('daysOnMandateTable');
-                var toggleButton = document.querySelector('button[onclick="toggleStatDisplay()"]');
-                
-                if (mandateTable.style.display === 'none') {
-                    mandateTable.style.display = ''; // Show the mandate count table
-                    daysTable.style.display = 'none'; // Hide the days on mandate table
-                    toggleButton.textContent = 'Antal dagar'; // Change button text to show "Antal dagar"
-                } else {
-                    mandateTable.style.display = 'none'; // Hide the mandate count table
-                    daysTable.style.display = ''; // Show the days on mandate table
-                    toggleButton.textContent = 'Antal mandat'; // Change button text to show "Antal mandat"
-                }
+            function selectPageSize(currentPage, sorting) {
+                var value = document.getElementById('pageSizeSelector').value;
+                window.location.href = `?page=${currentPage}&entries=${value}&sorting=${sorting}`;
             }
         div(class='clear')
       

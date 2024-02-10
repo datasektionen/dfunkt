@@ -182,6 +182,8 @@ router.get('/stats', function(req, res) {
     helpers.isadmin(req.user),
     helpers.issearch(req.user),
   ]).then(function(results) {
+    const pageSize = parseInt(req.query.entries) || 20;
+    const sorting = req.query.sorting || "count";
     var findAll = results[0];
     var isadmin = results[1];
     var issearch = results[2];
@@ -224,6 +226,19 @@ router.get('/stats', function(req, res) {
       return usermandates[key];
     });
 
+    // Pagination logic
+    const page = parseInt(req.query.page) || 1;
+    var paginatedItems;
+    var totalPages;
+    if (sorting === "days") {
+      paginatedItems = sortedByDaysOnMandate.slice((page - 1) * pageSize, page * pageSize);
+      totalPages = Math.ceil(sortedByDaysOnMandate.length / pageSize);
+    }else{
+      paginatedItems = sortedByMandateCount.slice((page - 1) * pageSize, page * pageSize);
+      totalPages = Math.ceil(sortedByMandateCount.length / pageSize);
+    }
+
+
 
     res.render('stats', {
       user: req.user,
@@ -233,6 +248,11 @@ router.get('/stats', function(req, res) {
       usermandates,
       sortedByMandateCount,
       sortedByDaysOnMandate,
+      paginatedItems,
+      currentPage: page,
+      totalPages,
+      pageSize,
+      sorting,
     });
   }).catch(function(e) {
     console.error(e);
