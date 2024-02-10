@@ -206,6 +206,9 @@ router.get('/stats', function(req, res) {
     });
     // Sort the usermandates object by the number of mandates and save all data in the object
     var sortedByMandateCount = Object.keys(usermandates).sort(function(a, b) {
+      if (usermandates[b].count === usermandates[a].count) {
+        return usermandates[b].days - usermandates[a].days;
+      }
       return usermandates[b].count - usermandates[a].count;
     }).map(function(key) {
       return usermandates[key];
@@ -213,6 +216,9 @@ router.get('/stats', function(req, res) {
 
     // Total days for each user on a mandate
     var sortedByDaysOnMandate = Object.keys(usermandates).sort(function(a, b) {
+      if(usermandates[b].days === usermandates[a].days) {
+        return usermandates[b].count - usermandates[a].count;
+      }
       return usermandates[b].days - usermandates[a].days;
     }).map(function(key) {
       return usermandates[key];
