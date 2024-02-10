@@ -6,17 +6,47 @@ block content
 
       div(class='row')
         include sidebar
-        div(class='col-sm-8 col-md-9')
+        div(class='col-sm-8 col-md-9') 
+
           h1 Aktuella mandat
-          table(class='table')
-            thead
-              tr
-                th KTH-ID
-            tbody
-              each rolemandate in rolemandates
-                    each mandate in rolemandate.Mandates
-                      tr
-                        th 
-                            = mandate.User.kthid
+          select(id='emailDomainSelector' class='button' onchange='toggleEmailDisplay()')
+            option(value='') Enbart KTH-ID
+            option(value='@kth.se') @kth.se
+            option(value='@datasektionen.se') @datasektionen.se
+          div(style='display: flex; justify-content: stretch;')
+            table(class='table' style='width: 20%; ')
+              thead
+                tr(style='height: 10px;')
+                  th KTH-ID
+              tbody
+                each rolemandate in rolemandates
+                      each mandate in rolemandate.Mandates
+                        tr(style='height: 10px;')
+                          th 
+                            span(data-kthid=mandate.User.kthid class='email-display')= mandate.User.kthid
+            table(class='table' style='width: 80%;')
+                thead
+                  tr(style='height: 10px;')
+                    th Namn
+                    th Post
+                tbody
+                  each rolemandate in rolemandates
+                        each mandate in rolemandate.Mandates
+                          tr(style='height: 10px;')
+                            th 
+                              a(href='/user/' + mandate.User.kthid)
+                              = mandate.User.first_name + " " + mandate.User.last_name
+                            th
+                              = rolemandate.title
+          script.
+            function toggleEmailDisplay() {
+              var selectedDomain = document.getElementById('emailDomainSelector').value;
+              var emailDisplays = document.querySelectorAll('.email-display');
+              emailDisplays.forEach(function(display) {
+                var kthid = display.getAttribute('data-kthid'); // Use the data-kthid attribute
+                display.textContent = kthid + selectedDomain; // Update the display text based on the selection
+              });
+            }
+
         div(class='clear')
       
