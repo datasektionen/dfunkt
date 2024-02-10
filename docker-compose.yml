@@ -19,6 +19,7 @@ services:
     environment:
       - SESSION_SECRET="asdf"
       - DATABASE_URL=postgresql://postgres:pass123@db:5432/dfunkt
+    env_file: .env
     volumes:
       - ./:/app
     ports:
