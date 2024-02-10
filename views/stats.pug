@@ -14,7 +14,7 @@ block content
                     else
                         button(class='button' style='margin: 0.5em' onclick=`location.href='?page=${currentPage}&entries=${pageSize}&sorting=count'`) Antal mandat
                 h3 Antal poster per sida
-                    select(style='margin: 0.5em' id='pageSizeSelector' class='button' onchange=`selectPageSize(${currentPage}, '${sorting}')`, selected=`${pageSize}`)
+                    select(style='margin: 0.5em' id='pageSizeSelector' class='button' onchange=`selectPageSize(1, '${sorting}')`, selected=`${pageSize}`)
                         option(value='20', selected = 20 == pageSize) 20
                         option(value='50', selected = 50 == pageSize) 50
                         option(value='100', selected = 100 == pageSize) 100
