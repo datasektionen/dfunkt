@@ -212,8 +212,11 @@ router.get('/stats', function(req, res) {
         return usermandates[b].days - usermandates[a].days;
       }
       return usermandates[b].count - usermandates[a].count;
-    }).map(function(key) {
-      return usermandates[key];
+    }).map(function(key, index) {
+      return {
+        ...usermandates[key],
+        idx: index+1
+      };
     });
 
     // Total days for each user on a mandate
@@ -222,9 +225,13 @@ router.get('/stats', function(req, res) {
         return usermandates[b].count - usermandates[a].count;
       }
       return usermandates[b].days - usermandates[a].days;
-    }).map(function(key) {
-      return usermandates[key];
+    }).map(function(key, index) {
+      return {
+        ...usermandates[key],
+        idx: index+1
+      };
     });
+    
 
     // Pagination logic
     const page = parseInt(req.query.page) || 1;

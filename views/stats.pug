@@ -30,13 +30,16 @@ block content
 
             table(id='mandateCountTable', style=`${sorting == "count" ? "" : "display: none;"}`)  
                 thead
-                    tr
+                    tr  
+                        th
                         th Användare
                         th Antal mandat
                         th Antal dagar
                 tbody
                     each user in paginatedItems
                         tr
+                            td 
+                                =user.idx
                             td 
                                 a(href='/user/' + user.user.kthid)
                                     =user.user.first_name + " " + user.user.last_name 
@@ -48,12 +51,15 @@ block content
             table(id='daysOnMandateTable', style=`${sorting == "days" ? "" : "display: none;"}`)  
                 thead
                     tr
-                    th Användare
-                    th Antal mandat
-                    th Antal dagar
+                        th
+                        th Användare
+                        th Antal mandat
+                        th Antal dagar
                 tbody
                  each user in paginatedItems
                     tr
+                        td
+                            =user.idx
                         td 
                             a(href='/user/' + user.user.kthid)
                                 =user.user.first_name + " " + user.user.last_name 
