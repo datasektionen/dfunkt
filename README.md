@@ -29,6 +29,8 @@ Endpoint: https://dfunkt.datasektionen.se
 
 ## Installation
 
+Skapa en tom **.env** fil
+
 För att köra rekommenderas docker-compose. Ladda ner docker-compose och starta med:
 
     $ docker-compose up
