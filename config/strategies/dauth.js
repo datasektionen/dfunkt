@@ -1,12 +1,13 @@
 var passport = require('passport');
 var CustomStrategy = require('passport-custom').Strategy;
 var https = require('https');
+var env = require("../../util/env")
 
 
 function verify(token, callback) {
   var options = {
-    host: "login.datasektionen.se",
-    path: "/verify/" + token + ".json?api_key=" + process.env.LOGIN_KEY,
+    host: env.login_api_url,
+    path: "/verify/" + token + ".json?api_key=" + env.login_key,
     method: "GET"
   };
 
