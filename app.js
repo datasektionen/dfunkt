@@ -16,6 +16,7 @@ var kthpeople = require('./routes/kthpeople');
 var login = require('./routes/login');
 var groups = require('./routes/groups');
 var helpers = require('./routes/helpers');
+var env = require("./util/env");
 
 var pug = require("pug");
 var babel = require("jade-babel");
@@ -39,6 +40,12 @@ app.use(session({
 	resave: true,
 	secret: process.env.SESSION_SECRET,
 }));
+
+app.use((req, res, next) => {
+  res.locals.login_url = env.login_frontend_url;
+  next();
+})
+
 require('./config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
