@@ -1,6 +1,7 @@
 var models  = require('../models');
 var moment = require('moment');
 var request = require('request');
+var env = require('../util/env')
 
 var denied = function(res) {
   res.status(403);
@@ -8,7 +9,7 @@ var denied = function(res) {
 };
 
 var isadmin = function(user) {
-  var plsurl = "https://pls.datasektionen.se/api/user/" + user + "/dfunkt/admin";
+  var plsurl = env.pls_url + "/api/user/" + user + "/dfunkt/admin";
   return new Promise(function (resolve) {
     request({uri: plsurl, method: 'GET'}, function (error, response, body) {
       if(error) console.error(error);
@@ -24,7 +25,7 @@ var isadmin = function(user) {
 exports.isadmin = isadmin;
 
 var issearch = function(user) {
-  var plsurl = "https://pls.datasektionen.se/api/user/" + user + "/dfunkt/search";
+  var plsurl = env.pls_url + "/api/user/" + user + "/dfunkt/search";
   return new Promise(function (resolve) {
     request({uri: plsurl, method: 'GET'}, function (error, response, body) {
       if(error) console.error(error);
