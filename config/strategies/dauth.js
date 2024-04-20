@@ -4,7 +4,7 @@ var fetch = require('node-fetch');
 var env = require("../../util/env");
 
 function verify(token, callback) {
-  fetch(env.login_api_url + "/verify/" + token + "?api_key=" + env.login_key)
+  fetch(`${env.login_api_url}/verify/${token}?api_key=${env.login_key}`)
     .then((res) => res.json())
     .then((data) => callback(data))
     .catch(() => callback(undefined))

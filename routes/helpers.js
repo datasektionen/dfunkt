@@ -10,7 +10,7 @@ var denied = function(res) {
 };
 
 var isadmin = function(user) {
-  return fetch(env.pls_url + "/api/user/" + user + "/dfunkt/admin")
+  return fetch(`${env.pls_url}/api/user/${user}/dfunkt/admin`)
     .then((res) => res.json())
     .then((data) => (resolve) => resolve(data))
     .catch((err) => () => console.error(err))
@@ -20,7 +20,7 @@ var isadmin = function(user) {
 exports.isadmin = isadmin;
 
 var issearch = function(user) {
-  return fetch(env.pls_url + "/api/user/" + user + "/dfunkt/search")
+  return fetch(`${env.pls_url}/api/user/${user}/dfunkt/search`)
     .then((res) => res.json())
     .then((data) => (resolve) => resolve(data))
     .catch((err) => () => console.error(err))
