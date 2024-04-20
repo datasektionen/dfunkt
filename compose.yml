@@ -20,7 +20,7 @@ services:
     environment:
       SESSION_SECRET: "asdf"
       DATABASE_URL: postgresql://postgres:pass123@db:5432/dfunkt
-      LOGIN_API_URL: "login:7002" 
+      LOGIN_API_URL: "http://login:7002" 
       LOGIN_FRONTEND_URL: http://localhost:7002
       LOGIN_KEY: 1234567890abcdef
       PLS_URL: http://login:7001
