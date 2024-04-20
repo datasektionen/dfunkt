@@ -1,7 +1,8 @@
 var models  = require('../models');
 var moment = require('moment');
 var request = require('request');
-var env = require('../util/env')
+var env = require('../util/env');
+var fetch = require('node-fetch');
 
 var denied = function(res) {
   res.status(403);
@@ -9,33 +10,20 @@ var denied = function(res) {
 };
 
 var isadmin = function(user) {
-  var plsurl = env.pls_url + "/api/user/" + user + "/dfunkt/admin";
-  return new Promise(function (resolve) {
-    request({uri: plsurl, method: 'GET'}, function (error, response, body) {
-      if(error) console.error(error);
-      if (body === "true") {
-        resolve(true);
-      } else {
-        resolve(false);
-      }
-    });
-  });
+  return fetch(env.pls_url + "/api/user/" + user + "/dfunkt/admin")
+    .then((res) => res.json())
+    .then((data) => (resolve) => resolve(data))
+    .catch((err) => () => console.error(err))
+
 };
 
 exports.isadmin = isadmin;
 
 var issearch = function(user) {
-  var plsurl = env.pls_url + "/api/user/" + user + "/dfunkt/search";
-  return new Promise(function (resolve) {
-    request({uri: plsurl, method: 'GET'}, function (error, response, body) {
-      if(error) console.error(error);
-      if (body === "true") {
-        resolve(true);
-      } else {
-        resolve(false);
-      }
-    });
-  });
+  return fetch(env.pls_url + "/api/user/" + user + "/dfunkt/search")
+    .then((res) => res.json())
+    .then((data) => (resolve) => resolve(data))
+    .catch((err) => () => console.error(err))
 };
 
 exports.issearch = issearch;

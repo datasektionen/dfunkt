@@ -1,7 +1,7 @@
 var passport = require('passport');
 var CustomStrategy = require('passport-custom').Strategy;
-var fetch = require('node-fetch')
-var env = require("../../util/env")
+var fetch = require('node-fetch');
+var env = require("../../util/env");
 
 function verify(token, callback) {
   fetch(env.login_api_url + "/verify/" + token + "?api_key=" + env.login_key)
