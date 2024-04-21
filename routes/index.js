@@ -5,6 +5,10 @@ var models  = require('../models');
 var express = require('express');
 var router  = express.Router();
 var helpers = require('./helpers');
+const { forever } = require("request");
+
+// temp logic for darkmode_sensitive
+const bool = false;
 
 router.get('/', function(req, res) {
   Promise.all([
@@ -15,6 +19,7 @@ router.get('/', function(req, res) {
     var rolemandates = results[0];
     var isadmin = results[1];
     var issearch = results[2];
+
     res.render('index', {
       user: req.user,
       isadmin,
@@ -29,42 +34,56 @@ router.get('/', function(req, res) {
 });
 
 router.get('/user/:kthid', function(req, res) {
-  models.User.findOne({where: {kthid:req.params.kthid}}).then(function(user) {
-    if(user) {
-      Promise.all([
-        models.Mandate.findAll({
-          include: [{all: true, nested: true}],
-          where: {UserId: user.id},
-          order: 'start DESC'
-        }),
-        helpers.isadmin(req.user),
-        helpers.issearch(req.user),
-      ]).then(function(results) {
-        var mandates = results[0];
-        var isadmin = results[1];
-        var issearch = results[2];
-        res.render('user', {
-          user: req.user,
-          userobj: user,
-          isadmin,
-          mandates,
-          issearch,
+
+  Promise.all([helpers.darkmode_sensitive_where_logic({kthid:req.params.kthid})])
+  .then(([whereclause])=>{
+    models.User.findOne({where: whereclause}).then(function(user) {
+      if(user) {
+        Promise.all([
+          models.Mandate.findAll({
+            include: [{all: true, nested: true}],
+            where: {UserId: user.id},
+            order: 'start DESC'
+          }),
+          helpers.isadmin(req.user),
+          helpers.issearch(req.user),
+          helpers.darkmode_status(),
+        ]).then(function(results) {
+          var mandates = results[0];
+          var isadmin = results[1];
+          var issearch = results[2];
+          var isdarkmode = results[3]
+  
+          // filter out mandates that are darkmode_sensitive
+          mandates = mandates.filter(obj => !(obj.Role.darkmode_sensitive && isdarkmode));
+  
+          res.render('user', {
+            user: req.user,
+            userobj: user,
+            isadmin,
+            mandates,
+            issearch,
+          });
+        }).catch(function(e) {
+          console.error(e);
+          res.status(403);
+          res.send('error');
         });
-      }).catch(function(e) {
-        console.error(e);
-        res.status(403);
-        res.send('error');
-      });
-    } else {
-      res.status(404);
-      res.send('This user does not exist in dfunkt.');
-    }
+      } else {
+        res.status(404);
+        res.send('This user does not exist in dfunkt.');
+      }
+    });
   });
 });
 
 router.get('/position/:identifier', function(req, res) {
+
   var identifier = req.params.identifier;
-  models.Role.findOne({where: {identifier}})
+
+  Promise.all([helpers.darkmode_sensitive_where_logic({identifier})])
+  .then(([whereclause])=>{
+    models.Role.findOne({whereclause})
     .then(role => {
       if ( role == null ) {
         res.status(404);
@@ -74,20 +93,25 @@ router.get('/position/:identifier', function(req, res) {
 
       return respondPositionWithRole(role, req, res);
     });
+  });
 });
 
 router.get('/position/id/:id', function(req, res) {
   var id = req.params.id;
-  models.Role.findOne({where: {id}})
-    .then(function(role) {
-      if ( role == null ) {
-        res.status(404);
-        res.send(`Bad position id ${id}`);
-        return;
-      }
 
-      return respondPositionWithRole(role, req, res);
-    })
+  Promise.all([helpers.darkmode_sensitive_where_logic({id})])
+  .then(([whereclause])=>{
+    models.Role.findOne({where: whereclause})
+      .then(function(role) {
+        if ( role == null ) {
+          res.status(404);
+          res.send(`Bad position id ${id}`);
+          return;
+        }
+
+        return respondPositionWithRole(role, req, res);
+      })
+  });
 });
 
 function respondPositionWithRole(role, req, res) {
@@ -97,8 +121,12 @@ function respondPositionWithRole(role, req, res) {
     order:   'start DESC'
   });
 
-  return Promise.all([ mandatesWithRoleIdP, helpers.isadmin(req.user), helpers.issearch(req.user), models.Group.findAll({}) ])
-    .spread(function (mandates, isadmin, issearch, groups) {
+  return Promise.all([ mandatesWithRoleIdP, helpers.isadmin(req.user), helpers.issearch(req.user), models.Group.findAll({}), helpers.darkmode_status()])
+    .spread(function (mandates, isadmin, issearch, groups, isdarkmode) {
+
+      // filter out mandates that are darkmode_sensitive
+      mandates = mandates.filter(obj => {!(obj.User.darkmode_sensitive && isdarkmode)});
+
       res.render( 'position', {
         user: req.user,
         isadmin,

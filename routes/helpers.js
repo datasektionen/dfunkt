@@ -20,8 +20,52 @@ var isadmin = function(user) {
     });
   });
 };
-
 exports.isadmin = isadmin;
+
+let darkmode_status = async ()=>{
+  
+  // get darkmode status from datasektionen
+  var options = {
+    'method': 'GET',
+    'url': 'https://darkmode.datasektionen.se',
+  };
+
+  const request_inner = ()=>{
+    return new Promise((resolve, reject)=>{
+      request(options, function (error, response) { 
+        if (error) {
+          console.log("error", error);
+          reject(error);
+        }
+        // resolve(response.body);
+        resolve("true");
+      });
+    });
+  }
+
+  bool = (await request_inner()) === "true";
+
+  return bool
+}
+
+exports.darkmode_status = darkmode_status;
+
+let darkmode_sensitive_where_logic = async (whereclause = {})=>{
+
+  const status = await darkmode_status();
+
+  console.log("DARKMODE STATUS: ", status)
+
+  // darkmode_sensitive logic
+  if (status){
+    whereclause = {
+      ...whereclause,
+      darkmode_sensitive: false,
+    }
+  }
+  return whereclause;
+}
+exports.darkmode_sensitive_where_logic = darkmode_sensitive_where_logic;
 
 var issearch = function(user) {
   var plsurl = "https://pls.datasektionen.se/api/user/" + user + "/dfunkt/search";
@@ -78,96 +122,114 @@ var mandateAtt = ['start', 'end'];
 
 exports.rolesFindAllTypeCurrent = function (groupIdentifier) {
   var now = new moment().format('YYYY-MM-DD');
-  return models.Role.findAll({
-    attributes: roleAtt,
-    include: [{
-      attributes: mandateAtt,
-      model: models.Mandate, 
-      required: false,
-      where: {start: {$lte: now}, end: {$gte: now}},
+
+  return Promise.all([darkmode_sensitive_where_logic()])
+  .then(([whereclause])=>{
+    return models.Role.findAll({
+      attributes: roleAtt,
       include: [{
-        attributes: userAtt,
-        model: models.User,
+        attributes: mandateAtt,
+        model: models.Mandate, 
+        required: false,
+        where: {start: {$lte: now}, end: {$gte: now}},
+        include: [{
+          attributes: userAtt,
+          model: models.User,
+        }],
+      },{
+        attributes: groupAtt,
+        required:   true,
+        where:      {identifier: groupIdentifier},
+        model:      models.Group,
       }],
-    },{
-      attributes: groupAtt,
-      required:   true,
-      where:      {identifier: groupIdentifier},
-      model:      models.Group,
-    }],
-    order: [
-      [models.Group, 'name'],
-      ['title'],
-    ] 
-  });
+      where: whereclause,
+      order: [
+        [models.Group, 'name'],
+        ['title'],
+      ] 
+    });
+  })
 };
 
 exports.rolesFindAllType = function (groupIdentifier) {
-  return models.Role.findAll({
-    attributes: roleAtt,
-    include: [{
-      attributes: mandateAtt,
-      model: models.Mandate, 
-      required: false,
+  return Promise.all([darkmode_sensitive_where_logic()])
+  .then(([whereclause])=>{
+    return models.Role.findAll({
+      attributes: roleAtt,
       include: [{
-        attributes: userAtt,
-        model: models.User,
+        attributes: mandateAtt,
+        model: models.Mandate, 
+        required: false,
+        include: [{
+          attributes: userAtt,
+          model: models.User,
+        }],
+      },{
+        attributes: groupAtt,
+        required:   true,
+        where:      {identifier: groupIdentifier},
+        model:      models.Group,
       }],
-    },{
-      attributes: groupAtt,
-      required:   true,
-      where:      {identifier: groupIdentifier},
-      model:      models.Group,
-    }],
-    order: [
-      [models.Group, 'name'],
-      ['title'],
-    ] 
-  });
+      where: whereclause,
+      order: [
+        [models.Group, 'name'],
+        ['title'],
+      ] 
+    });
+  })
 };
 
 exports.rolesFindAll = function() {
-  return models.Role.findAll({
-    attributes: roleAtt,
-    include: [{
-      attributes: mandateAtt,
-      model: models.Mandate, 
-      required: false,
+  return Promise.all([darkmode_sensitive_where_logic()])
+  .then(([whereclause])=>{
+    return models.Role.findAll({
+      attributes: roleAtt,
       include: [{
-        attributes: userAtt,
-        model: models.User,
+        attributes: mandateAtt,
+        model: models.Mandate, 
+        required: false,
+        include: [{
+          attributes: userAtt,
+          model: models.User,
+        }],
+      },{
+        attributes: groupAtt,
+        model: models.Group, 
       }],
-    },{
-      attributes: groupAtt,
-      model: models.Group, 
-    }],
-    order: [
-      [models.Group, 'name'],
-      ['title'],
-    ] 
+      where: darkmode_sensitive_where_logic(),
+      order: [
+        [models.Group, 'name'],
+        ['title'],
+      ] 
+    });
   });
+
 };
 
 exports.rolesFindAllCurrent = function() {
   var now = new moment().format('YYYY-MM-DD');
-  return models.Role.findAll({
-    attributes: roleAtt,
-    include: [{
-      attributes: mandateAtt,
-      model: models.Mandate, 
-      required: false,
-      where: {start: {$lte: now}, end: {$gte: now}},
+  return Promise.all([darkmode_sensitive_where_logic()])
+  .then(([whereclause])=>{
+    return models.Role.findAll({
+      attributes: roleAtt,
       include: [{
-        attributes: userAtt,
-        model: models.User,
+        attributes: mandateAtt,
+        model: models.Mandate, 
+        required: false,
+        where: {start: {$lte: now}, end: {$gte: now}},
+        include: [{
+          attributes: userAtt,
+          model: models.User,
+        }],
+      },{
+        attributes: groupAtt,
+        model: models.Group, 
       }],
-    },{
-      attributes: groupAtt,
-      model: models.Group, 
-    }],
-    order: [
-      [models.Group, 'name'],
-      ['title'],
-    ] 
-  });
+      where: whereclause,
+      order: [
+        [models.Group, 'name'],
+        ['title'],
+      ] 
+    });
+  })
 };
