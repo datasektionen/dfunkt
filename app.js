@@ -38,7 +38,7 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(session({
 	saveUninitialized: true,
 	resave: true,
-	secret: process.env.SESSION_SECRET,
+	secret: env.session_secret,
 }));
 
 app.use((req, res, next) => {

@@ -1,4 +1,5 @@
 const env = {
+  session_secret: process.env.SESSION_SECRET,
   node_env: process.env.NODE_ENV || "development",
   port: process.env.PORT || 5000,
   database_url: process.env.DATABASE_URL,
