@@ -107,7 +107,7 @@ function zfingerCreateUser(ugkthid) {
 }
 
 function findOrCreateUser(user) {
-  debug("GOind to find or create dis: " + user);
+  debug("Goind to find or create dis: " + user);
   return models.User.findOrCreate({
     where: {
       first_name: user.first_name,

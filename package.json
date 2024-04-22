@@ -23,6 +23,7 @@
     "ipaddr": "0.0.9",
     "jade-babel": "^5.0.0",
     "moment": "^2.29.1",
+    "node-fetch": "^2.7.0",
     "passport": "^0.3.2",
     "passport-custom": "^1.0.5",
     "pg": "^6.1.0",

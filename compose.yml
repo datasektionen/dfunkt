@@ -1,4 +1,3 @@
-version: "2"
 services:
   db:
     image: postgres:9.5
@@ -6,6 +5,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: pass123
       POSTGRES_DB: dfunkt
+
     volumes:
       - ./database/:/docker-entrypoint-initdb.d/
     healthcheck:
@@ -13,12 +13,17 @@ services:
       interval: 3s
       timeout: 3s
       retries: 5
+        
   node:
     tty: true
     build: .
     environment:
-      - SESSION_SECRET="asdf"
-      - DATABASE_URL=postgresql://postgres:pass123@db:5432/dfunkt
+      SESSION_SECRET: "asdf"
+      DATABASE_URL: postgresql://postgres:pass123@db:5432/dfunkt
+      LOGIN_API_URL: "http://login:7002" 
+      LOGIN_FRONTEND_URL: http://localhost:7002
+      LOGIN_KEY: 1234567890abcdef
+      PLS_URL: http://login:7001
     env_file: .env
     volumes:
       - ./:/app
@@ -27,3 +32,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  login:
+    image: ghcr.io/datasektionen/nyckeln-under-dorrmattan
+    ports:
+      - 7002:7002
+      - 7001:7001

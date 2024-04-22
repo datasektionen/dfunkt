@@ -3,8 +3,9 @@
 var debug = require('debug')('express-example');
 var app = require('../app');
 var models = require("../models");
+var env = require("../util/env");
 
-app.set('port', process.env.PORT || 5000);
+app.set('port', env.port);
 
 models.sequelize.sync().then(function () {
   var server = app.listen(app.get('port'), function() {

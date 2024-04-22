@@ -1,42 +1,13 @@
 var passport = require('passport');
 var CustomStrategy = require('passport-custom').Strategy;
-var https = require('https');
-
+var fetch = require('node-fetch');
+var env = require("../../util/env");
 
 function verify(token, callback) {
-  var options = {
-    host: "login.datasektionen.se",
-    path: "/verify/" + token + ".json?api_key=" + process.env.LOGIN_KEY,
-    method: "GET"
-  };
-
-  var requestCallback = function(res) {
-      var collectedData = "";
-      res.setEncoding("utf-8");
-
-      res.on("data", function(data) {
-          collectedData += data;
-      });
-
-      res.on("end", function() {
-          if (collectedData) {
-            try {
-              var user = JSON.parse(collectedData);
-              callback(user);
-            } catch(e) {
-              callback(undefined);
-            }
-          } else {
-            callback(undefined);
-          }
-      });
-
-      res.on("error", function(err) {
-          callback(undefined);
-      });
-    };
-    var request = https.request(options, requestCallback);
-    request.end();
+  fetch(`${env.login_api_url}/verify/${token}?api_key=${env.login_key}`)
+    .then((res) => res.json())
+    .then((data) => callback(data))
+    .catch(() => callback(undefined))
 }
 
 

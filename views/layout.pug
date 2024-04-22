@@ -35,7 +35,7 @@ html
           callback += ":" + location.port
         }
         callback += "/login/dauth/";
-        return "https://login.datasektionen.se/login?callback=" + callback
+        return '#{ login_url }' + "/login?callback=" + callback
       }
 
       var loginname="#{user}";
