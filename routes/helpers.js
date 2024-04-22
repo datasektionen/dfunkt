@@ -1,6 +1,5 @@
 var models  = require('../models');
 var moment = require('moment');
-var request = require('request');
 var env = require('../util/env');
 var fetch = require('node-fetch');
 
@@ -9,21 +8,27 @@ var denied = function(res) {
   res.send('denied');
 };
 
-var isadmin = function(user) {
-  return fetch(`${env.pls_url}/api/user/${user}/dfunkt/admin`)
-    .then((res) => res.json())
-    .then((data) => (resolve) => resolve(data))
-    .catch((err) => () => console.error(err))
+var haspermission = function(user, permission) {
+  if (user === undefined)
+    return Promise.resolve(false);
 
+  return fetch(`${env.pls_url}/api/user/${user}/dfunkt/${permission}`)
+    .then((res) => res.json())
+    .then((data) => data)
+    .catch((err) => {
+      console.error(err);
+      return false;
+    })
+}
+
+var isadmin = function(user) {
+  return haspermission(user, 'admin');
 };
 
 exports.isadmin = isadmin;
 
 var issearch = function(user) {
-  return fetch(`${env.pls_url}/api/user/${user}/dfunkt/search`)
-    .then((res) => res.json())
-    .then((data) => (resolve) => resolve(data))
-    .catch((err) => () => console.error(err))
+  return haspermission(user, 'search');
 };
 
 exports.issearch = issearch;
