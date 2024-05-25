@@ -35,7 +35,7 @@ router.get('/user/:kthid', function(req, res) {
         models.Mandate.findAll({
           include: [{all: true, nested: true}],
           where: {UserId: user.id},
-          order: 'start DESC'
+          order: [['start', 'DESC']],
         }),
         helpers.isadmin(req.user),
         helpers.issearch(req.user),
@@ -94,7 +94,7 @@ function respondPositionWithRole(role, req, res) {
   let mandatesWithRoleIdP = models.Mandate.findAll({
     include: [{all: true, nested: true}],
     where:   {RoleId: role.id},
-    order:   'start DESC'
+    order:   [['start', 'DESC']],
   });
 
   return Promise.all([ mandatesWithRoleIdP, helpers.isadmin(req.user), helpers.issearch(req.user), models.Group.findAll({}) ])
@@ -118,11 +118,11 @@ function respondPositionWithRole(role, req, res) {
 router.get('/admin', helpers.requireadmin, function(req, res) {
   Promise.all([
     models.User.findAll({
-      order: 'last_name'
+      order: ['last_name'],
     }),
     models.Role.findAll({
       include: [{model: models.Group, as: "Group"}],
-      order: 'title'
+      order: ['title'],
     }),
     models.Mandate.findAll({include: [{model: models.User, as: "User"},
                                       {model: models.Role, as: "Role"}]}),
@@ -130,8 +130,8 @@ router.get('/admin', helpers.requireadmin, function(req, res) {
     helpers.issearch(req.user),
     models.Group.findAll({}),
     models.User.findAll({
-      order: 'last_name',
-      where: {admin: true}
+      order: ['last_name'],
+      where: {admin: true},
     }),
   ]).then(function(results) {
     var users = results[0];

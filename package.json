@@ -26,12 +26,12 @@
     "node-fetch": "^2.7.0",
     "passport": "^0.3.2",
     "passport-custom": "^1.0.5",
-    "pg": "^6.1.0",
+    "pg": "^7.9.0",
     "pug": "^2.0.0-beta6",
     "react": "^15.3.2",
     "request": "^2.83.0",
     "require": "^2.4.20",
-    "sequelize": "^3.24.3",
+    "sequelize": "^4.4.0",
     "sequelize-cli": "^2.4.0",
     "sqlite3": "^5.0.0"
   }

@@ -7,14 +7,11 @@ module.exports = function(sequelize, DataTypes) {
     identifier: DataTypes.STRING,
     email: DataTypes.STRING,
     active: DataTypes.BOOLEAN,
-  }, {
-    classMethods: {
-      associate: function(models) {
-        Role.hasMany(models.Mandate, {onDelete: 'cascade'}),
-        Role.belongsTo(models.Group)
-      }
-    }
   });
+  Role.associate = function(models) {
+    Role.hasMany(models.Mandate, { onDelete: 'cascade' });
+    Role.belongsTo(models.Group);
+  };
 
   return Role;
 };
