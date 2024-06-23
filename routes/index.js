@@ -203,7 +203,7 @@ router.get('/stats', function(req, res) {
     Object.keys(usermandates).forEach(function(key) {
       usermandates[key].count = usermandates[key].mandates.length;
       usermandates[key].days = usermandates[key].mandates.reduce(function(sum, mandate) {
-        return sum + 1 + Math.ceil(((Math.min(mandate.end, Date.now())) - mandate.start) / 86400000);
+        return sum + 1 + Math.ceil(((Math.min(new Date(mandate.end), Date.now())) - new Date(mandate.start)) / 86400000);
       }, 0);
     });
     // Sort the usermandates object by the number of mandates and save all data in the object
