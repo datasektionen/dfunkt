@@ -13,10 +13,9 @@ job "dfunkt" {
       port     = "http"
       provider = "nomad"
       tags = [
-        "traefik-external.enable=true",
-        "traefik-external.http.routers.dfunkt.rule=Host(`dfunkt.datasektionen.se`)",
-        "traefik-external.http.routers.dfunkt.entrypoints=websecure",
-        "traefik-external.http.routers.dfunkt.tls.certresolver=default",
+        "traefik.enable=true",
+        "traefik.http.routers.dfunkt.rule=Host(`dfunkt.datasektionen.se`)",
+        "traefik.http.routers.dfunkt.tls.certresolver=default",
       ]
     }
 
