@@ -1,4 +1,4 @@
-# Dfunkt - Ny funktionärslista för Konglig Datasktionen
+# Dfunkt - Ny funktionärslista för Konglig Datasektionen
 
 Dfunkt håller koll på roller, mandat och personer. Roller har sina beskrivningar och emailaddresser, mandat har en sträckningstid, en person, och en roll, och personer är personer.
 
