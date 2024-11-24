@@ -16,6 +16,9 @@ job "dfunkt" {
         "traefik.enable=true",
         "traefik.http.routers.dfunkt.rule=Host(`dfunkt.datasektionen.se`)",
         "traefik.http.routers.dfunkt.tls.certresolver=default",
+
+        "traefik.http.routers.dfunkt-internal.rule=Host(`dfunkt.nomad.dsekt.internal`)",
+        "traefik.http.routers.dfunkt-internal.entrypoints=web-internal",
       ]
     }
 
@@ -36,9 +39,9 @@ DATABASE_URL=postgres://dfunkt:{{ .database_password }}@postgres.dsekt.internal:
 LOGIN_KEY={{ .login_api_key }}
 {{ end }}
 NODE_ENV=production
-PLS_URL=https://pls.datasektionen.se
-LOGIN_API_URL=https://login.datasektionen.se
-LOGIN_FRONTEND_URL=https://login.datasektionen.se
+PLS_URL=http://pls.nomad.dsekt.internal
+LOGIN_API_URL=http://logout.nomad.dsekt.internal/legacyapi
+LOGIN_FRONTEND_URL=https://logout.datasektionen.se/legacyapi
 ENV
         destination = "local/.env"
         env         = true
