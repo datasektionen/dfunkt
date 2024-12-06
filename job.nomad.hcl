@@ -40,8 +40,8 @@ LOGIN_KEY={{ .login_api_key }}
 {{ end }}
 NODE_ENV=production
 PLS_URL=http://pls.nomad.dsekt.internal
-LOGIN_API_URL=http://logout.nomad.dsekt.internal/legacyapi
-LOGIN_FRONTEND_URL=https://logout.datasektionen.se/legacyapi
+LOGIN_API_URL=http://sso.nomad.dsekt.internal/legacyapi
+LOGIN_FRONTEND_URL=https://sso.datasektionen.se/legacyapi
 ENV
         destination = "local/.env"
         env         = true
