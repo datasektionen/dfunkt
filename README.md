@@ -20,8 +20,8 @@ Endpoint: https://dfunkt.datasektionen.se
 * `GET api/users` - Listar alla användare någonsin (i dfunk-systemet).
 * `GET api/user/kthid/:kthid` - Listar en specifik användare.
 * `GET api/user/kthid/:kthid/current` - Listar en specifik användare och dess nuvarande mandat.
-* `GET api/user/kthid/:ugkthid` - Listar en specifik användare.
-* `GET api/user/kthid/:ugkthid/current` - Listar en specifik användare och dess nuvarande mandat.
+* `GET api/user/ugkthid/:ugkthid` - Listar en specifik användare.
+* `GET api/user/ugkthid/:ugkthid/current` - Listar en specifik användare och dess nuvarande mandat.
 
 ## Roadmap, I guess
 
