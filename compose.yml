@@ -19,12 +19,13 @@ services:
     build: .
     environment:
       SESSION_SECRET: "asdf"
+      NODE_ENV: development
       DATABASE_URL: postgresql://postgres:pass123@db:5432/dfunkt
       LOGIN_API_URL: "http://login:7002" 
       LOGIN_FRONTEND_URL: http://localhost:7002
       LOGIN_KEY: 1234567890abcdef
-      PLS_URL: http://login:7001
-    env_file: .env
+      HIVE_URL: http://login:7004/api/v1
+      HIVE_API_KEY: http://login:7004
     volumes:
       - ./:/app
     ports:
@@ -35,6 +36,45 @@ services:
 
   login:
     image: ghcr.io/datasektionen/nyckeln-under-dorrmattan
+    configs:
+      - source: nyckeln.yaml
+        target: /config.yaml
     ports:
-      - 7002:7002
       - 7001:7001
+      - 7002:7002
+      - 7004:7004
+
+configs:
+  nyckeln.yaml:
+    content: |
+      clients:
+        - id: "client-id" # use this in your oidc client
+          secret: "client-secret" # use this in your oidc client
+          redirect_uris: # URIs of your oidc client
+            [
+              "http://localhost:4000/oidcc/callback",
+              "http://localhost:4000/oidcc/authorize",
+            ]
+
+      users:
+        - ug_kth_id: some-id
+          kth_id: turetek
+          email: turetek@kth.se
+          first_name: Ture
+          family_name: Teknolog
+          hive_tags:
+            - id: personal_email
+              content: turetek@gmail.com
+
+      hive:
+        groups:
+          - name: Systemansvarig
+            id: d-sys
+            domain: example.com
+            members:
+              - turetek
+            tags:
+              - id: mandate
+            permissions:
+              - id: admin
+                scope: null
