@@ -12,7 +12,11 @@ var haspermission = function(user, permission) {
   if (user === undefined)
     return Promise.resolve(false);
 
-  return fetch(`${env.pls_url}/api/user/${user}/dfunkt/${permission}`)
+  return fetch(`${env.hive_url}/user/${user}/permission/${permission}`, {
+        headers: {
+            "Authorization": `Bearer ${env.hive_api_key}`,
+        },
+    })
     .then((res) => res.json())
     .then((data) => data)
     .catch((err) => {

@@ -37,9 +37,10 @@ PORT={{ env "NOMAD_PORT_http" }}
 SESSION_SECRET={{ .session_secret }}
 DATABASE_URL=postgres://dfunkt:{{ .database_password }}@postgres.dsekt.internal:5432/dfunkt
 LOGIN_KEY={{ .login_api_key }}
+HIVE_API_KEY={{ .hive_api_key }}
 {{ end }}
 NODE_ENV=production
-PLS_URL=http://pls.nomad.dsekt.internal
+HIVE_URL=http://hive.nomad.dsekt.internal/api/v1
 LOGIN_API_URL=http://sso.nomad.dsekt.internal/legacyapi
 LOGIN_FRONTEND_URL=https://sso.datasektionen.se/legacyapi
 ENV
