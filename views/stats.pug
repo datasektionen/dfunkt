@@ -1,6 +1,48 @@
 extends layout
 
 block content
+    style.
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        .stats-table th, .stats-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .stats-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        .stats-table th a {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .stats-table th a:hover {
+            color: #007bff;
+            text-decoration: underline;
+        }
+        .active-sort {
+            color: #007bff !important;
+            font-weight: bold;
+        }
+        .sort-arrow {
+            margin-left: 5px;
+            font-size: 12px;
+            min-width: 10px;
+        }
+        .name-column {
+            width: 250px;
+            min-width: 250px;
+        }
+        .stats-table tr:hover {
+            background-color: #f9f9f9;
+        }
     div(id='content')
       script(type="text/javascript").
 
@@ -8,17 +50,12 @@ block content
         include sidebar
         div(class='col-sm-8 col-md-9') 
             h1 Statistik 
-                h3 Ändra sortering till
-                    if sorting === 'count'
-                        button(class='button' style='margin: 0.5em' onclick=`location.href='?page=${currentPage}&entries=${pageSize}&sorting=days'`) Antal dagar
-                    else
-                        button(class='button' style='margin: 0.5em' onclick=`location.href='?page=${currentPage}&entries=${pageSize}&sorting=count'`) Antal mandat
-                h3 Antal poster per sida
-                    select(style='margin: 0.5em' id='pageSizeSelector' class='button' onchange=`selectPageSize(1, '${sorting}')`, selected=`${pageSize}`)
-                        option(value='20', selected = 20 == pageSize) 20
-                        option(value='50', selected = 50 == pageSize) 50
-                        option(value='100', selected = 100 == pageSize) 100
-                        option(value='200', selected = 200 == pageSize) 200
+            h3 Antal poster per sida
+            select(style='margin: 0.5em' id='pageSizeSelector' class='button' onchange=`selectPageSize(1, '${sorting}')`, selected=`${pageSize}`)
+                option(value='20', selected = 20 == pageSize) 20
+                option(value='50', selected = 50 == pageSize) 50
+                option(value='100', selected = 100 == pageSize) 100
+                option(value='200', selected = 200 == pageSize) 200
             if totalPages > 1
                 .pagination
                     if currentPage > 1
@@ -27,53 +64,82 @@ block content
                     if currentPage < totalPages
                         a(style='margin: 0.5em' href=`?page=${currentPage+1}&entries=${pageSize}&sorting=${sorting}`) Next
 
-
-            table(id='mandateCountTable', style=`${sorting == "count" ? "" : "display: none;"}`)  
+            table(class='stats-table')  
                 thead
                     tr  
-                        th
-                        th Användare
-                        th Antal mandat
-                        th Antal dagar
+                        th #
+                        th(class='name-column') Användare
+                        th 
+                            a(href=`?page=${currentPage}&entries=${pageSize}&sorting=${sorting === 'count' ? 'count_desc' : 'count'}`, 
+                              class=sorting === 'count' || sorting === 'count_desc' ? 'active-sort' : '',
+                              style='text-decoration: none; color: inherit;') 
+                                span Antal mandat
+                                span(class='sort-arrow')
+                                    if sorting === 'count'
+                                        | ↓
+                                    else if sorting === 'count_desc'
+                                        | ↑
+                        th 
+                            a(href=`?page=${currentPage}&entries=${pageSize}&sorting=${sorting === 'days' ? 'days_desc' : 'days'}`, 
+                              class=sorting === 'days' || sorting === 'days_desc' ? 'active-sort' : '',
+                              style='text-decoration: none; color: inherit;') 
+                                span Antal dagar
+                                span(class='sort-arrow')
+                                    if sorting === 'days'
+                                        | ↓
+                                    else if sorting === 'days_desc'
+                                        | ↑
+                        th 
+                            a(href=`?page=${currentPage}&entries=${pageSize}&sorting=${sorting === 'years' ? 'years_desc' : 'years'}`, 
+                              class=sorting === 'years' || sorting === 'years_desc' ? 'active-sort' : '',
+                              style='text-decoration: none; color: inherit;') 
+                                span dFunk-år
+                                span(class='sort-arrow')
+                                    if sorting === 'years'
+                                        | ↓
+                                    else if sorting === 'years_desc'
+                                        | ↑
+                        th 
+                            a(href=`?page=${currentPage}&entries=${pageSize}&sorting=${sorting === 'unique' ? 'unique_desc' : 'unique'}`, 
+                              class=sorting === 'unique' || sorting === 'unique_desc' ? 'active-sort' : '',
+                              style='text-decoration: none; color: inherit;') 
+                                span Unika roller
+                                span(class='sort-arrow')
+                                    if sorting === 'unique'
+                                        | ↓
+                                    else if sorting === 'unique_desc'
+                                        | ↑
+                        th 
+                            a(href=`?page=${currentPage}&entries=${pageSize}&sorting=${sorting === 'simultaneous' ? 'simultaneous_desc' : 'simultaneous'}`, 
+                              class=sorting === 'simultaneous' || sorting === 'simultaneous_desc' ? 'active-sort' : '',
+                              style='text-decoration: none; color: inherit;') 
+                                span Max parallella
+                                span(class='sort-arrow')
+                                    if sorting === 'simultaneous'
+                                        | ↓
+                                    else if sorting === 'simultaneous_desc'
+                                        | ↑
                 tbody
                     each user in paginatedItems
                         tr
-                            td 
-                                =user.idx
+                            td=user.idx
                             td 
                                 a(href='/user/' + user.user.kthid)
                                     =user.user.first_name + " " + user.user.last_name 
-                            td 
-                                =user.count
-                            td
-                                =user.days
+                            td=user.count
+                            td=user.days
+                            td=(user.days / 365).toFixed(2)
+                            td=user.uniqueRoles
+                            td=user.maxSimultaneous
 
-            table(id='daysOnMandateTable', style=`${sorting == "days" ? "" : "display: none;"}`)  
-                thead
-                    tr
-                        th
-                        th Användare
-                        th Antal mandat
-                        th Antal dagar
-                tbody
-                 each user in paginatedItems
-                    tr
-                        td
-                            =user.idx
-                        td 
-                            a(href='/user/' + user.user.kthid)
-                                =user.user.first_name + " " + user.user.last_name 
-                        td 
-                            =user.count
-                        td
-                            =user.days
-                        if totalPages > 1
-            .pagination
-                if currentPage > 1
-                    a(style='margin: 0.5em' href=`?page=${currentPage-1}&entries=${pageSize}&sorting=${sorting}`) Prev
-                | Page #{currentPage} of #{totalPages}
-                if currentPage < totalPages
-                    a(style='margin: 0.5em' href=`?page=${currentPage+1}&entries=${pageSize}&sorting=${sorting}`) Next
+            if totalPages > 1
+                .pagination
+                    if currentPage > 1
+                        a(style='margin: 0.5em' href=`?page=${currentPage-1}&entries=${pageSize}&sorting=${sorting}`) Prev
+                    | Page #{currentPage} of #{totalPages}
+                    if currentPage < totalPages
+                        a(style='margin: 0.5em' href=`?page=${currentPage+1}&entries=${pageSize}&sorting=${sorting}`) Next
+
         script.
             function selectPageSize(currentPage, sorting) {
                 var value = document.getElementById('pageSizeSelector').value;
