@@ -26,8 +26,6 @@ services:
       LOGIN_KEY: 1234567890abcdef
       HIVE_URL: http://login:7004/api/v1
       HIVE_API_KEY: aaaa
-    volumes:
-      - ./:/app
     ports:
       - "5000:5000"
     depends_on:
