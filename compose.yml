@@ -34,7 +34,7 @@ services:
       - ./models:/app/models
       - ./util:/app/util
     ports:
-      - "3000:5000"
+      - "5000:5000"
     depends_on:
       db:
         condition: service_healthy
