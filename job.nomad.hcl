@@ -38,11 +38,13 @@ SESSION_SECRET={{ .session_secret }}
 DATABASE_URL=postgres://dfunkt:{{ .database_password }}@postgres.dsekt.internal:5432/dfunkt
 LOGIN_KEY={{ .login_api_key }}
 HIVE_API_KEY={{ .hive_api_key }}
+OIDC_SECRET={{ .oidc_secret }}
 {{ end }}
 NODE_ENV=production
 HIVE_URL=http://hive.nomad.dsekt.internal/api/v1
-LOGIN_API_URL=http://sso.nomad.dsekt.internal/legacyapi
-LOGIN_FRONTEND_URL=https://sso.datasektionen.se/legacyapi
+OIDC_ID=dfunkt
+OIDC_PROVIDER=http://sso.nomad.dsekt.internal/op
+REDIRECT_URL=https://dfunkt.datasektionen.se/login/callback
 ENV
         destination = "local/.env"
         env         = true
