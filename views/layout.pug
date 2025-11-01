@@ -28,14 +28,7 @@ html
 
     script(type="text/javascript").
       function getLoginUrl() {
-        var callback = "";
-        callback += location.protocol + "//";
-        callback += location.hostname;
-        if(location.port) {
-          callback += ":" + location.port
-        }
-        callback += "/login/dauth/";
-        return '#{ login_url }' + "/login?callback=" + callback
+        return "/login/oidc"
       }
 
       var loginname="#{user}";
