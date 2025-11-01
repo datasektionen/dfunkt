@@ -1,0 +1,18 @@
+FROM node:12.22.12-alpine
+
+RUN apk add nginx
+
+RUN mkdir /app
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN echo "nginx &" >> run.sh
+RUN echo "npm start" >> run.sh
+RUN chmod +x run.sh
+
+CMD ["./run.sh"]
