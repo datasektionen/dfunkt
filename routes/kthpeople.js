@@ -1,9 +1,6 @@
 var express = require('express');
-var https = require('https');
-var debug = require('debug')('dfunkt');
-var zfinger = require("../util/zfinger");
+var sso = require("../util/sso");
 var helpers = require('./helpers');
-var models = require("../models");
 var router  = express.Router();
 
 router.get('/', function(req, res) {
@@ -28,22 +25,10 @@ router.get('/kthid', function(req, res) {
 });
 router.get('/kthid/:kthid', function(req, res) {
   var kthid = req.params.kthid;
-  var url = 'https://zfinger.datasektionen.se/user/' + kthid;
 
-  https.get(url, (get_res) => {
-    recv_data = "";
-    get_res.on('data', (d) => {
-      recv_data += d;
-    });
-    get_res.on('end', () => {
-      try {
-        result = JSON.parse(recv_data);
-        res.render('kthresult', result);
-      } catch (e) {
-        res.render('error',{ message:'No user by that kthid found.' });
-      }
-    });
-  });
+  sso.byKthid(kthid).then(function(results) {
+      res.render('kthresult', results)
+  })
 });
 
 router.get('/search', function(req, res) {
@@ -51,7 +36,7 @@ router.get('/search', function(req, res) {
 });
 router.get('/search/:query', function(req, res) {
   var query = req.params.query;
-    zfinger.search(query).then(function(results) {
+    sso.search(query).then(function(results) {
       res.send(results);
     }).catch(function(err) {
       res.render('error', err);

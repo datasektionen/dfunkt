@@ -42,6 +42,7 @@ OIDC_SECRET={{ .oidc_secret }}
 {{ end }}
 NODE_ENV=production
 HIVE_URL=http://hive.nomad.dsekt.internal/api/v1
+SSO_API_URL=http://sso.nomad.dsekt.internal
 OIDC_ID=dfunkt
 OIDC_PROVIDER=https://sso.datasektionen.se/op
 REDIRECT_URL=https://dfunkt.datasektionen.se/login/callback

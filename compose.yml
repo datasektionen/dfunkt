@@ -10,6 +10,7 @@ services:
       LOGIN_KEY: 1234567890abcdef
       HIVE_URL: http://nyckeln:7004/api/v1
       HIVE_API_KEY: aaaa
+      SSO_API_URL: http://nyckeln:7003
       OIDC_PROVIDER: http://localhost:7003
       OIDC_ID: client-id
       OIDC_SECRET: client-secret
@@ -76,9 +77,27 @@ configs:
           email: turetek@kth.se
           first_name: Ture
           family_name: Teknolog
-          hive_tags:
-            - id: personal_email
-              content: turetek@gmail.com
+          picture: https://thskth.se/wp-content/uploads/2023/06/ths-logo-bla-01-300x294-1.png
+          thumbnail: https://thskth.se/wp-content/uploads/2019/12/ths-logo-svart-01.png
+        - ug_kth_id: some-other-id
+          kth_id: diadat
+          email: diadat@kth.se
+          first_name: Diana
+          family_name: Datalog
+          year_tag: D-83
+        - ug_kth_id: yet-anouther-id
+          kth_id: marmed
+          email: marmed@kth.se
+          first_name: Martin
+          family_name: Median
+          year_tag: Me-00
+        - ug_kth_id: even-more
+          kth_id: karklu
+          email: karklu@kth.se
+          first_name: Karin
+          family_name: Klubbare
+          year_tag: D-85
+
 
       hive:
         groups:
@@ -91,3 +110,4 @@ configs:
               - id: mandate
             permissions:
               - id: admin
+              - id: search

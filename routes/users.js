@@ -6,7 +6,7 @@ var express = require('express');
 var helpers = require('./helpers');
 var debug = require("debug")("dfunkt");
 var router  = express.Router();
-const zfinger = require("../util/zfinger");
+const sso = require("../util/sso");
 
 router.post('/create', helpers.requireadmin, function(req, res) {
   if (req.body.first_name !== "") {
@@ -40,12 +40,12 @@ router.get("/fix_nulls", helpers.requireadmin, function (req, res) {
   })
   .then(function (users) {
     const updates = users.map(user => {
-      return zfinger.byUgkthid(user.ugkthid)
-      .then(userFromZfinger => {
+      return sso.byKthid(user.kthid)
+      .then(userFromSso => {
         return user.update({
-          first_name: userFromZfinger.first_name,
-          last_name: userFromZfinger.last_name,
-          email: userFromZfinger.email,
+          first_name: userFromSso.first_name,
+          last_name: userFromSso.last_name,
+          email: userFromSso.email,
         });
       })
       .then((newUser) => {
