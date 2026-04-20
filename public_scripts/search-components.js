@@ -178,12 +178,13 @@ var Result = React.createClass({
         fullname: this.props.fullname,
         kthid: this.props.kthid,
         ugkthid: this.props.ugkthid,
+        picture: this.props.picture,
       });
     }.bind(this);
 
     return (
         <div className="result btn btn-default btn-sm btn-block" onClick={callOnSelect} >
-          <img src={"https://zfinger.datasektionen.se/user/" + this.props.kthid + "/image/128"} />
+          <img style={{ height: "200px" }} className="img-thumbnail" src={this.props.picture} />
           <h3 className="result-name">
             {this.props.fullname}
           </h3>

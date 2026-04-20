@@ -18,21 +18,23 @@ module.exports = function(passport) {
                 if (!dbuser) {
                     //If user does not exist create it.
                     models.User.create({
-                        first_name: profile.givenName,
-                        last_name: profile.familyName,
+                        first_name: profile.name.givenName,
+                        last_name: profile.name.familyName,
                         email: profile.emails[0].value,
                         kthid: profile.id,
-                        ugkthid: "ug" + profile.id,
+                        // Api no longer supports retriving it, should be fased out
+                        ugkthid: "d-ug" + profile.id,
                         admin: false,
                     });
                     console.log("adding user: " + profile.id);
                 } else if (!dbuser.ugkthid) { //Update user if they are loggin in for the first time.
                     dbuser.update({
-                        first_name: profile.givenName,
-                        last_name: profile.familyName,
+                        first_name: profile.name.givenName,
+                        last_name: profile.name.familyName,
                         email: profile.emails[0].value,
                         kthid: profile.id,
-                        ugkthid: "ug" + profile.id,
+                        // Api no longer supports retriving it, should be fased out
+                        ugkthid: "d-ug" + profile.id,
                         admin: false,
                     });
                     console.log("updating user: " + profile.id);
